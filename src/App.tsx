@@ -3895,7 +3895,7 @@ export default function App() {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-xl overflow-hidden border border-border mb-20">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-xl overflow-hidden border border-border">
                 {[
                   { label: "Components",   value: "54",   desc: "Production-ready UI blocks" },
                   { label: "Icons",        value: "218",  desc: "Lucide icon library" },
@@ -3911,7 +3911,7 @@ export default function App() {
               </div>
 
               {/* Component showcase */}
-              <div className="mb-20">
+              <div className="pt-20 mb-0">
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h2 className="text-xl font-bold tracking-tight">Component showcase</h2>
@@ -3974,7 +3974,7 @@ export default function App() {
               </div>
 
               {/* Principles */}
-              <div className="mb-20">
+              <div className="pt-20 mb-0">
                 <div className="mb-4">
                   <h2 className="text-xl font-bold tracking-tight">Built to last</h2>
                 </div>
@@ -4008,6 +4008,7 @@ export default function App() {
               </div>
 
               {/* CTA strip */}
+              <div className="pt-20">
               <div className="rounded-xl border border-border bg-muted/30 px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                 <div className="space-y-1">
                   <h2 className="text-base font-bold">Ready to build?</h2>
@@ -4022,6 +4023,7 @@ export default function App() {
                   </Button>
                 </div>
               </div>
+              </div>{/* end CTA pt wrapper */}
 
             </div>
           )}
