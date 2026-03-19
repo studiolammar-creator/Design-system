@@ -678,6 +678,7 @@ function ComponentsPage() {
   const [sizeTabVariant, setSizeTabVariant] = useState<"default" | "secondary" | "accent" | "destructive" | "outline" | "ghost" | "link">("default");
   const [badgeClickable, setBadgeClickable] = useState(false);
   const [badgeStyle, setBadgeStyle] = useState<"badge" | "pill">("badge");
+  const [badgeSize, setBadgeSize] = useState<"sm" | "md" | "lg">("md");
   const [badgeIconName, setBadgeIconName] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -1007,13 +1008,31 @@ ${rows}
             { key: "outline",     label: "Outline" },
           ] as const;
 
-          // Size classes driven by style toggle
-          const sizeClass   = isPill ? "px-4 py-1.5 text-sm gap-1.5" : "";
-          const iconSize    = isPill ? "h-4 w-4" : "h-3 w-3";
+          // Size + radius lookup — badge gets square-ish corners, pill keeps rounded-full
+          const sizeLookup = {
+            badge: {
+              sm: { cls: "!rounded px-1.5 py-px text-[10px] gap-1",    icon: "h-2.5 w-2.5" },
+              md: { cls: "!rounded-md px-2.5 py-0.5 text-xs gap-1",    icon: "h-3 w-3" },
+              lg: { cls: "!rounded-md px-3.5 py-1 text-sm gap-1.5",    icon: "h-3.5 w-3.5" },
+            },
+            pill: {
+              sm: { cls: "px-3 py-0.5 text-xs gap-1",                  icon: "h-3 w-3" },
+              md: { cls: "px-4 py-1.5 text-sm gap-1.5",                icon: "h-4 w-4" },
+              lg: { cls: "px-5 py-2 text-base gap-2",                  icon: "h-5 w-5" },
+            },
+          };
+          const { cls: sizeClass, icon: iconSize } = sizeLookup[badgeStyle][badgeSize];
 
           // Interaction classes
           const staticClass    = "pointer-events-none opacity-90";
           const clickableClass = "cursor-pointer active:scale-95 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 hover:shadow-sm hover:brightness-105";
+
+          const segmentBtn = (active: boolean, onClick: () => void, label: string) => (
+            <button key={label} onClick={onClick}
+              className={`px-3 py-1 text-xs rounded font-medium transition-colors ${active ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+              {label}
+            </button>
+          );
 
           return (
             <div className="space-y-6">
@@ -1024,12 +1043,8 @@ ${rows}
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">Interaction</p>
                   <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
-                    {([{ val: false, label: "Static" }, { val: true, label: "Clickable" }] as const).map(({ val, label }) => (
-                      <button key={label} onClick={() => setBadgeClickable(val)}
-                        className={`px-3 py-1 text-xs rounded font-medium transition-colors ${badgeClickable === val ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
-                        {label}
-                      </button>
-                    ))}
+                    {segmentBtn(!badgeClickable, () => setBadgeClickable(false), "Static")}
+                    {segmentBtn(badgeClickable,  () => setBadgeClickable(true),  "Clickable")}
                   </div>
                   <p className="text-[10px] text-muted-foreground max-w-[160px] leading-snug">
                     {badgeClickable ? "Rendered as <button> — hover, active scale & focus ring active." : "Rendered as <div> — hover effects disabled, purely informational."}
@@ -1040,16 +1055,22 @@ ${rows}
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">Style</p>
                   <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
-                    {([{ val: "badge", label: "Badge" }, { val: "pill", label: "Pill" }] as const).map(({ val, label }) => (
-                      <button key={label} onClick={() => setBadgeStyle(val)}
-                        className={`px-3 py-1 text-xs rounded font-medium transition-colors ${badgeStyle === val ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
-                        {label}
-                      </button>
-                    ))}
+                    {segmentBtn(badgeStyle === "badge", () => setBadgeStyle("badge"), "Badge")}
+                    {segmentBtn(badgeStyle === "pill",  () => setBadgeStyle("pill"),  "Pill")}
                   </div>
                   <p className="text-[10px] text-muted-foreground max-w-[160px] leading-snug">
-                    {isPill ? "Larger padding & text — use for filter chips or tags." : "Compact — use for status labels and counts."}
+                    {isPill ? "Rounded-full — filter chips or tags." : "Rounded corners — status labels and counts."}
                   </p>
+                </div>
+
+                {/* Size */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground">Size</p>
+                  <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                    {segmentBtn(badgeSize === "sm", () => setBadgeSize("sm"), "S")}
+                    {segmentBtn(badgeSize === "md", () => setBadgeSize("md"), "M")}
+                    {segmentBtn(badgeSize === "lg", () => setBadgeSize("lg"), "L")}
+                  </div>
                 </div>
 
                 {/* Icon picker */}
@@ -1078,11 +1099,10 @@ ${rows}
 
               {/* Badge preview */}
               <div className="space-y-3">
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                   {variants.map(({ key, label }) =>
                     badgeClickable ? (
-                      <button key={key}
-                        className={cn(badgeVariants({ variant: key }), sizeClass, clickableClass)}>
+                      <button key={key} className={cn(badgeVariants({ variant: key }), sizeClass, clickableClass)}>
                         {BadgeIcon && <BadgeIcon className={iconSize} />}
                         {label}
                       </button>
@@ -1094,7 +1114,6 @@ ${rows}
                     )
                   )}
                 </div>
-                {/* Affordance hint */}
                 {badgeClickable && (
                   <p className="text-[11px] text-muted-foreground">↑ Hover or click to see the interactive states</p>
                 )}
