@@ -3,7 +3,124 @@
 @tailwind utilities;
 
 /* ─────────────────────────────────────────────────────────
-   OBRA DESIGN SYSTEM — CSS Variables (ShadCN convention)
+   UNIGEO32 — @font-face declarations
+   ───────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Thin.otf") format("opentype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Thin-Italic.otf") format("opentype");
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Extralight.otf") format("opentype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Extralight-Italic.otf") format("opentype");
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Light-Italic.otf") format("opentype");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Italic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Medium-Italic.otf") format("opentype");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Semibold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Semibold-Italic.otf") format("opentype");
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Bold-Italic.otf") format("opentype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Extrabold.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Unigeo32";
+  src: url("/fonts/Unigeo32-Extrabold-Italic.otf") format("opentype");
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ─────────────────────────────────────────────────────────
+   PAU DESIGN SYSTEM — CSS Variables (ShadCN convention)
    All color values are HSL channel triplets (no "hsl()")
    ───────────────────────────────────────────────────────── */
 

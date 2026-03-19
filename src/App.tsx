@@ -186,7 +186,7 @@ const palettes: Palette[] = [
 
 const typographyTokens = {
   fontFamily: [
-    { token: "font-sans", value: "Inter, ui-sans-serif, system-ui, sans-serif", sample: "Aa Bb Cc 123" },
+    { token: "font-sans", value: "Unigeo32, ui-sans-serif, system-ui, sans-serif", sample: "Aa Bb Cc 123" },
     { token: "font-mono", value: "ui-monospace, SFMono-Regular, Menlo, monospace", sample: "const x = 42;" },
   ],
   fontSize: [
@@ -590,7 +590,7 @@ function ComponentsPage() {
       </div>
 
       {/* Typography */}
-      <Section title="Typography" description="Type scale — headings to captions.">
+      <Section title="Typography" description="Unigeo32 — headings to captions.">
         <div className="space-y-1">
           {[
             { label: "Heading 1",   cls: "text-4xl font-extrabold tracking-tight" },
