@@ -674,6 +674,7 @@ function ComponentsPage() {
   const [sliderValue, setSliderValue] = useState([40]);
   const [radioValue, setRadioValue] = useState("option-1");
   const [collapsibleOpen, setCollapsibleOpen] = useState(false);
+  const [sizeTabVariant, setSizeTabVariant] = useState<"default" | "secondary" | "accent" | "destructive" | "outline" | "ghost" | "link">("default");
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [view, setView] = useState<"grid" | "detail">("grid");
@@ -932,12 +933,29 @@ export function ButtonDemo() {
               <Button variant="link">Link</Button>
             </div>
           </TabsContent>
-          <TabsContent value="sizes" className="pt-4">
+          <TabsContent value="sizes" className="pt-4 space-y-5">
+            {/* Variant switcher */}
+            <div className="flex flex-wrap gap-1.5">
+              {(["default", "secondary", "accent", "destructive", "outline", "ghost", "link"] as const).map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setSizeTabVariant(v)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors capitalize ${
+                    sizeTabVariant === v
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+                  }`}
+                >
+                  {v}
+                </button>
+              ))}
+            </div>
+            {/* Size preview */}
             <div className="flex flex-wrap items-center gap-3">
-              <Button size="sm">Small</Button>
-              <Button>Default</Button>
-              <Button size="lg">Large</Button>
-              <Button size="icon"><Bell className="h-4 w-4" /></Button>
+              <Button size="sm" variant={sizeTabVariant}>Small</Button>
+              <Button variant={sizeTabVariant}>Default</Button>
+              <Button size="lg" variant={sizeTabVariant}>Large</Button>
+              <Button size="icon" variant={sizeTabVariant}><Bell className="h-4 w-4" /></Button>
             </div>
           </TabsContent>
           <TabsContent value="states" className="pt-4">
