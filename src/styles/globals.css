@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────────────────
+   OBRA DESIGN SYSTEM — CSS Variables (ShadCN convention)
+   All color values are HSL channel triplets (no "hsl()")
+   ───────────────────────────────────────────────────────── */
+
+@layer base {
+  :root {
+    /* Surfaces */
+    --background:          0 0% 100%;
+    --foreground:          0 0% 20%;       /* #333333 */
+
+    /* Card */
+    --card:                0 0% 100%;
+    --card-foreground:     0 0% 20%;
+
+    /* Popover */
+    --popover:             0 0% 100%;
+    --popover-foreground:  0 0% 20%;
+
+    /* Primary — Forest Green #013229 */
+    --primary:             169 96% 10%;
+    --primary-foreground:  169 80% 97%;
+
+    /* Secondary — Golden Yellow #FFD653 */
+    --secondary:           46 100% 66%;
+    --secondary-foreground:169 96% 10%;
+
+    /* Muted */
+    --muted:               0 0% 96%;
+    --muted-foreground:    0 0% 45%;
+
+    /* Accent — Mint Teal #61CAA0 */
+    --accent:              156 49% 59%;
+    --accent-foreground:   169 96% 10%;
+
+    /* Destructive */
+    --destructive:         0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Borders & inputs */
+    --border:              0 0% 90%;
+    --input:               0 0% 90%;
+    --ring:                169 96% 10%;
+
+    /* Border radius base (ShadCN convention) */
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background:          0 0% 5%;        /* #0D0D0D */
+    --foreground:          0 0% 98%;       /* #FAFAFA */
+
+    --card:                0 0% 10%;       /* #1A1A1A */
+    --card-foreground:     0 0% 98%;
+
+    --popover:             0 0% 10%;
+    --popover-foreground:  0 0% 98%;
+
+    /* Primary becomes Intense (accessible on dark) */
+    --primary:             156 49% 59%;    /* #61CAA0 */
+    --primary-foreground:  169 96% 4%;
+
+    --secondary:           46 100% 66%;    /* #FFD653 */
+    --secondary-foreground:169 96% 10%;
+
+    --muted:               0 0% 20%;       /* #333333 */
+    --muted-foreground:    0 0% 64%;       /* #A3A3A3 */
+
+    --accent:              156 49% 37%;
+    --accent-foreground:   156 49% 97%;
+
+    --destructive:         0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border:              0 0% 25%;       /* #404040 */
+    --input:               0 0% 25%;
+    --ring:                156 49% 59%;    /* #61CAA0 */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  h1 {
+    @apply scroll-m-20 text-4xl font-extrabold tracking-tight;
+  }
+  h2 {
+    @apply scroll-m-20 text-3xl font-semibold tracking-tight;
+  }
+  h3 {
+    @apply scroll-m-20 text-2xl font-semibold tracking-tight;
+  }
+  h4 {
+    @apply scroll-m-20 text-xl font-semibold tracking-tight;
+  }
+  p {
+    @apply leading-7;
+  }
+  blockquote {
+    @apply mt-6 border-l-2 border-primary pl-6 italic;
+  }
+  code {
+    @apply relative rounded bg-muted px-1.5 py-1 font-mono text-sm font-semibold;
+  }
+}
