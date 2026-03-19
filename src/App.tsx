@@ -1255,7 +1255,7 @@ ${outlineRows}
           // Outlined variant overrides — transparent bg + colored border/text
           const outlineStyles: Record<string, string> = {
             default:     "bg-transparent border-primary/60 text-primary",
-            secondary:   "bg-transparent border-secondary text-secondary-foreground",
+            secondary:   "bg-transparent border-secondary text-secondary-foreground dark:text-secondary",
             accent:      "bg-transparent border-accent text-accent-foreground",
             success:     "bg-transparent border-intense-400/70 text-intense-400",
             destructive: "bg-transparent border-destructive/60 text-destructive",
