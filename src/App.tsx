@@ -1063,9 +1063,9 @@ ${outlineRows}
           // Size + radius lookup — badge gets square-ish corners, pill keeps rounded-full
           const sizeLookup = {
             badge: {
-              sm: { cls: "!rounded px-1.5 py-px text-[10px] gap-1",    icon: "h-2.5 w-2.5" },
-              md: { cls: "!rounded-md px-2.5 py-0.5 text-xs gap-1",    icon: "h-3 w-3" },
-              lg: { cls: "!rounded-md px-3.5 py-1 text-sm gap-1.5",    icon: "h-3.5 w-3.5" },
+              sm: { cls: "!rounded-sm px-1.5 py-px text-[10px] gap-1",  icon: "h-2.5 w-2.5" },
+              md: { cls: "!rounded px-2.5 py-0.5 text-xs gap-1",        icon: "h-3 w-3" },
+              lg: { cls: "!rounded px-3.5 py-1 text-sm gap-1.5",        icon: "h-3.5 w-3.5" },
             },
             pill: {
               sm: { cls: "px-3 py-0.5 text-xs gap-1",                  icon: "h-3 w-3" },
