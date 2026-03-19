@@ -394,12 +394,12 @@ function Section({ title, description, children, hidden, code }: {
         <div className="relative group">
           <button
             onClick={handleCopy}
-            className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white/60 hover:text-white text-xs font-mono transition-colors"
+            className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/15 hover:bg-white/25 text-white text-xs font-mono transition-colors"
           >
             {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
             {copied ? "Copied!" : "Copy"}
           </button>
-          <pre style={{ backgroundColor: "#0a0a0a", color: "#e5e5e5" }} className="rounded-xl p-5 pr-24 text-xs font-mono overflow-x-auto leading-relaxed whitespace-pre">
+          <pre style={{ backgroundColor: "#0a0a0a", color: "#ffffff" }} className="rounded-xl p-5 pr-24 text-xs font-mono overflow-x-auto leading-relaxed whitespace-pre">
             <code style={{ color: "inherit" }}>{code}</code>
           </pre>
         </div>
