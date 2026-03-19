@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   AlertCircle, AlignCenter, AlignLeft, AlignRight, ArrowRight, Bell, Bold, Check, ChevronDown,
   Copy, FileText, Home, Info, Italic, Layers, LayoutDashboard, LogOut, Moon,
@@ -675,57 +675,151 @@ function ComponentsPage() {
   const [radioValue, setRadioValue] = useState("option-1");
   const [collapsibleOpen, setCollapsibleOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [view, setView] = useState<"grid" | "detail">("grid");
+  const [selectedComponent, setSelectedComponent] = useState<string | null>(null);
 
-  const show = (title: string) =>
-    !query.trim() || title.toLowerCase().includes(query.toLowerCase());
-
-  const allSectionTitles = [
-    "Typography","Buttons","Badges","Cards","Form Controls","Alerts","Table",
-    "Accordion","Alert Dialog","Sheet","Progress & Slider","Radio Group & Textarea",
-    "Toggle & Toggle Group","Skeleton","Scroll Area","Popover & Hover Card",
-    "Menubar & Navigation Menu","Collapsible & Context Menu","Breadcrumb & Pagination",
-    "Aspect Ratio & Carousel","Calendar","Command","Drawer","Input OTP","Sonner (Toast)",
-    "Resizable","Chart","Sidebar","Spinner","Kbd","Native Select","Input Group",
-    "Button Group","Empty","Field","Item",
+  const componentMeta: { title: string; description: string; category: string; preview: React.ReactNode }[] = [
+    { title: "Typography",               category: "Foundation", description: "Text scales and font styles.",                  preview: <div className="space-y-1 pointer-events-none select-none"><p className="text-sm font-bold tracking-tight">Heading</p><p className="text-xs text-muted-foreground">Body text sample</p><p className="text-[10px] font-mono text-muted-foreground/60">Code</p></div> },
+    { title: "Buttons",                  category: "Actions",    description: "Seven variants × four sizes.",                  preview: <div className="flex flex-wrap gap-1.5 pointer-events-none select-none"><Button size="sm">Primary</Button><Button size="sm" variant="outline">Outline</Button><Button size="sm" variant="ghost">Ghost</Button></div> },
+    { title: "Badges",                   category: "Display",    description: "Status indicators and labels.",                 preview: <div className="flex flex-wrap gap-1.5 pointer-events-none select-none"><Badge>Default</Badge><Badge variant="secondary">Secondary</Badge><Badge variant="outline">Outline</Badge></div> },
+    { title: "Cards",                    category: "Layout",     description: "Content containers with header and footer.",    preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card"><p className="font-semibold text-xs">Card title</p><p className="text-muted-foreground text-[10px] mt-0.5">Short description here.</p></div> },
+    { title: "Form Controls",            category: "Forms",      description: "Inputs, selects, checkboxes, and switches.",    preview: <div className="space-y-1.5 pointer-events-none select-none w-full"><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">Email address</span></div><div className="flex items-center gap-1.5"><div className="h-3.5 w-3.5 rounded-sm border border-input bg-background" /><span className="text-[10px] text-muted-foreground">Accept terms</span></div></div> },
+    { title: "Alerts",                   category: "Feedback",   description: "Four semantic variants.",                       preview: <div className="pointer-events-none select-none border border-border rounded-md p-2.5 w-full flex gap-2 items-start"><div className="h-3 w-3 rounded-full bg-primary mt-0.5 shrink-0" /><div><p className="text-[10px] font-semibold">Alert title</p><p className="text-[9px] text-muted-foreground mt-0.5">Alert description text.</p></div></div> },
+    { title: "Table",                    category: "Data",       description: "Data display with status badges.",              preview: <div className="pointer-events-none select-none w-full text-[9px]"><div className="flex gap-3 border-b border-border pb-1 mb-1 font-semibold text-muted-foreground"><span className="flex-1">Invoice</span><span>Status</span><span>Amount</span></div><div className="flex gap-3"><span className="flex-1 text-foreground">INV-001</span><Badge className="text-[8px] h-3.5 px-1">Paid</Badge><span>$250</span></div></div> },
+    { title: "Accordion",                category: "Navigation", description: "Collapsible sections.",                         preview: <div className="pointer-events-none select-none w-full space-y-1"><div className="border-b border-border pb-1.5 flex items-center justify-between"><span className="text-[10px] font-medium">Is it accessible?</span><span className="text-[10px] text-muted-foreground">+</span></div><div className="border-b border-border pb-1.5 flex items-center justify-between"><span className="text-[10px] font-medium">Is it styled?</span><span className="text-[10px] text-muted-foreground">+</span></div></div> },
+    { title: "Alert Dialog",             category: "Overlay",    description: "Blocking confirmation dialogs.",                preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card shadow-sm"><p className="text-[10px] font-semibold">Are you sure?</p><p className="text-[9px] text-muted-foreground mt-0.5">This action cannot be undone.</p><div className="flex gap-1.5 mt-2"><div className="h-5 px-2 rounded bg-destructive flex items-center"><span className="text-[9px] text-white">Delete</span></div><div className="h-5 px-2 rounded border border-border flex items-center"><span className="text-[9px]">Cancel</span></div></div></div> },
+    { title: "Sheet",                    category: "Overlay",    description: "Slide-in panels from any edge.",                preview: <div className="pointer-events-none select-none flex gap-2 w-full"><Button size="sm" variant="outline" className="text-[10px] h-6 px-2">Open →</Button><div className="flex-1 border-l border-border pl-2"><p className="text-[10px] font-medium">Sheet title</p><p className="text-[9px] text-muted-foreground">Content here.</p></div></div> },
+    { title: "Progress & Slider",        category: "Forms",      description: "Progress bars and range inputs.",               preview: <div className="space-y-2 pointer-events-none select-none w-full"><div className="h-2 rounded-full bg-muted overflow-hidden"><div className="h-full bg-primary rounded-full" style={{width:"60%"}} /></div><div className="h-2 rounded-full bg-muted relative"><div className="absolute left-[35%] top-1/2 -translate-y-1/2 h-4 w-4 rounded-full border-2 border-primary bg-background shadow" /></div></div> },
+    { title: "Radio Group & Textarea",   category: "Forms",      description: "Radio buttons and multi-line inputs.",          preview: <div className="space-y-1.5 pointer-events-none select-none"><div className="flex items-center gap-1.5"><div className="h-3 w-3 rounded-full border-2 border-primary bg-background flex items-center justify-center"><div className="h-1.5 w-1.5 rounded-full bg-primary" /></div><span className="text-[10px]">Option 1</span></div><div className="h-10 rounded-md border border-input bg-background w-full" /></div> },
+    { title: "Toggle & Toggle Group",    category: "Actions",    description: "Toggle and grouped toggle buttons.",            preview: <div className="flex gap-1 pointer-events-none select-none"><div className="h-7 w-7 rounded border border-border flex items-center justify-center bg-muted"><span className="text-[10px] font-bold">B</span></div><div className="h-7 w-7 rounded border border-border flex items-center justify-center"><span className="text-[10px] italic">I</span></div><div className="h-7 w-7 rounded border border-border flex items-center justify-center"><span className="text-[10px] underline">U</span></div></div> },
+    { title: "Skeleton",                 category: "Feedback",   description: "Loading placeholder states.",                   preview: <div className="flex items-center gap-2 pointer-events-none select-none w-full"><div className="h-8 w-8 rounded-full bg-muted animate-pulse shrink-0" /><div className="flex-1 space-y-1.5"><div className="h-2.5 rounded bg-muted animate-pulse" /><div className="h-2.5 rounded bg-muted animate-pulse w-3/4" /></div></div> },
+    { title: "Scroll Area",              category: "Layout",     description: "Custom-styled scrollable containers.",          preview: <div className="pointer-events-none select-none border border-border rounded-md p-2 h-14 w-full overflow-hidden relative"><div className="space-y-0.5"><p className="text-[9px] text-muted-foreground">Item 1</p><p className="text-[9px] text-muted-foreground">Item 2</p><p className="text-[9px] text-muted-foreground">Item 3</p></div><div className="absolute right-1 top-1 w-1 h-8 rounded-full bg-muted" /></div> },
+    { title: "Popover & Hover Card",     category: "Overlay",    description: "Floating content on click or hover.",          preview: <div className="pointer-events-none select-none relative flex gap-2"><Button size="sm" variant="outline" className="text-[10px] h-6 px-2">Open</Button><div className="border border-border rounded-md p-2 shadow-md bg-popover text-[9px] text-muted-foreground">Popover content</div></div> },
+    { title: "Menubar & Navigation Menu",category: "Navigation", description: "Desktop menus and site navigation.",            preview: <div className="pointer-events-none select-none flex gap-1 border border-border rounded-md p-1 bg-background w-full"><span className="text-[10px] px-2 py-0.5 rounded hover:bg-muted">File</span><span className="text-[10px] px-2 py-0.5 rounded bg-muted">Edit</span><span className="text-[10px] px-2 py-0.5 rounded">View</span></div> },
+    { title: "Collapsible & Context Menu",category:"Navigation", description: "Expand/collapse and right-click menus.",        preview: <div className="pointer-events-none select-none w-full space-y-1"><div className="flex items-center justify-between border border-border rounded px-2 py-1"><span className="text-[10px] font-medium">Toggle content</span><span className="text-[10px] text-muted-foreground">↓</span></div><div className="border border-dashed border-border rounded px-2 py-1"><span className="text-[9px] text-muted-foreground">Collapsed content</span></div></div> },
+    { title: "Breadcrumb & Pagination",  category: "Navigation", description: "Trails and page navigation.",                   preview: <div className="space-y-2 pointer-events-none select-none"><div className="flex items-center gap-1 text-[9px] text-muted-foreground"><span className="text-foreground">Home</span><span>/</span><span className="text-foreground">Components</span><span>/</span><span className="text-primary">Button</span></div><div className="flex items-center gap-1"><div className="h-5 w-5 rounded border border-border flex items-center justify-center text-[9px]">‹</div><div className="h-5 w-5 rounded bg-primary text-primary-foreground flex items-center justify-center text-[9px]">1</div><div className="h-5 w-5 rounded border border-border flex items-center justify-center text-[9px]">2</div><div className="h-5 w-5 rounded border border-border flex items-center justify-center text-[9px]">›</div></div></div> },
+    { title: "Aspect Ratio & Carousel",  category: "Layout",     description: "Fixed-ratio containers and slideshows.",        preview: <div className="pointer-events-none select-none flex gap-1 items-center w-full"><div className="h-12 flex-1 rounded-md bg-muted flex items-center justify-center text-[9px] text-muted-foreground">1</div><div className="h-12 flex-1 rounded-md border-2 border-primary bg-muted/50 flex items-center justify-center text-[9px] font-bold">2</div><div className="h-12 flex-1 rounded-md bg-muted flex items-center justify-center text-[9px] text-muted-foreground">3</div></div> },
+    { title: "Calendar",                 category: "Forms",      description: "Date picker with range selection.",             preview: <div className="pointer-events-none select-none w-full text-[9px]"><div className="flex justify-between mb-1 font-medium"><span>March 2026</span><div className="flex gap-1"><span>‹</span><span>›</span></div></div><div className="grid grid-cols-7 gap-0.5 text-center text-muted-foreground"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span><span className="rounded bg-primary text-primary-foreground">1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div> },
+    { title: "Command",                  category: "Navigation", description: "Keyboard-driven command palette.",              preview: <div className="pointer-events-none select-none border border-border rounded-lg w-full overflow-hidden bg-popover"><div className="flex items-center border-b border-border px-2 py-1 gap-1"><Search className="h-2.5 w-2.5 text-muted-foreground" /><span className="text-[9px] text-muted-foreground">Search commands…</span></div><div className="p-1 space-y-0.5"><div className="rounded px-2 py-0.5 bg-accent text-[9px]">Calendar</div><div className="rounded px-2 py-0.5 text-[9px] text-muted-foreground">Settings</div></div></div> },
+    { title: "Drawer",                   category: "Overlay",    description: "Mobile-optimised bottom sheet.",                preview: <div className="pointer-events-none select-none w-full border border-border rounded-t-xl p-3 bg-card"><div className="mx-auto h-1 w-8 rounded bg-muted mb-2" /><p className="text-[10px] font-semibold">Drawer title</p><p className="text-[9px] text-muted-foreground mt-0.5">Swipe down to close.</p></div> },
+    { title: "Input OTP",                category: "Forms",      description: "One-time password input.",                      preview: <div className="flex gap-1 pointer-events-none select-none"><div className="h-7 w-7 rounded border-2 border-primary bg-background flex items-center justify-center text-xs font-bold">1</div><div className="h-7 w-7 rounded border border-input bg-background flex items-center justify-center text-xs">2</div><div className="h-7 w-7 rounded border border-input bg-background flex items-center justify-center text-xs">3</div><span className="flex items-center text-muted-foreground">—</span><div className="h-7 w-7 rounded border border-input bg-background" /><div className="h-7 w-7 rounded border border-input bg-background" /><div className="h-7 w-7 rounded border border-input bg-background" /></div> },
+    { title: "Sonner (Toast)",           category: "Feedback",   description: "Notification toasts.",                          preview: <div className="pointer-events-none select-none space-y-1 w-full"><div className="border border-border rounded-lg px-3 py-2 bg-card flex items-center gap-2 shadow-sm"><div className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" /><span className="text-[10px] font-medium">Saved successfully!</span></div><div className="border border-border rounded-lg px-3 py-2 bg-card flex items-center gap-2 shadow-sm"><div className="h-2 w-2 rounded-full bg-destructive shrink-0" /><span className="text-[10px] font-medium">Something went wrong</span></div></div> },
+    { title: "Resizable",                category: "Layout",     description: "Drag-to-resize panel layouts.",                 preview: <div className="pointer-events-none select-none flex h-12 w-full rounded border border-border overflow-hidden"><div className="flex-1 flex items-center justify-center bg-muted/30 text-[9px] text-muted-foreground">Panel A</div><div className="w-px bg-border relative flex items-center justify-center"><div className="w-1 h-4 rounded bg-border" /></div><div className="flex-1 flex items-center justify-center bg-muted/30 text-[9px] text-muted-foreground">Panel B</div></div> },
+    { title: "Chart",                    category: "Data",       description: "Data visualisation with brand tokens.",         preview: <div className="pointer-events-none select-none flex items-end gap-1 h-12 w-full px-1"><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"40%"}} /><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"60%"}} /><div className="flex-1 bg-primary rounded-sm" style={{height:"100%"}} /><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"75%"}} /><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"50%"}} /></div> },
+    { title: "Sidebar",                  category: "Layout",     description: "Collapsible navigation sidebar.",               preview: <div className="pointer-events-none select-none flex h-14 w-full rounded border border-border overflow-hidden"><div className="w-16 bg-sidebar p-2 space-y-1.5"><div className="h-2 w-8 rounded bg-sidebar-foreground/20" /><div className="h-2 w-6 rounded bg-sidebar-primary" /><div className="h-2 w-7 rounded bg-sidebar-foreground/20" /></div><div className="flex-1 bg-background p-2"><div className="h-2 w-20 rounded bg-muted mb-1.5" /><div className="h-2 w-16 rounded bg-muted" /></div></div> },
+    { title: "Spinner",                  category: "Feedback",   description: "Animated loading indicator.",                   preview: <div className="flex items-center gap-3 pointer-events-none select-none"><div className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin" /><div className="h-6 w-6 rounded-full border-2 border-primary border-t-transparent animate-spin" /><div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" /></div> },
+    { title: "Kbd",                      category: "Display",    description: "Keyboard key display.",                         preview: <div className="flex items-center gap-1 pointer-events-none select-none"><span className="inline-flex items-center rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-mono shadow-sm">⌘</span><span className="text-[10px] text-muted-foreground">+</span><span className="inline-flex items-center rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-mono shadow-sm">K</span></div> },
+    { title: "Native Select",            category: "Forms",      description: "Browser-native select element.",                preview: <div className="pointer-events-none select-none w-full h-7 rounded-md border border-input bg-background px-2 flex items-center justify-between"><span className="text-[10px] text-muted-foreground">Pick an option</span><span className="text-[10px] text-muted-foreground">▾</span></div> },
+    { title: "Input Group",              category: "Forms",      description: "Input with prefix / suffix addons.",            preview: <div className="pointer-events-none select-none flex h-7 w-full rounded-md border border-input overflow-hidden"><div className="px-2 flex items-center bg-muted border-r border-input"><Search className="h-3 w-3 text-muted-foreground" /></div><div className="flex-1 px-2 flex items-center bg-background"><span className="text-[10px] text-muted-foreground">Search…</span></div></div> },
+    { title: "Button Group",             category: "Actions",    description: "Segmented strip of attached buttons.",          preview: <div className="pointer-events-none select-none flex"><div className="h-7 px-2.5 border border-r-0 border-input rounded-l-md bg-background flex items-center text-[10px]">Left</div><div className="h-7 px-2.5 border border-input bg-muted flex items-center text-[10px] font-medium">Center</div><div className="h-7 px-2.5 border border-l-0 border-input rounded-r-md bg-background flex items-center text-[10px]">Right</div></div> },
+    { title: "Empty",                    category: "Display",    description: "Zero-state placeholder.",                       preview: <div className="pointer-events-none select-none flex flex-col items-center justify-center gap-1.5 py-2"><div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center"><FileText className="h-4 w-4 text-muted-foreground" /></div><p className="text-[10px] font-medium">No files found</p><p className="text-[9px] text-muted-foreground">Upload to get started</p></div> },
+    { title: "Field",                    category: "Forms",      description: "Form field with label, hint, and error.",       preview: <div className="pointer-events-none select-none space-y-1 w-full"><p className="text-[10px] font-medium">Email</p><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">you@example.com</span></div><p className="text-[9px] text-muted-foreground">We'll never share your email.</p></div> },
+    { title: "Item",                     category: "Display",    description: "Flexible list row primitive.",                  preview: <div className="pointer-events-none select-none divide-y divide-border rounded-md border border-border w-full overflow-hidden"><div className="flex items-center gap-2 px-2 py-1.5"><div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-[8px] text-primary-foreground font-bold shrink-0">EL</div><div className="flex-1 min-w-0"><p className="text-[10px] font-medium truncate">Erhan Lammar</p><p className="text-[9px] text-muted-foreground">Designer</p></div><Badge className="text-[8px] h-3.5 px-1">Admin</Badge></div></div> },
   ];
-  const noResults = query.trim() !== "" && allSectionTitles.every((t) => !show(t));
 
   return (
-    <div className="space-y-16">
-      <div className="space-y-5">
-        <div className="space-y-3">
-          <h1 className="text-4xl font-extrabold tracking-tight">Components</h1>
-          <p className="text-muted-foreground text-lg max-w-2xl">
-            All Pau components, pre-themed with Pau's brand tokens. Copy any variant directly into your project.
-          </p>
-        </div>
-        <div className="relative max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-          <input
-            type="text"
-            placeholder="Search components…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="w-full h-9 rounded-md border border-input bg-background pl-9 pr-9 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          />
-          {query && (
-            <button
-              onClick={() => setQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
-          )}
-        </div>
-        {noResults && (
-          <div className="py-16 text-center text-muted-foreground text-sm">
-            No components found for "<span className="font-medium text-foreground">{query}</span>"
+    <div className="space-y-8">
+
+      {/* ── Grid view ── */}
+      {view === "grid" && (
+        <div className="space-y-8">
+          {/* Header */}
+          <div className="space-y-5">
+            <div className="space-y-2">
+              <h1 className="text-4xl font-extrabold tracking-tight">Components</h1>
+              <p className="text-muted-foreground text-lg max-w-2xl">
+                All Pau components, pre-themed with Pau's brand tokens. Click any component to explore it.
+              </p>
+            </div>
+            {/* Search */}
+            <div className="relative max-w-sm">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search components…"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="w-full h-9 rounded-md border border-input bg-background pl-9 pr-9 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              />
+              {query && (
+                <button
+                  onClick={() => setQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+              )}
+            </div>
           </div>
-        )}
-      </div>
+
+          {/* Grid */}
+          {(() => {
+            const filtered = componentMeta.filter((c) =>
+              !query.trim() || c.title.toLowerCase().includes(query.toLowerCase()) || c.category.toLowerCase().includes(query.toLowerCase())
+            );
+            if (filtered.length === 0) {
+              return (
+                <div className="py-20 text-center text-muted-foreground text-sm">
+                  No components found for "<span className="font-medium text-foreground">{query}</span>"
+                </div>
+              );
+            }
+            return (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filtered.map((c) => (
+                  <button
+                    key={c.title}
+                    onClick={() => { setSelectedComponent(c.title); setView("detail"); }}
+                    className="group text-left border border-border rounded-xl overflow-hidden bg-card hover:border-primary/50 hover:shadow-md transition-all duration-200"
+                  >
+                    {/* Preview area */}
+                    <div className="h-32 bg-muted/30 border-b border-border flex items-center justify-center px-6">
+                      {c.preview}
+                    </div>
+                    {/* Label area */}
+                    <div className="px-4 py-3 flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-semibold group-hover:text-primary transition-colors">{c.title}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{c.description}</p>
+                      </div>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            );
+          })()}
+        </div>
+      )}
+
+      {/* ── Detail view breadcrumb + back ── */}
+      {view === "detail" && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <button
+              onClick={() => { setView("grid"); setSelectedComponent(null); }}
+              className="hover:text-foreground transition-colors"
+            >
+              Components
+            </button>
+            <span>/</span>
+            <span className="text-foreground font-medium">{selectedComponent}</span>
+          </div>
+          <button
+            onClick={() => { setView("grid"); setSelectedComponent(null); }}
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            Back to components
+          </button>
+        </div>
+      )}
+
+      {/* ── All sections (hidden in grid view, filtered to selected in detail view) ── */}
+      <div className={view === "grid" ? "hidden" : "space-y-16"}>
 
       {/* Typography */}
-      <Section hidden={!show("Typography")} title="Typography" description="Unigeo32 — headings to captions." code={`import { cn } from "@/lib/utils"
+      <Section hidden={selectedComponent !== "Typography"} title="Typography" description="Unigeo32 — headings to captions." code={`import { cn } from "@/lib/utils"
 
 export function TypographyDemo() {
   return (
@@ -763,7 +857,7 @@ export function TypographyDemo() {
       </Section>
 
       {/* Buttons */}
-      <Section hidden={!show("Buttons")} title="Buttons" description="Seven variants × four sizes." code={`import { Button } from "@/components/ui/button"
+      <Section hidden={selectedComponent !== "Buttons"} title="Buttons" description="Seven variants × four sizes." code={`import { Button } from "@/components/ui/button"
 
 export function ButtonDemo() {
   return (
@@ -817,7 +911,7 @@ export function ButtonDemo() {
       </Section>
 
       {/* Badges */}
-      <Section hidden={!show("Badges")} title="Badges" description="Status indicators and labels." code={`import { Badge } from "@/components/ui/badge"
+      <Section hidden={selectedComponent !== "Badges"} title="Badges" description="Status indicators and labels." code={`import { Badge } from "@/components/ui/badge"
 
 export function BadgeDemo() {
   return (
@@ -841,7 +935,7 @@ export function BadgeDemo() {
       </Section>
 
       {/* Cards */}
-      <Section hidden={!show("Cards")} title="Cards" description="Content containers with header, body, and footer." code={`import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+      <Section hidden={selectedComponent !== "Cards"} title="Cards" description="Content containers with header, body, and footer." code={`import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
 export function CardDemo() {
@@ -928,7 +1022,7 @@ export function CardDemo() {
       </Section>
 
       {/* Form Controls */}
-      <Section hidden={!show("Form Controls")} title="Form Controls" description="Inputs, selects, checkboxes, and switches." code={`import { Input } from "@/components/ui/input"
+      <Section hidden={selectedComponent !== "Form Controls"} title="Form Controls" description="Inputs, selects, checkboxes, and switches." code={`import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
@@ -1045,7 +1139,7 @@ export function FormDemo() {
       </Section>
 
       {/* Alerts */}
-      <Section hidden={!show("Alerts")} title="Alerts" description="Four semantic variants." code={`import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+      <Section hidden={selectedComponent !== "Alerts"} title="Alerts" description="Four semantic variants." code={`import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Info } from "lucide-react"
 
 export function AlertDemo() {
@@ -1072,7 +1166,7 @@ export function AlertDemo() {
       </Section>
 
       {/* Table */}
-      <Section hidden={!show("Table")} title="Table" description="Data display with status badges." code={`import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+      <Section hidden={selectedComponent !== "Table"} title="Table" description="Data display with status badges." code={`import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 
 export function TableDemo() {
@@ -1130,7 +1224,7 @@ export function TableDemo() {
       </Section>
 
       {/* Accordion */}
-      <Section hidden={!show("Accordion")} title="Accordion" description="Collapsible sections for progressive disclosure." code={`import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+      <Section hidden={selectedComponent !== "Accordion"} title="Accordion" description="Collapsible sections for progressive disclosure." code={`import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 export function AccordionDemo() {
   return (
@@ -1161,7 +1255,7 @@ export function AccordionDemo() {
       </Section>
 
       {/* Alert Dialog */}
-      <Section hidden={!show("Alert Dialog")} title="Alert Dialog" description="Blocking confirmation dialogs for destructive actions." code={`import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+      <Section hidden={selectedComponent !== "Alert Dialog"} title="Alert Dialog" description="Blocking confirmation dialogs for destructive actions." code={`import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 
 export function AlertDialogDemo() {
@@ -1222,7 +1316,7 @@ export function AlertDialogDemo() {
       </Section>
 
       {/* Sheet */}
-      <Section hidden={!show("Sheet")} title="Sheet" description="Slide-in panels from any edge of the screen." code={`import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+      <Section hidden={selectedComponent !== "Sheet"} title="Sheet" description="Slide-in panels from any edge of the screen." code={`import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 
 export function SheetDemo() {
@@ -1271,7 +1365,7 @@ export function SheetDemo() {
       </Section>
 
       {/* Progress & Slider */}
-      <Section hidden={!show("Progress & Slider")} title="Progress & Slider" description="Linear progress indicators and range inputs." code={`import { Progress } from "@/components/ui/progress"
+      <Section hidden={selectedComponent !== "Progress & Slider"} title="Progress & Slider" description="Linear progress indicators and range inputs." code={`import { Progress } from "@/components/ui/progress"
 import { Slider } from "@/components/ui/slider"
 
 export function ProgressSliderDemo() {
@@ -1316,7 +1410,7 @@ export function ProgressSliderDemo() {
       </Section>
 
       {/* Radio Group & Textarea */}
-      <Section hidden={!show("Radio Group & Textarea")} title="Radio Group & Textarea" description="Single-selection controls and multi-line text input." code={`import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+      <Section hidden={selectedComponent !== "Radio Group & Textarea"} title="Radio Group & Textarea" description="Single-selection controls and multi-line text input." code={`import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 
@@ -1368,7 +1462,7 @@ export function RadioTextareaDemo() {
       </Section>
 
       {/* Toggle & Toggle Group */}
-      <Section hidden={!show("Toggle & Toggle Group")} title="Toggle & Toggle Group" description="Single and grouped toggle buttons." code={`import { Toggle } from "@/components/ui/toggle"
+      <Section hidden={selectedComponent !== "Toggle & Toggle Group"} title="Toggle & Toggle Group" description="Single and grouped toggle buttons." code={`import { Toggle } from "@/components/ui/toggle"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Bold, Italic } from "lucide-react"
 
@@ -1413,7 +1507,7 @@ export function ToggleDemo() {
       </Section>
 
       {/* Skeleton */}
-      <Section hidden={!show("Skeleton")} title="Skeleton" description="Loading placeholders that mimic content layout." code={`import { Skeleton } from "@/components/ui/skeleton"
+      <Section hidden={selectedComponent !== "Skeleton"} title="Skeleton" description="Loading placeholders that mimic content layout." code={`import { Skeleton } from "@/components/ui/skeleton"
 
 export function SkeletonDemo() {
   return (
@@ -1457,7 +1551,7 @@ export function SkeletonDemo() {
       </Section>
 
       {/* Scroll Area */}
-      <Section hidden={!show("Scroll Area")} title="Scroll Area" description="Custom-styled scrollable containers." code={`import { ScrollArea } from "@/components/ui/scroll-area"
+      <Section hidden={selectedComponent !== "Scroll Area"} title="Scroll Area" description="Custom-styled scrollable containers." code={`import { ScrollArea } from "@/components/ui/scroll-area"
 
 export function ScrollAreaDemo() {
   return (
@@ -1498,7 +1592,7 @@ export function ScrollAreaDemo() {
       </Section>
 
       {/* Popover & Hover Card */}
-      <Section hidden={!show("Popover & Hover Card")} title="Popover & Hover Card" description="Floating content triggered by click or hover." code={`import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+      <Section hidden={selectedComponent !== "Popover & Hover Card"} title="Popover & Hover Card" description="Floating content triggered by click or hover." code={`import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Button } from "@/components/ui/button"
 
@@ -1567,7 +1661,7 @@ export function PopoverHoverCardDemo() {
       </Section>
 
       {/* Menubar & Navigation Menu */}
-      <Section hidden={!show("Menubar & Navigation Menu")} title="Menubar & Navigation Menu" description="Desktop-style application menus and site navigation." code={`import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar"
+      <Section hidden={selectedComponent !== "Menubar & Navigation Menu"} title="Menubar & Navigation Menu" description="Desktop-style application menus and site navigation." code={`import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar"
 
 export function MenubarDemo() {
   return (
@@ -1670,7 +1764,7 @@ export function MenubarDemo() {
       </Section>
 
       {/* Collapsible & Context Menu */}
-      <Section hidden={!show("Collapsible & Context Menu")} title="Collapsible & Context Menu" description="Expand/collapse sections and right-click menus." code={`import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+      <Section hidden={selectedComponent !== "Collapsible & Context Menu"} title="Collapsible & Context Menu" description="Expand/collapse sections and right-click menus." code={`import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button"
 
 export function CollapsibleDemo() {
@@ -1728,7 +1822,7 @@ export function CollapsibleDemo() {
       </Section>
 
       {/* Breadcrumb & Pagination */}
-      <Section hidden={!show("Breadcrumb & Pagination")} title="Breadcrumb & Pagination" description="Navigation trails and page navigation." code={`import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+      <Section hidden={selectedComponent !== "Breadcrumb & Pagination"} title="Breadcrumb & Pagination" description="Navigation trails and page navigation." code={`import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 
 export function BreadcrumbPaginationDemo() {
@@ -1796,7 +1890,7 @@ export function BreadcrumbPaginationDemo() {
       </Section>
 
       {/* Aspect Ratio & Carousel */}
-      <Section hidden={!show("Aspect Ratio & Carousel")} title="Aspect Ratio & Carousel" description="Fixed-ratio containers and scrollable slide shows." code={`import { AspectRatio } from "@/components/ui/aspect-ratio"
+      <Section hidden={selectedComponent !== "Aspect Ratio & Carousel"} title="Aspect Ratio & Carousel" description="Fixed-ratio containers and scrollable slide shows." code={`import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { Card, CardContent } from "@/components/ui/card"
 
@@ -1850,7 +1944,7 @@ export function CarouselDemo() {
       </Section>
 
       {/* Calendar */}
-      <Section hidden={!show("Calendar")} title="Calendar" description="Date picker with range selection support." code={`import { Calendar } from "@/components/ui/calendar"
+      <Section hidden={selectedComponent !== "Calendar"} title="Calendar" description="Date picker with range selection support." code={`import { Calendar } from "@/components/ui/calendar"
 import { useState } from "react"
 
 export function CalendarDemo() {
@@ -1875,7 +1969,7 @@ export function CalendarDemo() {
       </Section>
 
       {/* Command */}
-      <Section hidden={!show("Command")} title="Command" description="Keyboard-driven searchable command palette." code={`import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+      <Section hidden={selectedComponent !== "Command"} title="Command" description="Keyboard-driven searchable command palette." code={`import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 
 export function CommandDemo() {
   return (
@@ -1913,7 +2007,7 @@ export function CommandDemo() {
       </Section>
 
       {/* Drawer */}
-      <Section hidden={!show("Drawer")} title="Drawer" description="Mobile-optimised bottom sheet with swipe-to-close." code={`import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
+      <Section hidden={selectedComponent !== "Drawer"} title="Drawer" description="Mobile-optimised bottom sheet with swipe-to-close." code={`import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button"
 
 export function DrawerDemo() {
@@ -1969,7 +2063,7 @@ export function DrawerDemo() {
       </Section>
 
       {/* Input OTP */}
-      <Section hidden={!show("Input OTP")} title="Input OTP" description="One-time password input with slot groups." code={`import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/components/ui/input-otp"
+      <Section hidden={selectedComponent !== "Input OTP"} title="Input OTP" description="One-time password input with slot groups." code={`import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/components/ui/input-otp"
 
 export function InputOTPDemo() {
   return (
@@ -2020,7 +2114,7 @@ export function InputOTPDemo() {
       </Section>
 
       {/* Sonner Toast */}
-      <Section hidden={!show("Sonner (Toast)")} title="Sonner (Toast)" description="Notification toasts for success, error, and info states." code={`import { Toaster, toast } from "sonner"
+      <Section hidden={selectedComponent !== "Sonner (Toast)"} title="Sonner (Toast)" description="Notification toasts for success, error, and info states." code={`import { Toaster, toast } from "sonner"
 import { Button } from "@/components/ui/button"
 
 export function ToastDemo() {
@@ -2047,7 +2141,7 @@ export function ToastDemo() {
       </Section>
 
       {/* Resizable */}
-      <Section hidden={!show("Resizable")} title="Resizable" description="Drag-to-resize panel layouts." code={`import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+      <Section hidden={selectedComponent !== "Resizable"} title="Resizable" description="Drag-to-resize panel layouts." code={`import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 
 export function ResizableDemo() {
   return (
@@ -2095,7 +2189,7 @@ export function ResizableDemo() {
       </Section>
 
       {/* Chart */}
-      <Section hidden={!show("Chart")} title="Chart" description="Data visualisation built on Recharts with brand tokens." code={`import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+      <Section hidden={selectedComponent !== "Chart"} title="Chart" description="Data visualisation built on Recharts with brand tokens." code={`import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 
 const data = [
   { name: "Jan", value: 400 },
@@ -2157,7 +2251,7 @@ export function ChartDemo() {
       </Section>
 
       {/* Sidebar */}
-      <Section hidden={!show("Sidebar")} title="Sidebar" description="Collapsible navigation sidebar with icon mode." code={`import { SidebarProvider, Sidebar, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
+      <Section hidden={selectedComponent !== "Sidebar"} title="Sidebar" description="Collapsible navigation sidebar with icon mode." code={`import { SidebarProvider, Sidebar, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
 import { Home, Settings } from "lucide-react"
 
 export function SidebarDemo() {
@@ -2235,7 +2329,7 @@ export function SidebarDemo() {
       </Section>
 
       {/* Spinner */}
-      <Section hidden={!show("Spinner")} title="Spinner" description="Animated loading indicator with size and colour variants." code={`import { Spinner } from "@/components/ui/spinner"
+      <Section hidden={selectedComponent !== "Spinner"} title="Spinner" description="Animated loading indicator with size and colour variants." code={`import { Spinner } from "@/components/ui/spinner"
 
 export function SpinnerDemo() {
   return (
@@ -2278,7 +2372,7 @@ export function SpinnerDemo() {
       </Section>
 
       {/* Kbd */}
-      <Section hidden={!show("Kbd")} title="Kbd" description="Keyboard key display for shortcuts and hotkeys." code={`import { Kbd } from "@/components/ui/kbd"
+      <Section hidden={selectedComponent !== "Kbd"} title="Kbd" description="Keyboard key display for shortcuts and hotkeys." code={`import { Kbd } from "@/components/ui/kbd"
 
 export function KbdDemo() {
   return (
@@ -2320,7 +2414,7 @@ export function KbdDemo() {
       </Section>
 
       {/* Native Select */}
-      <Section hidden={!show("Native Select")} title="Native Select" description="Browser-native <select> styled to match the design system — zero JS overhead." code={`import { NativeSelect } from "@/components/ui/native-select"
+      <Section hidden={selectedComponent !== "Native Select"} title="Native Select" description="Browser-native <select> styled to match the design system — zero JS overhead." code={`import { NativeSelect } from "@/components/ui/native-select"
 
 export function NativeSelectDemo() {
   return (
@@ -2347,7 +2441,7 @@ export function NativeSelectDemo() {
       </Section>
 
       {/* Input Group */}
-      <Section hidden={!show("Input Group")} title="Input Group" description="Compose an input with prefix / suffix addons — icons, text, or actions." code={`import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
+      <Section hidden={selectedComponent !== "Input Group"} title="Input Group" description="Compose an input with prefix / suffix addons — icons, text, or actions." code={`import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
 
@@ -2387,7 +2481,7 @@ export function InputGroupDemo() {
       </Section>
 
       {/* Button Group */}
-      <Section hidden={!show("Button Group")} title="Button Group" description="Segmented strip of attached buttons — layouts, alignments, filters." code={`import { ButtonGroup } from "@/components/ui/button-group"
+      <Section hidden={selectedComponent !== "Button Group"} title="Button Group" description="Segmented strip of attached buttons — layouts, alignments, filters." code={`import { ButtonGroup } from "@/components/ui/button-group"
 import { Button } from "@/components/ui/button"
 
 export function ButtonGroupDemo() {
@@ -2428,7 +2522,7 @@ export function ButtonGroupDemo() {
       </Section>
 
       {/* Empty */}
-      <Section hidden={!show("Empty")} title="Empty" description="Zero-state placeholder with icon, title, description, and optional action." code={`import { Empty } from "@/components/ui/empty"
+      <Section hidden={selectedComponent !== "Empty"} title="Empty" description="Zero-state placeholder with icon, title, description, and optional action." code={`import { Empty } from "@/components/ui/empty"
 import { FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -2459,7 +2553,7 @@ export function EmptyDemo() {
       </Section>
 
       {/* Field */}
-      <Section hidden={!show("Field")} title="Field" description="Form field wrapper — label, control, hint text, and error state." code={`import { Field } from "@/components/ui/field"
+      <Section hidden={selectedComponent !== "Field"} title="Field" description="Form field wrapper — label, control, hint text, and error state." code={`import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 
 export function FieldDemo() {
@@ -2503,7 +2597,7 @@ export function FieldDemo() {
       </Section>
 
       {/* Item */}
-      <Section hidden={!show("Item")} title="Item" description="Flexible list row primitive — start slot, title, description, end slot." code={`import { Item } from "@/components/ui/item"
+      <Section hidden={selectedComponent !== "Item"} title="Item" description="Flexible list row primitive — start slot, title, description, end slot." code={`import { Item } from "@/components/ui/item"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 
@@ -2567,6 +2661,7 @@ export function ItemDemo() {
         </div>
       </Section>
 
+      </div>{/* end sections wrapper */}
     </div>
   );
 }
