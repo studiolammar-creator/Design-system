@@ -1,10 +1,16 @@
 import { useState } from "react";
 import {
-  AlertCircle, Bell, Check, ChevronDown, Copy, Info,
-  LogOut, Moon, Settings, Sun, User, Zap,
+  AlertCircle, AlignCenter, AlignLeft, AlignRight, Bell, Bold, Check, ChevronDown,
+  Copy, Info, Italic, LogOut, Moon, Settings, Sun, User, Zap,
 } from "lucide-react";
 
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader,
+  AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,6 +18,11 @@ import {
   Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {
+  ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuLabel,
+  ContextMenuSeparator, ContextMenuShortcut, ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter,
   DialogHeader, DialogTitle, DialogTrigger,
@@ -20,18 +31,40 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Menubar, MenubarContent, MenubarItem, MenubarMenu,
+  MenubarSeparator, MenubarShortcut, MenubarTrigger,
+} from "@/components/ui/menubar";
+import {
+  NavigationMenu, NavigationMenuContent, NavigationMenuItem,
+  NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Progress } from "@/components/ui/progress";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import {
+  Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger,
+} from "@/components/ui/sheet";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import {
   Table, TableBody, TableCaption, TableCell, TableHead,
   TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { Toggle } from "@/components/ui/toggle";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 /* ═══════════════════════════════════════════════════════════
@@ -297,25 +330,6 @@ function Section({ title, description, children }: { title: string; description?
   );
 }
 
-function TokenRow({ label, value, mono = true }: { label: string; value: string; mono?: boolean }) {
-  const [copied, setCopied] = useState(false);
-  const copy = () => {
-    navigator.clipboard.writeText(value);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
-  return (
-    <div className="flex items-center justify-between py-2 border-b border-border last:border-0 gap-4">
-      <span className="text-sm text-muted-foreground font-mono shrink-0">{label}</span>
-      <div className="flex items-center gap-2 ml-auto">
-        <span className={`text-sm ${mono ? "font-mono" : ""} text-foreground`}>{value}</span>
-        <button onClick={copy} className="opacity-0 group-hover:opacity-100 hover:opacity-100 p-1 rounded hover:bg-muted transition-opacity">
-          {copied ? <Check className="h-3 w-3 text-accent" /> : <Copy className="h-3 w-3 text-muted-foreground" />}
-        </button>
-      </div>
-    </div>
-  );
-}
 
 /* ═══════════════════════════════════════════════════════════
    TOKENS PAGE
@@ -579,6 +593,9 @@ function TokensPage({ dark }: { dark: boolean }) {
 function ComponentsPage() {
   const [checked, setChecked] = useState(false);
   const [switchOn, setSwitchOn] = useState(false);
+  const [sliderValue, setSliderValue] = useState([40]);
+  const [radioValue, setRadioValue] = useState("option-1");
+  const [collapsibleOpen, setCollapsibleOpen] = useState(false);
 
   return (
     <div className="space-y-16">
@@ -852,6 +869,423 @@ function ComponentsPage() {
             </TableBody>
           </Table>
         </Card>
+      </Section>
+
+      {/* Accordion */}
+      <Section title="Accordion" description="Collapsible sections for progressive disclosure.">
+        <Accordion type="single" collapsible className="w-full max-w-lg">
+          {[
+            { value: "item-1", trigger: "What is Pau Design System?", content: "Pau is a fully-themed ShadCN-based component library built on Radix UI primitives, tailored with brand tokens for Forest Green, Golden Yellow, and Mint Teal." },
+            { value: "item-2", trigger: "Which typefaces are included?", content: "Unigeo32 is the primary display and body typeface across all weights (Thin to Extrabold). Space Mono handles monospace code snippets." },
+            { value: "item-3", trigger: "Is dark mode supported?", content: "Yes — every component and token adapts seamlessly between light and dark modes. Toggle it with the sun/moon button in the header." },
+          ].map(({ value, trigger, content }) => (
+            <AccordionItem key={value} value={value}>
+              <AccordionTrigger>{trigger}</AccordionTrigger>
+              <AccordionContent>{content}</AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </Section>
+
+      {/* Alert Dialog */}
+      <Section title="Alert Dialog" description="Blocking confirmation dialogs for destructive actions.">
+        <div className="flex gap-3 flex-wrap">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">Delete project</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete project?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently delete "Forest Initiative" and all its data. This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction>Delete</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline">Remove member</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Remove team member?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  They will lose access to all projects immediately.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction>Remove</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </Section>
+
+      {/* Sheet */}
+      <Section title="Sheet" description="Slide-in panels from any edge of the screen.">
+        <div className="flex gap-3 flex-wrap">
+          {(["right", "left", "top", "bottom"] as const).map((side) => (
+            <Sheet key={side}>
+              <SheetTrigger asChild>
+                <Button variant="outline" className="capitalize">Open {side}</Button>
+              </SheetTrigger>
+              <SheetContent side={side}>
+                <SheetHeader>
+                  <SheetTitle>Pau Panel</SheetTitle>
+                  <SheetDescription>
+                    This panel slides in from the {side}. Use it for settings, filters, or detail views.
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="mt-6 space-y-4">
+                  <div className="space-y-2">
+                    <Label>Project name</Label>
+                    <Input placeholder="Forest Initiative" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Description</Label>
+                    <Textarea placeholder="Describe your project…" />
+                  </div>
+                  <Button className="w-full">Save changes</Button>
+                </div>
+              </SheetContent>
+            </Sheet>
+          ))}
+        </div>
+      </Section>
+
+      {/* Progress & Slider */}
+      <Section title="Progress & Slider" description="Linear progress indicators and range inputs.">
+        <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
+          <div className="space-y-4">
+            <Label className="text-sm font-semibold">Progress bars</Label>
+            {[25, 60, 85, 100].map((v) => (
+              <div key={v} className="space-y-1">
+                <div className="flex justify-between text-xs text-muted-foreground">
+                  <span>Task progress</span><span>{v}%</span>
+                </div>
+                <Progress value={v} className="h-2" />
+              </div>
+            ))}
+          </div>
+          <div className="space-y-6">
+            <Label className="text-sm font-semibold">Slider</Label>
+            <div className="space-y-3">
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Volume</span><span>{sliderValue[0]}%</span>
+              </div>
+              <Slider
+                value={sliderValue}
+                onValueChange={setSliderValue}
+                max={100}
+                step={1}
+              />
+            </div>
+            <div className="space-y-2">
+              <Slider defaultValue={[20, 80]} max={100} step={5} />
+              <p className="text-xs text-muted-foreground">Range slider (20–80)</p>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Radio Group & Textarea */}
+      <Section title="Radio Group & Textarea" description="Single-selection controls and multi-line text input.">
+        <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
+          <div className="space-y-3">
+            <Label className="text-sm font-semibold">Plan selection</Label>
+            <RadioGroup value={radioValue} onValueChange={setRadioValue}>
+              {[
+                { id: "option-1", label: "Forest Plan — $29/mo" },
+                { id: "option-2", label: "Golden Plan — $79/mo" },
+                { id: "option-3", label: "Enterprise — Custom" },
+              ].map(({ id, label }) => (
+                <div key={id} className="flex items-center space-x-2">
+                  <RadioGroupItem value={id} id={id} />
+                  <Label htmlFor={id} className="cursor-pointer">{label}</Label>
+                </div>
+              ))}
+            </RadioGroup>
+            <p className="text-xs text-muted-foreground">Selected: {radioValue}</p>
+          </div>
+          <div className="space-y-3">
+            <div className="space-y-2">
+              <Label htmlFor="feedback">Feedback</Label>
+              <Textarea id="feedback" placeholder="Share your thoughts about this design system…" rows={4} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="notes">Notes (disabled)</Label>
+              <Textarea id="notes" placeholder="Disabled textarea…" disabled />
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Toggle & Toggle Group */}
+      <Section title="Toggle & Toggle Group" description="Single and grouped toggle buttons.">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">Single toggles</Label>
+            <div className="flex gap-2">
+              <Toggle aria-label="Bold"><Bold className="h-4 w-4" /></Toggle>
+              <Toggle aria-label="Italic"><Italic className="h-4 w-4" /></Toggle>
+              <Toggle variant="outline" aria-label="Bold outline"><Bold className="h-4 w-4" /></Toggle>
+              <Toggle pressed><Zap className="h-4 w-4 mr-1" />Turbo</Toggle>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">Toggle group (single)</Label>
+            <ToggleGroup type="single" defaultValue="center">
+              <ToggleGroupItem value="left" aria-label="Align left"><AlignLeft className="h-4 w-4" /></ToggleGroupItem>
+              <ToggleGroupItem value="center" aria-label="Align center"><AlignCenter className="h-4 w-4" /></ToggleGroupItem>
+              <ToggleGroupItem value="right" aria-label="Align right"><AlignRight className="h-4 w-4" /></ToggleGroupItem>
+            </ToggleGroup>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">Toggle group (multiple)</Label>
+            <ToggleGroup type="multiple" variant="outline">
+              <ToggleGroupItem value="bold" aria-label="Bold"><Bold className="h-4 w-4" /></ToggleGroupItem>
+              <ToggleGroupItem value="italic" aria-label="Italic"><Italic className="h-4 w-4" /></ToggleGroupItem>
+            </ToggleGroup>
+          </div>
+        </div>
+      </Section>
+
+      {/* Skeleton */}
+      <Section title="Skeleton" description="Loading placeholders that mimic content layout.">
+        <div className="grid gap-6 sm:grid-cols-2 max-w-2xl">
+          <div className="space-y-3">
+            <div className="flex items-center space-x-3">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-3 w-24" />
+              </div>
+            </div>
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-4/5" />
+            <Skeleton className="h-4 w-3/5" />
+          </div>
+          <Card>
+            <CardHeader className="gap-2">
+              <Skeleton className="h-5 w-1/2" />
+              <Skeleton className="h-4 w-4/5" />
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Skeleton className="h-32 w-full rounded-md" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+            </CardContent>
+            <CardFooter>
+              <Skeleton className="h-9 w-24 rounded-md" />
+            </CardFooter>
+          </Card>
+        </div>
+      </Section>
+
+      {/* Scroll Area */}
+      <Section title="Scroll Area" description="Custom-styled scrollable containers.">
+        <div className="flex gap-6 flex-wrap">
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">Vertical scroll</Label>
+            <ScrollArea className="h-48 w-64 rounded-md border p-3">
+              <div className="space-y-3">
+                {Array.from({ length: 15 }, (_, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm">
+                    <div className="h-2 w-2 rounded-full bg-primary" />
+                    <span>Component item {i + 1}</span>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">Horizontal scroll</Label>
+            <ScrollArea className="w-64 rounded-md border">
+              <div className="flex gap-3 p-3">
+                {["Forest", "Golden", "Teal", "Neutral", "Primary", "Secondary"].map((name) => (
+                  <div key={name} className="shrink-0 rounded-md border p-3 text-sm w-32 text-center">
+                    {name}
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+          </div>
+        </div>
+      </Section>
+
+      {/* Popover & Hover Card */}
+      <Section title="Popover & Hover Card" description="Floating content triggered by click or hover.">
+        <div className="flex gap-4 flex-wrap items-start">
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">Popover (click)</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline">Open popover</Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-72">
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-sm">Filter options</h4>
+                  <div className="space-y-2">
+                    <Label htmlFor="pop-name">Team name</Label>
+                    <Input id="pop-name" placeholder="Design system…" />
+                  </div>
+                  <Button size="sm" className="w-full">Apply filter</Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">Hover card</Label>
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <Button variant="link">@pau_design</Button>
+              </HoverCardTrigger>
+              <HoverCardContent className="w-72">
+                <div className="flex items-start gap-3">
+                  <Avatar>
+                    <AvatarFallback className="bg-primary text-primary-foreground">PD</AvatarFallback>
+                  </Avatar>
+                  <div className="space-y-1">
+                    <h4 className="text-sm font-semibold">Pau Design System</h4>
+                    <p className="text-xs text-muted-foreground">Open-source component library built on ShadCN with Forest Green brand tokens.</p>
+                    <p className="text-xs text-muted-foreground">16 components · MIT license</p>
+                  </div>
+                </div>
+              </HoverCardContent>
+            </HoverCard>
+          </div>
+        </div>
+      </Section>
+
+      {/* Menubar & Navigation Menu */}
+      <Section title="Menubar & Navigation Menu" description="Desktop-style application menus and site navigation.">
+        <div className="space-y-8">
+          <div className="space-y-3">
+            <Label className="text-sm text-muted-foreground">Menubar</Label>
+            <Menubar>
+              <MenubarMenu>
+                <MenubarTrigger>File</MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem>New Project <MenubarShortcut>⌘N</MenubarShortcut></MenubarItem>
+                  <MenubarItem>Open… <MenubarShortcut>⌘O</MenubarShortcut></MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem>Save <MenubarShortcut>⌘S</MenubarShortcut></MenubarItem>
+                  <MenubarItem>Export PDF</MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
+              <MenubarMenu>
+                <MenubarTrigger>Edit</MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem>Undo <MenubarShortcut>⌘Z</MenubarShortcut></MenubarItem>
+                  <MenubarItem>Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut></MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem>Cut <MenubarShortcut>⌘X</MenubarShortcut></MenubarItem>
+                  <MenubarItem>Copy <MenubarShortcut>⌘C</MenubarShortcut></MenubarItem>
+                  <MenubarItem>Paste <MenubarShortcut>⌘V</MenubarShortcut></MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
+              <MenubarMenu>
+                <MenubarTrigger>View</MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem>Components</MenubarItem>
+                  <MenubarItem>Tokens</MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem>Toggle Dark Mode</MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
+            </Menubar>
+          </div>
+
+          <div className="space-y-3">
+            <Label className="text-sm text-muted-foreground">Navigation Menu</Label>
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid gap-3 p-4 w-[400px] md:grid-cols-2">
+                      {[
+                        { title: "Introduction", href: "#", description: "Learn about the Pau design system." },
+                        { title: "Installation", href: "#", description: "Set up your project in minutes." },
+                        { title: "Tokens", href: "#", description: "Explore color, type, and spacing." },
+                        { title: "Components", href: "#", description: "Browse all available components." },
+                      ].map(({ title, description }) => (
+                        <li key={title}>
+                          <NavigationMenuLink asChild>
+                            <a href="#" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                              <div className="text-sm font-medium leading-none">{title}</div>
+                              <p className="line-clamp-2 text-xs leading-snug text-muted-foreground">{description}</p>
+                            </a>
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()} href="#">
+                    Documentation
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()} href="#">
+                    GitHub
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
+        </div>
+      </Section>
+
+      {/* Collapsible & Context Menu */}
+      <Section title="Collapsible & Context Menu" description="Expand/collapse sections and right-click menus.">
+        <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">Collapsible</Label>
+            <Collapsible open={collapsibleOpen} onOpenChange={setCollapsibleOpen} className="space-y-2">
+              <div className="flex items-center justify-between rounded-md border px-4 py-3">
+                <span className="text-sm font-medium">Team members (4)</span>
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <ChevronDown className={`h-4 w-4 transition-transform ${collapsibleOpen ? "rotate-180" : ""}`} />
+                  </Button>
+                </CollapsibleTrigger>
+              </div>
+              <div className="rounded-md border px-4 py-3 text-sm">Erhan Lammar — Owner</div>
+              <CollapsibleContent className="space-y-2">
+                {["Ana Moreno — Admin", "Jules Kim — Editor", "Priya Nair — Viewer"].map((member) => (
+                  <div key={member} className="rounded-md border px-4 py-3 text-sm">{member}</div>
+                ))}
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">Context Menu (right-click the box)</Label>
+            <ContextMenu>
+              <ContextMenuTrigger className="flex h-36 w-full items-center justify-center rounded-md border border-dashed text-sm text-muted-foreground select-none">
+                Right-click here
+              </ContextMenuTrigger>
+              <ContextMenuContent className="w-48">
+                <ContextMenuLabel>Actions</ContextMenuLabel>
+                <ContextMenuSeparator />
+                <ContextMenuItem><Copy className="h-4 w-4 mr-2" />Copy</ContextMenuItem>
+                <ContextMenuItem><Settings className="h-4 w-4 mr-2" />Properties</ContextMenuItem>
+                <ContextMenuSeparator />
+                <ContextMenuItem className="text-destructive">
+                  <AlertCircle className="h-4 w-4 mr-2" />Delete
+                  <ContextMenuShortcut>⌦</ContextMenuShortcut>
+                </ContextMenuItem>
+              </ContextMenuContent>
+            </ContextMenu>
+          </div>
+        </div>
       </Section>
     </div>
   );
