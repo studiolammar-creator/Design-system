@@ -1,7 +1,7 @@
 {
-  "name": "obra-design-system",
+  "name": "pau-design-system",
   "version": "1.0.0",
-  "description": "Obra Design System — ShadCN-based component library with custom brand tokens",
+  "description": "Pau Design System — ShadCN-based component library with custom brand tokens",
   "private": true,
   "type": "module",
   "scripts": {
