@@ -933,32 +933,11 @@ export function ButtonDemo() {
             </div>
           </TabsContent>
           <TabsContent value="sizes" className="pt-4">
-            <div className="space-y-4">
-              {(["sm", "default", "lg", "icon"] as const).map((size) => (
-                <div key={size} className="flex flex-wrap items-center gap-3">
-                  <span className="w-16 shrink-0 text-xs text-muted-foreground font-mono">{size}</span>
-                  {size === "icon" ? (
-                    <>
-                      <Button size="icon"><Bell className="h-4 w-4" /></Button>
-                      <Button size="icon" variant="secondary"><Bell className="h-4 w-4" /></Button>
-                      <Button size="icon" variant="accent"><Bell className="h-4 w-4" /></Button>
-                      <Button size="icon" variant="destructive"><Bell className="h-4 w-4" /></Button>
-                      <Button size="icon" variant="outline"><Bell className="h-4 w-4" /></Button>
-                      <Button size="icon" variant="ghost"><Bell className="h-4 w-4" /></Button>
-                    </>
-                  ) : (
-                    <>
-                      <Button size={size}>Default</Button>
-                      <Button size={size} variant="secondary">Secondary</Button>
-                      <Button size={size} variant="accent">Accent</Button>
-                      <Button size={size} variant="destructive">Destructive</Button>
-                      <Button size={size} variant="outline">Outline</Button>
-                      <Button size={size} variant="ghost">Ghost</Button>
-                      <Button size={size} variant="link">Link</Button>
-                    </>
-                  )}
-                </div>
-              ))}
+            <div className="flex flex-wrap items-center gap-3">
+              <Button size="sm">Small</Button>
+              <Button>Default</Button>
+              <Button size="lg">Large</Button>
+              <Button size="icon"><Bell className="h-4 w-4" /></Button>
             </div>
           </TabsContent>
           <TabsContent value="states" className="pt-4">
