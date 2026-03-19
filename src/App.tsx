@@ -625,7 +625,7 @@ function ComponentsPage() {
       <div className="space-y-3">
         <h1 className="text-4xl font-extrabold tracking-tight">Components</h1>
         <p className="text-muted-foreground text-lg max-w-2xl">
-          All ShadCN components, pre-themed with Pau's brand tokens. Copy any variant directly into your project.
+          All Pau components, pre-themed with Pau's brand tokens. Copy any variant directly into your project.
         </p>
       </div>
 
@@ -898,7 +898,7 @@ function ComponentsPage() {
       <Section title="Accordion" description="Collapsible sections for progressive disclosure.">
         <Accordion type="single" collapsible className="w-full max-w-lg">
           {[
-            { value: "item-1", trigger: "What is Pau Design System?", content: "Pau is a fully-themed ShadCN-based component library built on Radix UI primitives, tailored with brand tokens for Forest Green, Golden Yellow, and Mint Teal." },
+            { value: "item-1", trigger: "What is Pau Design System?", content: "Pau is a fully-themed component library built on Radix UI primitives, tailored with brand tokens for Forest Green, Golden Yellow, and Mint Teal." },
             { value: "item-2", trigger: "Which typefaces are included?", content: "Unigeo32 is the primary display and body typeface across all weights (Thin to Extrabold). Space Mono handles monospace code snippets." },
             { value: "item-3", trigger: "Is dark mode supported?", content: "Yes — every component and token adapts seamlessly between light and dark modes. Toggle it with the sun/moon button in the header." },
           ].map(({ value, trigger, content }) => (
@@ -1176,7 +1176,7 @@ function ComponentsPage() {
                   </Avatar>
                   <div className="space-y-1">
                     <h4 className="text-sm font-semibold">Pau Design System</h4>
-                    <p className="text-xs text-muted-foreground">Open-source component library built on ShadCN with Forest Green brand tokens.</p>
+                    <p className="text-xs text-muted-foreground">Open-source component library built on Pau with Forest Green brand tokens.</p>
                     <p className="text-xs text-muted-foreground">16 components · MIT license</p>
                   </div>
                 </div>
@@ -1976,17 +1976,17 @@ export default function App() {
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block" />
                       v1.0.0
                     </Badge>
-                    <Badge variant="secondary">ShadCN-based</Badge>
+                    <Badge variant="secondary">Pau-based</Badge>
                     <Badge variant="outline">Open Source</Badge>
                   </div>
 
                   <h1 className="text-6xl font-extrabold tracking-tight leading-[1.05] max-w-3xl">
                     The design foundation<br />
-                    <span className="text-primary">for Obra Studio.</span>
+                    <span className="text-primary">for Pau.</span>
                   </h1>
 
                   <p className="text-muted-foreground text-xl max-w-2xl leading-relaxed">
-                    A production-ready component library built on ShadCN — tailored with Obra's brand tokens,
+                    A production-ready component library — tailored with Pau's brand tokens,
                     accessible by default, and built to scale across every product we ship.
                   </p>
 
@@ -2086,8 +2086,8 @@ export default function App() {
                   {[
                     {
                       icon: Layers,
-                      title: "ShadCN-based",
-                      desc: "Built on shadcn/ui — copy-paste components you own, with full access to source code and zero vendor lock-in.",
+                      title: "Pau-based",
+                      desc: "Built on Pau — copy-paste components you own, with full access to source code and zero vendor lock-in.",
                     },
                     {
                       icon: Palette,
@@ -2115,7 +2115,7 @@ export default function App() {
               <div className="rounded-xl border border-border bg-muted/30 px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                 <div className="space-y-1">
                   <h2 className="text-lg font-bold">Ready to build?</h2>
-                  <p className="text-sm text-muted-foreground">Explore 54 ready-to-use components and start shipping faster with Obra's design system.</p>
+                  <p className="text-sm text-muted-foreground">Explore 54 ready-to-use components and start shipping faster with Pau's design system.</p>
                 </div>
                 <div className="flex gap-3 shrink-0">
                   <Button onClick={() => setPage("components")}>
@@ -2146,7 +2146,7 @@ export default function App() {
                     </div>
                     <span className="font-medium text-foreground">Pau</span>
                   </div>
-                  <p>Built with ShadCN · Tailwind CSS · React · Vite · Unigeo</p>
+                  <p>Built with Pau · Tailwind CSS · React · Vite · Unigeo</p>
                 </div>
               </footer>
             </div>
