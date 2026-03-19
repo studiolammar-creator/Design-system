@@ -240,3 +240,8 @@
     @apply relative rounded bg-muted px-1.5 py-1 font-mono text-sm font-semibold;
   }
 }
+
+/* Radix popper wrappers (tooltips, popovers, dropdowns) must sit above the sticky header (z-40) */
+[data-radix-popper-content-wrapper] {
+  z-index: 50 !important;
+}
