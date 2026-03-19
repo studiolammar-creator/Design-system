@@ -1087,11 +1087,11 @@ ${outlineRows}
 
           // Hover tint for outlined clickable — lowest opacity of each variant's colour
           const outlineHoverStyles: Record<string, string> = {
-            default:     "hover:bg-primary/8",
+            default:     "hover:bg-primary/10",
             secondary:   "hover:bg-secondary/20",
             accent:      "hover:bg-accent/15",
             success:     "hover:bg-intense-400/10",
-            destructive: "hover:bg-destructive/8",
+            destructive: "hover:bg-destructive/10",
             outline:     "hover:bg-muted",
           };
 
