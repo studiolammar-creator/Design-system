@@ -340,16 +340,70 @@ const invoices = [
    SMALL REUSABLE PIECES
 ═══════════════════════════════════════════════════════════ */
 
-function Section({ title, description, children, hidden }: { title: string; description?: string; children: React.ReactNode; hidden?: boolean }) {
+function Section({ title, description, children, hidden, code }: {
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+  hidden?: boolean;
+  code?: string;
+}) {
+  const [view, setView] = useState<"preview" | "code">("preview");
+  const [copied, setCopied] = useState(false);
+
   if (hidden) return null;
+
+  const handleCopy = () => {
+    if (!code) return;
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <section className="space-y-4">
-      <div>
-        <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
-        {description && <p className="text-muted-foreground mt-1 text-sm">{description}</p>}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
+          {description && <p className="text-muted-foreground mt-1 text-sm">{description}</p>}
+        </div>
+        {code && (
+          <div className="flex items-center rounded-md border border-border bg-muted p-0.5 shrink-0">
+            <button
+              onClick={() => setView("preview")}
+              className={`px-3 py-1 text-xs rounded font-medium transition-colors ${
+                view === "preview" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Preview
+            </button>
+            <button
+              onClick={() => setView("code")}
+              className={`px-3 py-1 text-xs rounded font-medium transition-colors ${
+                view === "code" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Code
+            </button>
+          </div>
+        )}
       </div>
       <Separator />
-      <div>{children}</div>
+      {view === "preview" || !code ? (
+        <div>{children}</div>
+      ) : (
+        <div className="relative group">
+          <button
+            onClick={handleCopy}
+            className="absolute top-3 right-3 z-10 flex items-center gap-1.5 px-2 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white/60 hover:text-white text-xs font-mono transition-colors"
+          >
+            {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+            {copied ? "Copied!" : "Copy"}
+          </button>
+          <pre className="rounded-xl bg-neutral-950 text-neutral-100 p-5 pr-24 text-xs font-mono overflow-x-auto leading-relaxed whitespace-pre">
+            <code>{code}</code>
+          </pre>
+        </div>
+      )}
     </section>
   );
 }
@@ -671,7 +725,23 @@ function ComponentsPage() {
       </div>
 
       {/* Typography */}
-      <Section hidden={!show("Typography")} title="Typography" description="Unigeo32 — headings to captions.">
+      <Section hidden={!show("Typography")} title="Typography" description="Unigeo32 — headings to captions." code={`import { cn } from "@/lib/utils"
+
+export function TypographyDemo() {
+  return (
+    <div className="space-y-1">
+      <p className="text-4xl font-extrabold tracking-tight">Heading 1</p>
+      <p className="text-3xl font-semibold tracking-tight">Heading 2</p>
+      <p className="text-2xl font-semibold tracking-tight">Heading 3</p>
+      <p className="text-xl font-semibold tracking-tight">Heading 4</p>
+      <p className="text-lg leading-relaxed">Body Large</p>
+      <p className="text-base leading-relaxed">Body</p>
+      <p className="text-sm leading-normal">Body Small</p>
+      <p className="text-xs font-medium tracking-wide uppercase">Caption</p>
+      <p className="text-sm font-mono">Code</p>
+    </div>
+  )
+}`}>
         <div className="space-y-1">
           {[
             { label: "Heading 1",   cls: "text-4xl font-extrabold tracking-tight" },
@@ -693,7 +763,24 @@ function ComponentsPage() {
       </Section>
 
       {/* Buttons */}
-      <Section hidden={!show("Buttons")} title="Buttons" description="Seven variants × four sizes.">
+      <Section hidden={!show("Buttons")} title="Buttons" description="Seven variants × four sizes." code={`import { Button } from "@/components/ui/button"
+
+export function ButtonDemo() {
+  return (
+    <div className="flex flex-wrap gap-3">
+      <Button>Default</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="accent">Accent</Button>
+      <Button variant="destructive">Destructive</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="link">Link</Button>
+      <Button size="sm">Small</Button>
+      <Button size="lg">Large</Button>
+      <Button disabled>Disabled</Button>
+    </div>
+  )
+}`}>
         <Tabs defaultValue="variants">
           <TabsList>
             <TabsTrigger value="variants">Variants</TabsTrigger>
@@ -730,7 +817,19 @@ function ComponentsPage() {
       </Section>
 
       {/* Badges */}
-      <Section hidden={!show("Badges")} title="Badges" description="Status indicators and labels.">
+      <Section hidden={!show("Badges")} title="Badges" description="Status indicators and labels." code={`import { Badge } from "@/components/ui/badge"
+
+export function BadgeDemo() {
+  return (
+    <div className="flex flex-wrap gap-3">
+      <Badge>Default</Badge>
+      <Badge variant="secondary">Secondary</Badge>
+      <Badge variant="outline">Outline</Badge>
+      <Badge variant="destructive">Destructive</Badge>
+      <Badge variant="accent">Accent</Badge>
+    </div>
+  )
+}`}>
         <div className="flex flex-wrap gap-3">
           <Badge>Default</Badge>
           <Badge variant="secondary">Secondary</Badge>
@@ -742,7 +841,26 @@ function ComponentsPage() {
       </Section>
 
       {/* Cards */}
-      <Section hidden={!show("Cards")} title="Cards" description="Content containers with header, body, and footer.">
+      <Section hidden={!show("Cards")} title="Cards" description="Content containers with header, body, and footer." code={`import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+
+export function CardDemo() {
+  return (
+    <Card className="max-w-sm">
+      <CardHeader>
+        <CardTitle>Card title</CardTitle>
+        <CardDescription>Card description goes here.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground">Card body content.</p>
+      </CardContent>
+      <CardFooter className="flex gap-2">
+        <Button size="sm">Action</Button>
+        <Button size="sm" variant="outline">Cancel</Button>
+      </CardFooter>
+    </Card>
+  )
+}`}>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader>
@@ -810,7 +928,39 @@ function ComponentsPage() {
       </Section>
 
       {/* Form Controls */}
-      <Section hidden={!show("Form Controls")} title="Form Controls" description="Inputs, selects, checkboxes, and switches.">
+      <Section hidden={!show("Form Controls")} title="Form Controls" description="Inputs, selects, checkboxes, and switches." code={`import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Switch } from "@/components/ui/switch"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
+export function FormDemo() {
+  return (
+    <div className="space-y-4 max-w-sm">
+      <div className="space-y-1.5">
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" type="email" placeholder="you@example.com" />
+      </div>
+      <div className="flex items-center gap-2">
+        <Checkbox id="terms" />
+        <Label htmlFor="terms">Accept terms</Label>
+      </div>
+      <div className="flex items-center gap-2">
+        <Switch id="notifications" />
+        <Label htmlFor="notifications">Notifications</Label>
+      </div>
+      <Select>
+        <SelectTrigger>
+          <SelectValue placeholder="Select option" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="a">Option A</SelectItem>
+          <SelectItem value="b">Option B</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  )
+}`}>
         <div className="grid gap-8 sm:grid-cols-2">
           <div className="space-y-4">
             <div className="space-y-2">
@@ -895,7 +1045,24 @@ function ComponentsPage() {
       </Section>
 
       {/* Alerts */}
-      <Section hidden={!show("Alerts")} title="Alerts" description="Four semantic variants.">
+      <Section hidden={!show("Alerts")} title="Alerts" description="Four semantic variants." code={`import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Info } from "lucide-react"
+
+export function AlertDemo() {
+  return (
+    <div className="space-y-3">
+      <Alert>
+        <Info className="h-4 w-4" />
+        <AlertTitle>Default</AlertTitle>
+        <AlertDescription>This is a default alert.</AlertDescription>
+      </Alert>
+      <Alert variant="destructive">
+        <AlertTitle>Destructive</AlertTitle>
+        <AlertDescription>Something went wrong.</AlertDescription>
+      </Alert>
+    </div>
+  )
+}`}>
         <div className="space-y-3">
           <Alert><Info className="h-4 w-4" /><AlertTitle>Heads up!</AlertTitle><AlertDescription>You can add components to your app using the CLI.</AlertDescription></Alert>
           <Alert variant="success"><Check className="h-4 w-4" /><AlertTitle>All systems operational</AlertTitle><AlertDescription>Everything is running smoothly.</AlertDescription></Alert>
@@ -905,7 +1072,34 @@ function ComponentsPage() {
       </Section>
 
       {/* Table */}
-      <Section hidden={!show("Table")} title="Table" description="Data display with status badges.">
+      <Section hidden={!show("Table")} title="Table" description="Data display with status badges." code={`import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
+
+export function TableDemo() {
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Invoice</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Amount</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableCell>INV-001</TableCell>
+          <TableCell><Badge variant="secondary">Pending</Badge></TableCell>
+          <TableCell>$250.00</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>INV-002</TableCell>
+          <TableCell><Badge>Paid</Badge></TableCell>
+          <TableCell>$150.00</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  )
+}`}>
         <Card>
           <Table>
             <TableCaption>Recent invoices — Q1 2026</TableCaption>
@@ -936,7 +1130,22 @@ function ComponentsPage() {
       </Section>
 
       {/* Accordion */}
-      <Section hidden={!show("Accordion")} title="Accordion" description="Collapsible sections for progressive disclosure.">
+      <Section hidden={!show("Accordion")} title="Accordion" description="Collapsible sections for progressive disclosure." code={`import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+
+export function AccordionDemo() {
+  return (
+    <Accordion type="single" collapsible className="w-full">
+      <AccordionItem value="item-1">
+        <AccordionTrigger>Is it accessible?</AccordionTrigger>
+        <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="item-2">
+        <AccordionTrigger>Is it styled?</AccordionTrigger>
+        <AccordionContent>Yes. It comes with default styles that match your theme.</AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  )
+}`}>
         <Accordion type="single" collapsible className="w-full max-w-lg">
           {[
             { value: "item-1", trigger: "What is Pau Design System?", content: "Pau is a fully-themed component library built on Radix UI primitives, tailored with brand tokens for Forest Green, Golden Yellow, and Mint Teal." },
@@ -952,7 +1161,28 @@ function ComponentsPage() {
       </Section>
 
       {/* Alert Dialog */}
-      <Section hidden={!show("Alert Dialog")} title="Alert Dialog" description="Blocking confirmation dialogs for destructive actions.">
+      <Section hidden={!show("Alert Dialog")} title="Alert Dialog" description="Blocking confirmation dialogs for destructive actions." code={`import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+
+export function AlertDialogDemo() {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="destructive">Delete account</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction>Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
+}`}>
         <div className="flex gap-3 flex-wrap">
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -992,7 +1222,24 @@ function ComponentsPage() {
       </Section>
 
       {/* Sheet */}
-      <Section hidden={!show("Sheet")} title="Sheet" description="Slide-in panels from any edge of the screen.">
+      <Section hidden={!show("Sheet")} title="Sheet" description="Slide-in panels from any edge of the screen." code={`import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Button } from "@/components/ui/button"
+
+export function SheetDemo() {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline">Open sheet</Button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Sheet title</SheetTitle>
+          <SheetDescription>Sheet description here.</SheetDescription>
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
+  )
+}`}>
         <div className="flex gap-3 flex-wrap">
           {(["right", "left", "top", "bottom"] as const).map((side) => (
             <Sheet key={side}>
@@ -1024,7 +1271,17 @@ function ComponentsPage() {
       </Section>
 
       {/* Progress & Slider */}
-      <Section hidden={!show("Progress & Slider")} title="Progress & Slider" description="Linear progress indicators and range inputs.">
+      <Section hidden={!show("Progress & Slider")} title="Progress & Slider" description="Linear progress indicators and range inputs." code={`import { Progress } from "@/components/ui/progress"
+import { Slider } from "@/components/ui/slider"
+
+export function ProgressSliderDemo() {
+  return (
+    <div className="space-y-6 max-w-sm">
+      <Progress value={60} />
+      <Slider defaultValue={[40]} max={100} step={1} />
+    </div>
+  )
+}`}>
         <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
           <div className="space-y-4">
             <Label className="text-sm font-semibold">Progress bars</Label>
@@ -1059,7 +1316,27 @@ function ComponentsPage() {
       </Section>
 
       {/* Radio Group & Textarea */}
-      <Section hidden={!show("Radio Group & Textarea")} title="Radio Group & Textarea" description="Single-selection controls and multi-line text input.">
+      <Section hidden={!show("Radio Group & Textarea")} title="Radio Group & Textarea" description="Single-selection controls and multi-line text input." code={`import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+
+export function RadioTextareaDemo() {
+  return (
+    <div className="space-y-6">
+      <RadioGroup defaultValue="option-1">
+        <div className="flex items-center gap-2">
+          <RadioGroupItem value="option-1" id="r1" />
+          <Label htmlFor="r1">Option 1</Label>
+        </div>
+        <div className="flex items-center gap-2">
+          <RadioGroupItem value="option-2" id="r2" />
+          <Label htmlFor="r2">Option 2</Label>
+        </div>
+      </RadioGroup>
+      <Textarea placeholder="Type your message here…" className="max-w-sm" />
+    </div>
+  )
+}`}>
         <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
           <div className="space-y-3">
             <Label className="text-sm font-semibold">Plan selection</Label>
@@ -1091,7 +1368,22 @@ function ComponentsPage() {
       </Section>
 
       {/* Toggle & Toggle Group */}
-      <Section hidden={!show("Toggle & Toggle Group")} title="Toggle & Toggle Group" description="Single and grouped toggle buttons.">
+      <Section hidden={!show("Toggle & Toggle Group")} title="Toggle & Toggle Group" description="Single and grouped toggle buttons." code={`import { Toggle } from "@/components/ui/toggle"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { Bold, Italic } from "lucide-react"
+
+export function ToggleDemo() {
+  return (
+    <div className="flex flex-wrap gap-4">
+      <Toggle aria-label="Bold"><Bold className="h-4 w-4" /></Toggle>
+      <Toggle variant="outline" aria-label="Italic"><Italic className="h-4 w-4" /></Toggle>
+      <ToggleGroup type="multiple">
+        <ToggleGroupItem value="bold"><Bold className="h-4 w-4" /></ToggleGroupItem>
+        <ToggleGroupItem value="italic"><Italic className="h-4 w-4" /></ToggleGroupItem>
+      </ToggleGroup>
+    </div>
+  )
+}`}>
         <div className="space-y-6">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">Single toggles</Label>
@@ -1121,7 +1413,19 @@ function ComponentsPage() {
       </Section>
 
       {/* Skeleton */}
-      <Section hidden={!show("Skeleton")} title="Skeleton" description="Loading placeholders that mimic content layout.">
+      <Section hidden={!show("Skeleton")} title="Skeleton" description="Loading placeholders that mimic content layout." code={`import { Skeleton } from "@/components/ui/skeleton"
+
+export function SkeletonDemo() {
+  return (
+    <div className="flex items-center gap-4">
+      <Skeleton className="h-12 w-12 rounded-full" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-[200px]" />
+        <Skeleton className="h-4 w-[160px]" />
+      </div>
+    </div>
+  )
+}`}>
         <div className="grid gap-6 sm:grid-cols-2 max-w-2xl">
           <div className="space-y-3">
             <div className="flex items-center space-x-3">
@@ -1153,7 +1457,17 @@ function ComponentsPage() {
       </Section>
 
       {/* Scroll Area */}
-      <Section hidden={!show("Scroll Area")} title="Scroll Area" description="Custom-styled scrollable containers.">
+      <Section hidden={!show("Scroll Area")} title="Scroll Area" description="Custom-styled scrollable containers." code={`import { ScrollArea } from "@/components/ui/scroll-area"
+
+export function ScrollAreaDemo() {
+  return (
+    <ScrollArea className="h-48 w-64 rounded-md border p-4">
+      {Array.from({ length: 20 }).map((_, i) => (
+        <p key={i} className="text-sm py-1">Item {i + 1}</p>
+      ))}
+    </ScrollArea>
+  )
+}`}>
         <div className="flex gap-6 flex-wrap">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">Vertical scroll</Label>
@@ -1184,7 +1498,32 @@ function ComponentsPage() {
       </Section>
 
       {/* Popover & Hover Card */}
-      <Section hidden={!show("Popover & Hover Card")} title="Popover & Hover Card" description="Floating content triggered by click or hover.">
+      <Section hidden={!show("Popover & Hover Card")} title="Popover & Hover Card" description="Floating content triggered by click or hover." code={`import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
+import { Button } from "@/components/ui/button"
+
+export function PopoverHoverCardDemo() {
+  return (
+    <div className="flex gap-4">
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="outline">Open popover</Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          <p className="text-sm">Popover content here.</p>
+        </PopoverContent>
+      </Popover>
+      <HoverCard>
+        <HoverCardTrigger asChild>
+          <Button variant="link">Hover me</Button>
+        </HoverCardTrigger>
+        <HoverCardContent>
+          <p className="text-sm">Hover card content.</p>
+        </HoverCardContent>
+      </HoverCard>
+    </div>
+  )
+}`}>
         <div className="flex gap-4 flex-wrap items-start">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">Popover (click)</Label>
@@ -1228,7 +1567,29 @@ function ComponentsPage() {
       </Section>
 
       {/* Menubar & Navigation Menu */}
-      <Section hidden={!show("Menubar & Navigation Menu")} title="Menubar & Navigation Menu" description="Desktop-style application menus and site navigation.">
+      <Section hidden={!show("Menubar & Navigation Menu")} title="Menubar & Navigation Menu" description="Desktop-style application menus and site navigation." code={`import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar"
+
+export function MenubarDemo() {
+  return (
+    <Menubar>
+      <MenubarMenu>
+        <MenubarTrigger>File</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem>New</MenubarItem>
+          <MenubarItem>Open</MenubarItem>
+          <MenubarItem>Save</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger>Edit</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem>Undo</MenubarItem>
+          <MenubarItem>Redo</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+    </Menubar>
+  )
+}`}>
         <div className="space-y-8">
           <div className="space-y-3">
             <Label className="text-sm text-muted-foreground">Menubar</Label>
@@ -1309,7 +1670,21 @@ function ComponentsPage() {
       </Section>
 
       {/* Collapsible & Context Menu */}
-      <Section hidden={!show("Collapsible & Context Menu")} title="Collapsible & Context Menu" description="Expand/collapse sections and right-click menus.">
+      <Section hidden={!show("Collapsible & Context Menu")} title="Collapsible & Context Menu" description="Expand/collapse sections and right-click menus." code={`import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Button } from "@/components/ui/button"
+
+export function CollapsibleDemo() {
+  return (
+    <Collapsible>
+      <CollapsibleTrigger asChild>
+        <Button variant="outline">Toggle</Button>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <p className="text-sm mt-2 text-muted-foreground">Collapsible content revealed.</p>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}`}>
         <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">Collapsible</Label>
@@ -1353,7 +1728,32 @@ function ComponentsPage() {
       </Section>
 
       {/* Breadcrumb & Pagination */}
-      <Section hidden={!show("Breadcrumb & Pagination")} title="Breadcrumb & Pagination" description="Navigation trails and page navigation.">
+      <Section hidden={!show("Breadcrumb & Pagination")} title="Breadcrumb & Pagination" description="Navigation trails and page navigation." code={`import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
+
+export function BreadcrumbPaginationDemo() {
+  return (
+    <div className="space-y-6">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem><BreadcrumbLink href="#">Home</BreadcrumbLink></BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem><BreadcrumbLink href="#">Components</BreadcrumbLink></BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem><BreadcrumbPage>Breadcrumb</BreadcrumbPage></BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
+          <PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem>
+          <PaginationItem><PaginationLink href="#" isActive>2</PaginationLink></PaginationItem>
+          <PaginationItem><PaginationNext href="#" /></PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </div>
+  )
+}`}>
         <div className="space-y-8">
           <div className="space-y-3">
             <Label className="text-sm text-muted-foreground">Breadcrumb</Label>
@@ -1396,7 +1796,29 @@ function ComponentsPage() {
       </Section>
 
       {/* Aspect Ratio & Carousel */}
-      <Section hidden={!show("Aspect Ratio & Carousel")} title="Aspect Ratio & Carousel" description="Fixed-ratio containers and scrollable slide shows.">
+      <Section hidden={!show("Aspect Ratio & Carousel")} title="Aspect Ratio & Carousel" description="Fixed-ratio containers and scrollable slide shows." code={`import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
+import { Card, CardContent } from "@/components/ui/card"
+
+export function CarouselDemo() {
+  return (
+    <Carousel className="w-full max-w-xs">
+      <CarouselContent>
+        {[1, 2, 3].map((n) => (
+          <CarouselItem key={n}>
+            <Card>
+              <CardContent className="flex aspect-square items-center justify-center p-6">
+                <span className="text-4xl font-bold">{n}</span>
+              </CardContent>
+            </Card>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  )
+}`}>
         <div className="grid gap-8 sm:grid-cols-2">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">Aspect Ratio (16:9)</Label>
@@ -1428,7 +1850,20 @@ function ComponentsPage() {
       </Section>
 
       {/* Calendar */}
-      <Section hidden={!show("Calendar")} title="Calendar" description="Date picker with range selection support.">
+      <Section hidden={!show("Calendar")} title="Calendar" description="Date picker with range selection support." code={`import { Calendar } from "@/components/ui/calendar"
+import { useState } from "react"
+
+export function CalendarDemo() {
+  const [date, setDate] = useState<Date | undefined>(new Date())
+  return (
+    <Calendar
+      mode="single"
+      selected={date}
+      onSelect={setDate}
+      className="rounded-md border"
+    />
+  )
+}`}>
         <div className="flex gap-6 flex-wrap">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">Single date</Label>
@@ -1440,7 +1875,23 @@ function ComponentsPage() {
       </Section>
 
       {/* Command */}
-      <Section hidden={!show("Command")} title="Command" description="Keyboard-driven searchable command palette.">
+      <Section hidden={!show("Command")} title="Command" description="Keyboard-driven searchable command palette." code={`import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+
+export function CommandDemo() {
+  return (
+    <Command className="rounded-lg border shadow-md w-72">
+      <CommandInput placeholder="Type a command…" />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Suggestions">
+          <CommandItem>Calendar</CommandItem>
+          <CommandItem>Search</CommandItem>
+          <CommandItem>Settings</CommandItem>
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  )
+}`}>
         <div className="rounded-md border w-full max-w-sm">
           <Command>
             <CommandInput placeholder="Search components…" />
@@ -1462,7 +1913,30 @@ function ComponentsPage() {
       </Section>
 
       {/* Drawer */}
-      <Section hidden={!show("Drawer")} title="Drawer" description="Mobile-optimised bottom sheet with swipe-to-close.">
+      <Section hidden={!show("Drawer")} title="Drawer" description="Mobile-optimised bottom sheet with swipe-to-close." code={`import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
+import { Button } from "@/components/ui/button"
+
+export function DrawerDemo() {
+  return (
+    <Drawer>
+      <DrawerTrigger asChild>
+        <Button variant="outline">Open drawer</Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Drawer title</DrawerTitle>
+          <DrawerDescription>Drawer description here.</DrawerDescription>
+        </DrawerHeader>
+        <DrawerFooter>
+          <Button>Submit</Button>
+          <DrawerClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  )
+}`}>
         <Drawer>
           <DrawerTrigger asChild>
             <Button variant="outline">Open Drawer</Button>
@@ -1495,7 +1969,25 @@ function ComponentsPage() {
       </Section>
 
       {/* Input OTP */}
-      <Section hidden={!show("Input OTP")} title="Input OTP" description="One-time password input with slot groups.">
+      <Section hidden={!show("Input OTP")} title="Input OTP" description="One-time password input with slot groups." code={`import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/components/ui/input-otp"
+
+export function InputOTPDemo() {
+  return (
+    <InputOTP maxLength={6}>
+      <InputOTPGroup>
+        <InputOTPSlot index={0} />
+        <InputOTPSlot index={1} />
+        <InputOTPSlot index={2} />
+      </InputOTPGroup>
+      <InputOTPSeparator />
+      <InputOTPGroup>
+        <InputOTPSlot index={3} />
+        <InputOTPSlot index={4} />
+        <InputOTPSlot index={5} />
+      </InputOTPGroup>
+    </InputOTP>
+  )
+}`}>
         <div className="space-y-6">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">6-digit OTP</Label>
@@ -1528,7 +2020,21 @@ function ComponentsPage() {
       </Section>
 
       {/* Sonner Toast */}
-      <Section hidden={!show("Sonner (Toast)")} title="Sonner (Toast)" description="Notification toasts for success, error, and info states.">
+      <Section hidden={!show("Sonner (Toast)")} title="Sonner (Toast)" description="Notification toasts for success, error, and info states." code={`import { Toaster, toast } from "sonner"
+import { Button } from "@/components/ui/button"
+
+export function ToastDemo() {
+  return (
+    <>
+      <Toaster />
+      <div className="flex gap-2">
+        <Button onClick={() => toast.success("Saved!")}>Success</Button>
+        <Button variant="destructive" onClick={() => toast.error("Failed!")}>Error</Button>
+        <Button variant="outline" onClick={() => toast("Info message")}>Info</Button>
+      </div>
+    </>
+  )
+}`}>
         <div className="flex flex-wrap gap-3">
           <Button onClick={() => toast("Event created", { description: "Your design sprint has been scheduled." })}>Default toast</Button>
           <Button variant="secondary" onClick={() => toast.success("Changes saved", { description: "Your tokens have been published." })}>Success</Button>
@@ -1541,7 +2047,25 @@ function ComponentsPage() {
       </Section>
 
       {/* Resizable */}
-      <Section hidden={!show("Resizable")} title="Resizable" description="Drag-to-resize panel layouts.">
+      <Section hidden={!show("Resizable")} title="Resizable" description="Drag-to-resize panel layouts." code={`import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+
+export function ResizableDemo() {
+  return (
+    <ResizablePanelGroup direction="horizontal" className="max-w-md rounded-lg border">
+      <ResizablePanel defaultSize={50}>
+        <div className="flex h-32 items-center justify-center p-6">
+          <span className="font-semibold">Panel A</span>
+        </div>
+      </ResizablePanel>
+      <ResizableHandle />
+      <ResizablePanel defaultSize={50}>
+        <div className="flex h-32 items-center justify-center p-6">
+          <span className="font-semibold">Panel B</span>
+        </div>
+      </ResizablePanel>
+    </ResizablePanelGroup>
+  )
+}`}>
         <div className="space-y-6">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">Horizontal panels</Label>
@@ -1571,7 +2095,29 @@ function ComponentsPage() {
       </Section>
 
       {/* Chart */}
-      <Section hidden={!show("Chart")} title="Chart" description="Data visualisation built on Recharts with brand tokens.">
+      <Section hidden={!show("Chart")} title="Chart" description="Data visualisation built on Recharts with brand tokens." code={`import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+
+const data = [
+  { name: "Jan", value: 400 },
+  { name: "Feb", value: 300 },
+  { name: "Mar", value: 600 },
+  { name: "Apr", value: 800 },
+  { name: "May", value: 500 },
+]
+
+export function ChartDemo() {
+  return (
+    <ResponsiveContainer width="100%" height={200}>
+      <BarChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Bar dataKey="value" fill="var(--color-primary)" radius={4} />
+      </BarChart>
+    </ResponsiveContainer>
+  )
+}`}>
         <div className="grid gap-6 sm:grid-cols-2">
           <Card>
             <CardHeader>
@@ -1611,7 +2157,33 @@ function ComponentsPage() {
       </Section>
 
       {/* Sidebar */}
-      <Section hidden={!show("Sidebar")} title="Sidebar" description="Collapsible navigation sidebar with icon mode.">
+      <Section hidden={!show("Sidebar")} title="Sidebar" description="Collapsible navigation sidebar with icon mode." code={`import { SidebarProvider, Sidebar, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
+import { Home, Settings } from "lucide-react"
+
+export function SidebarDemo() {
+  return (
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarContent>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton isActive>
+                <Home className="h-4 w-4" />
+                <span>Home</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton>
+                <Settings className="h-4 w-4" />
+                <span>Settings</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarContent>
+      </Sidebar>
+    </SidebarProvider>
+  )
+}`}>
         <div className="rounded-lg border overflow-hidden flex" style={{ height: 320 }}>
           <SidebarProvider defaultOpen style={{ "--sidebar-width": "14rem" } as React.CSSProperties}>
             <Sidebar collapsible="none" className="border-r border-sidebar-border">
@@ -1663,7 +2235,17 @@ function ComponentsPage() {
       </Section>
 
       {/* Spinner */}
-      <Section hidden={!show("Spinner")} title="Spinner" description="Animated loading indicator with size and colour variants.">
+      <Section hidden={!show("Spinner")} title="Spinner" description="Animated loading indicator with size and colour variants." code={`import { Spinner } from "@/components/ui/spinner"
+
+export function SpinnerDemo() {
+  return (
+    <div className="flex items-center gap-4">
+      <Spinner size="sm" />
+      <Spinner />
+      <Spinner size="lg" />
+    </div>
+  )
+}`}>
         <div className="space-y-6">
           <div>
             <p className="text-xs font-mono text-muted-foreground mb-3">Sizes</p>
@@ -1696,7 +2278,23 @@ function ComponentsPage() {
       </Section>
 
       {/* Kbd */}
-      <Section hidden={!show("Kbd")} title="Kbd" description="Keyboard key display for shortcuts and hotkeys.">
+      <Section hidden={!show("Kbd")} title="Kbd" description="Keyboard key display for shortcuts and hotkeys." code={`import { Kbd } from "@/components/ui/kbd"
+
+export function KbdDemo() {
+  return (
+    <div className="flex flex-wrap items-center gap-2 text-sm">
+      <Kbd>⌘</Kbd>
+      <span>+</span>
+      <Kbd>K</Kbd>
+      <span className="mx-2">or</span>
+      <Kbd>Ctrl</Kbd>
+      <span>+</span>
+      <Kbd>Shift</Kbd>
+      <span>+</span>
+      <Kbd>P</Kbd>
+    </div>
+  )
+}`}>
         <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-3">
             <Kbd>⌘</Kbd>
@@ -1722,7 +2320,18 @@ function ComponentsPage() {
       </Section>
 
       {/* Native Select */}
-      <Section hidden={!show("Native Select")} title="Native Select" description="Browser-native <select> styled to match the design system — zero JS overhead.">
+      <Section hidden={!show("Native Select")} title="Native Select" description="Browser-native <select> styled to match the design system — zero JS overhead." code={`import { NativeSelect } from "@/components/ui/native-select"
+
+export function NativeSelectDemo() {
+  return (
+    <NativeSelect className="max-w-xs">
+      <option value="">Pick an option</option>
+      <option value="a">Option A</option>
+      <option value="b">Option B</option>
+      <option value="c">Option C</option>
+    </NativeSelect>
+  )
+}`}>
         <div className="flex flex-wrap gap-4 max-w-sm">
           <NativeSelect className="w-full">
             <option value="">Choose a framework…</option>
@@ -1738,7 +2347,24 @@ function ComponentsPage() {
       </Section>
 
       {/* Input Group */}
-      <Section hidden={!show("Input Group")} title="Input Group" description="Compose an input with prefix / suffix addons — icons, text, or actions.">
+      <Section hidden={!show("Input Group")} title="Input Group" description="Compose an input with prefix / suffix addons — icons, text, or actions." code={`import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
+import { Input } from "@/components/ui/input"
+import { Search } from "lucide-react"
+
+export function InputGroupDemo() {
+  return (
+    <div className="space-y-3 max-w-xs">
+      <InputGroup>
+        <InputGroupAddon><Search className="h-4 w-4" /></InputGroupAddon>
+        <Input placeholder="Search…" />
+      </InputGroup>
+      <InputGroup>
+        <InputGroupAddon>https://</InputGroupAddon>
+        <Input placeholder="yoursite.com" />
+      </InputGroup>
+    </div>
+  )
+}`}>
         <div className="flex flex-col gap-4 max-w-sm">
           <InputGroup>
             <InputGroupAddon position="left"><Search className="h-4 w-4" /></InputGroupAddon>
@@ -1761,7 +2387,18 @@ function ComponentsPage() {
       </Section>
 
       {/* Button Group */}
-      <Section hidden={!show("Button Group")} title="Button Group" description="Segmented strip of attached buttons — layouts, alignments, filters.">
+      <Section hidden={!show("Button Group")} title="Button Group" description="Segmented strip of attached buttons — layouts, alignments, filters." code={`import { ButtonGroup } from "@/components/ui/button-group"
+import { Button } from "@/components/ui/button"
+
+export function ButtonGroupDemo() {
+  return (
+    <ButtonGroup>
+      <Button variant="outline">Left</Button>
+      <Button variant="outline">Center</Button>
+      <Button variant="outline">Right</Button>
+    </ButtonGroup>
+  )
+}`}>
         <div className="flex flex-col gap-4">
           <div>
             <p className="text-xs font-mono text-muted-foreground mb-3">Icon strip</p>
@@ -1791,7 +2428,20 @@ function ComponentsPage() {
       </Section>
 
       {/* Empty */}
-      <Section hidden={!show("Empty")} title="Empty" description="Zero-state placeholder with icon, title, description, and optional action.">
+      <Section hidden={!show("Empty")} title="Empty" description="Zero-state placeholder with icon, title, description, and optional action." code={`import { Empty } from "@/components/ui/empty"
+import { FileText } from "lucide-react"
+import { Button } from "@/components/ui/button"
+
+export function EmptyDemo() {
+  return (
+    <Empty
+      icon={FileText}
+      title="No files found"
+      description="Upload your first file to get started."
+      action={<Button size="sm">Upload file</Button>}
+    />
+  )
+}`}>
         <div className="grid gap-4 sm:grid-cols-2">
           <Empty
             icon={<ImageOff className="h-6 w-6" />}
@@ -1809,7 +2459,21 @@ function ComponentsPage() {
       </Section>
 
       {/* Field */}
-      <Section hidden={!show("Field")} title="Field" description="Form field wrapper — label, control, hint text, and error state.">
+      <Section hidden={!show("Field")} title="Field" description="Form field wrapper — label, control, hint text, and error state." code={`import { Field } from "@/components/ui/field"
+import { Input } from "@/components/ui/input"
+
+export function FieldDemo() {
+  return (
+    <div className="space-y-4 max-w-sm">
+      <Field label="Email" hint="We'll never share your email.">
+        <Input type="email" placeholder="you@example.com" />
+      </Field>
+      <Field label="Username" error="Username is already taken.">
+        <Input placeholder="johndoe" />
+      </Field>
+    </div>
+  )
+}`}>
         <div className="grid gap-6 sm:grid-cols-2 max-w-2xl">
           <Field>
             <FieldLabel htmlFor="field-name" required>Full name</FieldLabel>
@@ -1839,7 +2503,28 @@ function ComponentsPage() {
       </Section>
 
       {/* Item */}
-      <Section hidden={!show("Item")} title="Item" description="Flexible list row primitive — start slot, title, description, end slot.">
+      <Section hidden={!show("Item")} title="Item" description="Flexible list row primitive — start slot, title, description, end slot." code={`import { Item } from "@/components/ui/item"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+
+export function ItemDemo() {
+  return (
+    <div className="divide-y divide-border rounded-lg border">
+      <Item
+        start={<Avatar className="h-8 w-8"><AvatarFallback>EL</AvatarFallback></Avatar>}
+        title="Erhan Lammar"
+        description="UI Designer"
+        end={<Badge>Admin</Badge>}
+      />
+      <Item
+        start={<Avatar className="h-8 w-8"><AvatarFallback>JD</AvatarFallback></Avatar>}
+        title="Jane Doe"
+        description="Developer"
+        end={<Badge variant="secondary">Member</Badge>}
+      />
+    </div>
+  )
+}`}>
         <div className="rounded-md border border-border divide-y divide-border max-w-md">
           <Item>
             <ItemStart>
