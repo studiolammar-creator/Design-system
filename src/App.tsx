@@ -1,8 +1,8 @@
 import { useState } from "react";
 import {
   AlertCircle, AlignCenter, AlignLeft, AlignRight, Bell, Bold, Check, ChevronDown,
-  Copy, FileText, Home, Info, Italic, LayoutDashboard, LogOut, Moon,
-  Settings, Sun, User, Zap,
+  Copy, FileText, Home, Info, Italic, Layers, LayoutDashboard, LogOut, Moon,
+  Palette, Settings, Sun, User, Zap,
 } from "lucide-react";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -1563,13 +1563,13 @@ function ComponentsPage() {
 
       {/* Sidebar */}
       <Section title="Sidebar" description="Collapsible navigation sidebar with icon mode.">
-        <div className="rounded-lg border overflow-hidden" style={{ height: 320 }}>
-          <SidebarProvider defaultOpen>
-            <Sidebar collapsible="icon">
+        <div className="rounded-lg border overflow-hidden flex" style={{ height: 320 }}>
+          <SidebarProvider defaultOpen style={{ "--sidebar-width": "14rem" } as React.CSSProperties}>
+            <Sidebar collapsible="none" className="border-r border-sidebar-border">
               <SidebarHeader>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton tooltip="Pau Design System" className="font-semibold">
+                    <SidebarMenuButton className="font-semibold">
                       <Zap className="h-4 w-4" /><span>Pau</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -1585,7 +1585,7 @@ function ComponentsPage() {
                       { icon: FileText, label: "Components" },
                     ].map(({ icon: Icon, label }) => (
                       <SidebarMenuItem key={label}>
-                        <SidebarMenuButton tooltip={label} isActive={label === "Components"}>
+                        <SidebarMenuButton isActive={label === "Components"}>
                           <Icon className="h-4 w-4" /><span>{label}</span>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -1596,22 +1596,19 @@ function ComponentsPage() {
               <SidebarFooter>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton tooltip="Settings">
+                    <SidebarMenuButton>
                       <Settings className="h-4 w-4" /><span>Settings</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
               </SidebarFooter>
             </Sidebar>
-            <main className="flex flex-1 flex-col gap-2 p-4">
-              <div className="flex items-center gap-2">
-                <SidebarTrigger />
-                <span className="text-sm text-muted-foreground">Click trigger to collapse/expand</span>
-              </div>
+            <div className="flex flex-1 flex-col gap-2 p-4">
+              <span className="text-sm text-muted-foreground">Main content area</span>
               <div className="flex-1 rounded-md border border-dashed flex items-center justify-center text-sm text-muted-foreground">
                 Page content
               </div>
-            </main>
+            </div>
           </SidebarProvider>
         </div>
       </Section>
@@ -1625,6 +1622,12 @@ function ComponentsPage() {
 
 type Page = "overview" | "tokens" | "components";
 
+const navItems: { id: Page; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  { id: "overview",    label: "Overview",    icon: Home },
+  { id: "tokens",      label: "Tokens",      icon: Palette },
+  { id: "components",  label: "Components",  icon: Layers },
+];
+
 export default function App() {
   const [dark, setDark] = useState(false);
   const [page, setPage] = useState<Page>("overview");
@@ -1634,90 +1637,101 @@ export default function App() {
     document.documentElement.classList.toggle("dark");
   };
 
+  const currentNav = navItems.find((n) => n.id === page)!;
+
   return (
     <TooltipProvider>
       <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+        <SidebarProvider defaultOpen>
+          <div className="flex min-h-screen w-full">
 
-        {/* Header */}
-        <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
-          {/* Top row: logo + actions */}
-          <div className="container flex h-14 items-center justify-between gap-4">
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center">
-                <Zap className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <span className="font-bold text-lg tracking-tight">Pau</span>
-              <Badge variant="secondary" className="hidden sm:inline-flex">v1.0.0</Badge>
-            </div>
+            {/* ── Vertical Sidebar ── */}
+            <Sidebar collapsible="icon">
+              {/* Logo */}
+              <SidebarHeader>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton tooltip="Pau Design System" className="h-12 gap-3">
+                      <div className="h-7 w-7 rounded-md bg-sidebar-primary flex items-center justify-center shrink-0">
+                        <Zap className="h-3.5 w-3.5 text-sidebar-primary-foreground" />
+                      </div>
+                      <div className="flex flex-col leading-tight">
+                        <span className="font-bold text-sm text-sidebar-foreground">Pau</span>
+                        <span className="text-[10px] text-sidebar-foreground/50">v1.0.0</span>
+                      </div>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarHeader>
 
-            {/* Page nav — hidden on mobile, shown inline on sm+ */}
-            <nav className="hidden sm:flex items-center gap-0.5">
-              {(["overview", "tokens", "components"] as Page[]).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPage(p)}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium capitalize transition-colors whitespace-nowrap ${
-                    page === p
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                  }`}
-                >
-                  {p}
-                </button>
-              ))}
-            </nav>
+              {/* Nav items */}
+              <SidebarContent>
+                <SidebarGroup>
+                  <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+                  <SidebarMenu>
+                    {navItems.map(({ id, label, icon: Icon }) => (
+                      <SidebarMenuItem key={id}>
+                        <SidebarMenuButton
+                          tooltip={label}
+                          isActive={page === id}
+                          onClick={() => setPage(id)}
+                        >
+                          <Icon className="h-4 w-4" />
+                          <span>{label}</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroup>
+              </SidebarContent>
 
-            <div className="flex items-center gap-2 shrink-0">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" onClick={toggleDark}>
-                    {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Toggle {dark ? "light" : "dark"} mode</TooltipContent>
-              </Tooltip>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <Avatar className="h-6 w-6">
-                      <AvatarFallback className="text-xs">EL</AvatarFallback>
-                    </Avatar>
-                    <span className="hidden sm:inline">Erhan</span>
-                    <ChevronDown className="h-3 w-3 opacity-60" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem><User className="mr-2 h-4 w-4" />Profile</DropdownMenuItem>
-                  <DropdownMenuItem><Settings className="mr-2 h-4 w-4" />Settings</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive"><LogOut className="mr-2 h-4 w-4" />Log out</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-          {/* Mobile-only bottom nav row */}
-          <div className="sm:hidden border-t border-border">
-            <nav className="container flex h-10 items-center gap-1">
-              {(["overview", "tokens", "components"] as Page[]).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPage(p)}
-                  className={`flex-1 py-1.5 rounded-md text-xs font-medium capitalize transition-colors ${
-                    page === p
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                  }`}
-                >
-                  {p}
-                </button>
-              ))}
-            </nav>
-          </div>
-        </header>
+              {/* Footer: dark mode + user */}
+              <SidebarFooter>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton tooltip={dark ? "Light mode" : "Dark mode"} onClick={toggleDark}>
+                      {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                      <span>{dark ? "Light mode" : "Dark mode"}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <SidebarMenuButton tooltip="Erhan Lammar" className="gap-2">
+                          <Avatar className="h-5 w-5 shrink-0">
+                            <AvatarFallback className="text-[10px] bg-sidebar-primary text-sidebar-primary-foreground">EL</AvatarFallback>
+                          </Avatar>
+                          <span className="truncate">Erhan Lammar</span>
+                          <ChevronDown className="ml-auto h-3 w-3 opacity-50 shrink-0" />
+                        </SidebarMenuButton>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent side="right" align="end" className="w-48">
+                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem><User className="mr-2 h-4 w-4" />Profile</DropdownMenuItem>
+                        <DropdownMenuItem><Settings className="mr-2 h-4 w-4" />Settings</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="text-destructive"><LogOut className="mr-2 h-4 w-4" />Log out</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarFooter>
+            </Sidebar>
 
-        <main className="container py-12">
+            {/* ── Main content area ── */}
+            <div className="flex flex-col flex-1 min-w-0">
+              {/* Top bar */}
+              <header className="sticky top-0 z-40 flex h-14 items-center gap-3 border-b border-border bg-background/95 backdrop-blur-sm px-4 sm:px-6">
+                <SidebarTrigger />
+                <Separator orientation="vertical" className="h-5 opacity-40" />
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  <currentNav.icon className="h-4 w-4 text-muted-foreground" />
+                  <span className="capitalize">{currentNav.label}</span>
+                </div>
+              </header>
+
+              <main className="flex-1 px-6 py-10 sm:px-10 sm:py-12">
 
           {/* ── Overview ── */}
           {page === "overview" && (
@@ -1760,7 +1774,7 @@ export default function App() {
               {/* Stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
-                  { label: "Components",   value: "16" },
+                  { label: "Components",   value: "47" },
                   { label: "Color tokens", value: "70+" },
                   { label: "Type styles",  value: "9" },
                   { label: "Themes",       value: "2" },
@@ -1782,20 +1796,23 @@ export default function App() {
           {/* ── Components ── */}
           {page === "components" && <ComponentsPage />}
 
-        </main>
+              </main>
 
-        <footer className="border-t border-border mt-16">
-          <div className="container py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <div className="h-5 w-5 rounded bg-primary flex items-center justify-center">
-                <Zap className="h-3 w-3 text-primary-foreground" />
-              </div>
-              <span className="font-medium text-foreground">Pau</span>
+              <footer className="border-t border-border">
+                <div className="px-6 sm:px-10 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <div className="h-5 w-5 rounded bg-primary flex items-center justify-center">
+                      <Zap className="h-3 w-3 text-primary-foreground" />
+                    </div>
+                    <span className="font-medium text-foreground">Pau</span>
+                  </div>
+                  <p>Built with ShadCN · Tailwind CSS · React · Vite · Unigeo</p>
+                </div>
+              </footer>
             </div>
-            <p>Built with ShadCN · Tailwind CSS · React · Vite · Unigeo</p>
-          </div>
-        </footer>
 
+          </div>
+        </SidebarProvider>
       </div>
     </TooltipProvider>
   );
