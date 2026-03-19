@@ -187,7 +187,7 @@ const palettes: Palette[] = [
 const typographyTokens = {
   fontFamily: [
     { token: "font-sans", value: "Unigeo32, ui-sans-serif, system-ui, sans-serif", sample: "Aa Bb Cc 123" },
-    { token: "font-mono", value: "ui-monospace, SFMono-Regular, Menlo, monospace", sample: "const x = 42;" },
+    { token: "font-mono", value: "Space Mono, ui-monospace, SFMono-Regular, Menlo, monospace", sample: "const x = 42;" },
   ],
   fontSize: [
     { token: "text-xs",   value: "12px",  cls: "text-xs" },
