@@ -450,20 +450,154 @@ function Section({ title, description, children, hidden, code }: {
 
 
 /* ═══════════════════════════════════════════════════════════
+   TOKENS PAGE — Token Studio JSON export
+═══════════════════════════════════════════════════════════ */
+
+type BoxShadowValue = {
+  x: string; y: string; blur: string; spread: string;
+  color: string; type: "dropShadow" | "innerShadow";
+};
+
+function generateTokenStudioJSON() {
+  /* ── Core / Color ── */
+  const coreColor: Record<string, Record<string, { value: string; type: string }>> = {};
+  palettes.forEach((p) => {
+    coreColor[p.key] = {};
+    p.swatches.forEach((s) => {
+      coreColor[p.key][s.name] = { value: s.hex, type: "color" };
+    });
+  });
+
+  /* ── Core / Typography ── */
+  const coreTypography: Record<string, Record<string, { value: string; type: string }>> = {
+    fontFamily: {}, fontSize: {}, fontWeight: {}, lineHeight: {}, letterSpacing: {},
+  };
+  typographyTokens.fontFamily.forEach((f) => {
+    coreTypography.fontFamily[f.token.replace("font-", "")] = { value: f.value, type: "fontFamilies" };
+  });
+  typographyTokens.fontSize.forEach((f) => {
+    coreTypography.fontSize[f.token.replace("text-", "")] = { value: f.value.replace("px", ""), type: "fontSizes" };
+  });
+  typographyTokens.fontWeight.forEach((f) => {
+    coreTypography.fontWeight[f.token.replace("font-", "")] = { value: f.value, type: "fontWeights" };
+  });
+  typographyTokens.lineHeight.forEach((f) => {
+    coreTypography.lineHeight[f.token.replace("leading-", "")] = { value: f.value, type: "lineHeights" };
+  });
+  typographyTokens.letterSpacing.forEach((f) => {
+    coreTypography.letterSpacing[f.token.replace("tracking-", "")] = { value: f.value, type: "letterSpacing" };
+  });
+
+  /* ── Core / Spacing ── */
+  const coreSpacing: Record<string, { value: string; type: string }> = {};
+  spacingTokens.forEach((s) => {
+    const key = s.token.replace("spacing-", "");
+    coreSpacing[key] = { value: String(s.px), type: "spacing" };
+  });
+
+  /* ── Core / Radius ── */
+  const coreRadius: Record<string, { value: string; type: string }> = {};
+  radiusTokens.forEach((r) => {
+    const key = r.token === "rounded" ? "DEFAULT"
+      : r.token === "rounded-full" ? "full"
+      : r.token.replace("rounded-", "");
+    coreRadius[key] = { value: r.value.replace("px", "") || "0", type: "borderRadius" };
+  });
+
+  /* ── Core / Shadow ── */
+  const shadowMap: Record<string, BoxShadowValue> = {
+    "shadow-sm":    { x: "0", y: "1",  blur: "2",  spread: "0", color: "rgba(0,0,0,0.05)", type: "dropShadow" },
+    "shadow":       { x: "0", y: "1",  blur: "3",  spread: "0", color: "rgba(0,0,0,0.10)", type: "dropShadow" },
+    "shadow-md":    { x: "0", y: "4",  blur: "6",  spread: "0", color: "rgba(0,0,0,0.10)", type: "dropShadow" },
+    "shadow-lg":    { x: "0", y: "10", blur: "15", spread: "0", color: "rgba(0,0,0,0.10)", type: "dropShadow" },
+    "shadow-xl":    { x: "0", y: "20", blur: "25", spread: "0", color: "rgba(0,0,0,0.10)", type: "dropShadow" },
+    "shadow-2xl":   { x: "0", y: "25", blur: "50", spread: "0", color: "rgba(0,0,0,0.25)", type: "dropShadow" },
+    "shadow-inner": { x: "0", y: "2",  blur: "4",  spread: "0", color: "rgba(0,0,0,0.06)", type: "innerShadow" },
+  };
+  const coreShadow: Record<string, { value: string | BoxShadowValue; type: string }> = {};
+  shadowTokens.forEach((s) => {
+    const key = s.token === "shadow" ? "DEFAULT" : s.token.replace("shadow-", "");
+    if (s.token === "shadow-none") {
+      coreShadow[key] = { value: "none", type: "boxShadow" };
+    } else {
+      coreShadow[key] = { value: shadowMap[s.token], type: "boxShadow" };
+    }
+  });
+
+  /* ── Semantic light / dark ── */
+  const semanticLight: Record<string, { value: string; type: string }> = {};
+  const semanticDark: Record<string, { value: string; type: string }> = {};
+  semanticColorTokens.forEach((group) => {
+    group.tokens.forEach((t) => {
+      semanticLight[t.token] = { value: t.lightHex, type: "color" };
+      semanticDark[t.token]  = { value: t.darkHex,  type: "color" };
+    });
+  });
+
+  return {
+    $metadata: {
+      tokenSetOrder: [
+        "core/color", "core/typography", "core/spacing",
+        "core/radius", "core/shadow", "semantic/light", "semantic/dark",
+      ],
+    },
+    "core/color":      coreColor,
+    "core/typography": coreTypography,
+    "core/spacing":    coreSpacing,
+    "core/radius":     coreRadius,
+    "core/shadow":     coreShadow,
+    "semantic/light":  semanticLight,
+    "semantic/dark":   semanticDark,
+  };
+}
+
+function downloadTokenStudioJSON() {
+  const json = JSON.stringify(generateTokenStudioJSON(), null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href     = url;
+  a.download = "pau-tokens.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ═══════════════════════════════════════════════════════════
    TOKENS PAGE
 ═══════════════════════════════════════════════════════════ */
 
 function TokensPage({ dark }: { dark: boolean }) {
+  const [downloadCopied, setDownloadCopied] = useState(false);
+
+  const handleDownload = () => {
+    downloadTokenStudioJSON();
+    setDownloadCopied(true);
+    setTimeout(() => setDownloadCopied(false), 2500);
+  };
+
   return (
     <div className="space-y-16">
 
       {/* ── Intro ── */}
-      <div className="space-y-3">
-        <h1 className="text-4xl font-extrabold tracking-tight">Design Tokens</h1>
-        <p className="text-muted-foreground text-lg max-w-2xl">
-          All tokens are defined as CSS custom properties and mapped to Tailwind utilities.
-          Import <code>tokens.json</code> via Tokens Studio or use <code>tokens.css</code> directly.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+        <div className="space-y-3">
+          <h1 className="text-4xl font-extrabold tracking-tight">Design Tokens</h1>
+          <p className="text-muted-foreground text-lg max-w-2xl">
+            All tokens are defined as CSS custom properties and mapped to Tailwind utilities.
+            Download <code>pau-tokens.json</code> and import it into Tokens Studio for Figma.
+          </p>
+        </div>
+        <div className="flex flex-col items-start sm:items-end gap-2 shrink-0">
+          <Button onClick={handleDownload} className="gap-2" variant="default">
+            {downloadCopied
+              ? <><Check className="h-4 w-4" /> Downloaded!</>
+              : <><Download className="h-4 w-4" /> Download tokens.json</>
+            }
+          </Button>
+          <p className="text-[11px] text-muted-foreground">
+            Figma → Tokens Studio plugin → Import → select file
+          </p>
+        </div>
       </div>
 
       <Tabs defaultValue="colors">
