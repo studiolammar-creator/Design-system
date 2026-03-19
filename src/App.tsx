@@ -3866,7 +3866,7 @@ export default function App() {
             <div className="animate-fade-in max-w-5xl space-y-0">
 
               {/* Hero */}
-              <div className="border-b border-border pb-14 mb-16">
+              <div className="border-b border-border pb-14 mb-20">
                 <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground mb-4">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block" />
                   <span>v1.0.0</span>
@@ -3895,7 +3895,7 @@ export default function App() {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-xl overflow-hidden border border-border mb-16">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-xl overflow-hidden border border-border mb-20">
                 {[
                   { label: "Components",   value: "54",   desc: "Production-ready UI blocks" },
                   { label: "Icons",        value: "218",  desc: "Lucide icon library" },
@@ -3911,8 +3911,8 @@ export default function App() {
               </div>
 
               {/* Component showcase */}
-              <div className="mb-16">
-                <div className="flex items-center justify-between mb-8">
+              <div className="mb-20">
+                <div className="flex items-center justify-between mb-4">
                   <div>
                     <h2 className="text-xl font-bold tracking-tight">Component showcase</h2>
                     <p className="text-sm text-muted-foreground mt-1">A live look at key building blocks</p>
@@ -3974,8 +3974,8 @@ export default function App() {
               </div>
 
               {/* Principles */}
-              <div className="mb-16">
-                <div className="mb-8">
+              <div className="mb-20">
+                <div className="mb-4">
                   <h2 className="text-xl font-bold tracking-tight">Built to last</h2>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
