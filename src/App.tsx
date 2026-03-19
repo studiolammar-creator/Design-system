@@ -3899,7 +3899,7 @@ export default function App() {
                 {[
                   { label: "Components",   value: "54",   desc: "Production-ready UI blocks" },
                   { label: "Icons",        value: "218",  desc: "Lucide icon library" },
-                  { label: "Color tokens", value: "85+",  desc: "Semantic & brand tokens" },
+                  { label: "Tokens",       value: "130",  desc: "Color, type, spacing, radius & shadows" },
                   { label: "Themes",       value: "2",    desc: "Light & dark mode" },
                 ].map(({ label, value, desc }) => (
                   <div key={label} className="bg-background px-6 py-8">
