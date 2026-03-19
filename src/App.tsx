@@ -1019,17 +1019,30 @@ export function ButtonDemo() {
           const iconJsx = badgeIconName ? `<${badgeIconName} className="${isPill ? "h-4 w-4" : "h-3 w-3"}" /> ` : "";
           const pillClass = isPill ? ` className="px-4 py-1.5 text-sm gap-1.5"` : "";
           const clickClass = badgeClickable ? ` cursor-pointer active:scale-95 transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 hover:shadow-sm` : "";
-          const rows = ["default","secondary","accent","success","destructive","outline"].map((v) =>
+          const variants6 = ["default","secondary","accent","success","destructive","outline"];
+          const filledRows = variants6.map((v) =>
             badgeClickable
               ? `      <button className={cn(badgeVariants({ variant: "${v}" }),"${clickClass.trim()}"${isPill ? `,"px-4 py-1.5 text-sm gap-1.5"` : ""})}>${iconJsx}${v.charAt(0).toUpperCase()+v.slice(1)}</button>`
-              : `      <Badge variant="${v}"${pillClass}${isPill ? ` className="px-4 py-1.5 text-sm gap-1.5"` : ""}>${iconJsx}${v.charAt(0).toUpperCase()+v.slice(1)}</Badge>`
+              : `      <Badge variant="${v}"${pillClass}>${iconJsx}${v.charAt(0).toUpperCase()+v.slice(1)}</Badge>`
+          ).join("\n");
+          const outlineRows = variants6.map((v) =>
+            badgeClickable
+              ? `      <button className={cn(badgeVariants({ variant: "outline" }),"${clickClass.trim()}"${isPill ? `,"px-4 py-1.5 text-sm gap-1.5"` : ""})}>${iconJsx}${v.charAt(0).toUpperCase()+v.slice(1)}</button>`
+              : `      <Badge variant="outline"${pillClass}>${iconJsx}${v.charAt(0).toUpperCase()+v.slice(1)}</Badge>`
           ).join("\n");
           return `import { Badge${badgeClickable ? ", badgeVariants" : ""} } from "@/components/ui/badge"${iconImport}${badgeClickable ? `\nimport { cn } from "@/lib/utils"` : ""}
 
 export function BadgeDemo() {
   return (
-    <div className="flex flex-wrap gap-3">
-${rows}
+    <div className="space-y-4">
+      {/* Filled */}
+      <div className="flex flex-wrap gap-3">
+${filledRows}
+      </div>
+      {/* Outlined */}
+      <div className="flex flex-wrap gap-3">
+${outlineRows}
+      </div>
     </div>
   )
 }`;
@@ -1061,6 +1074,16 @@ ${rows}
             },
           };
           const { cls: sizeClass, icon: iconSize } = sizeLookup[badgeStyle][badgeSize];
+
+          // Outlined variant overrides — transparent bg + colored border/text
+          const outlineStyles: Record<string, string> = {
+            default:     "!bg-transparent border-primary/60 text-primary",
+            secondary:   "!bg-transparent border-secondary text-secondary-foreground",
+            accent:      "!bg-transparent border-accent text-accent-foreground",
+            success:     "!bg-transparent border-intense-400/70 text-intense-400",
+            destructive: "!bg-transparent border-destructive/60 text-destructive",
+            outline:     "!bg-transparent border-border text-muted-foreground",
+          };
 
           // Interaction classes
           const staticClass    = "pointer-events-none opacity-90";
@@ -1137,22 +1160,47 @@ ${rows}
               <div className="h-px bg-border" />
 
               {/* Badge preview */}
-              <div className="space-y-3">
-                <div className="flex flex-wrap items-center gap-3">
-                  {variants.map(({ key, label }) =>
-                    badgeClickable ? (
-                      <button key={key} className={cn(badgeVariants({ variant: key }), sizeClass, clickableClass)}>
-                        {BadgeIcon && <BadgeIcon className={iconSize} />}
-                        {label}
-                      </button>
-                    ) : (
-                      <Badge key={key} variant={key} className={cn(sizeClass, staticClass)}>
-                        {BadgeIcon && <BadgeIcon className={iconSize} />}
-                        {label}
-                      </Badge>
-                    )
-                  )}
+              <div className="space-y-5">
+                {/* Filled row */}
+                <div className="space-y-2">
+                  <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Filled</p>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {variants.map(({ key, label }) =>
+                      badgeClickable ? (
+                        <button key={key} className={cn(badgeVariants({ variant: key }), sizeClass, clickableClass)}>
+                          {BadgeIcon && <BadgeIcon className={iconSize} />}
+                          {label}
+                        </button>
+                      ) : (
+                        <Badge key={key} variant={key} className={cn(sizeClass, staticClass)}>
+                          {BadgeIcon && <BadgeIcon className={iconSize} />}
+                          {label}
+                        </Badge>
+                      )
+                    )}
+                  </div>
                 </div>
+
+                {/* Outlined row */}
+                <div className="space-y-2">
+                  <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Outlined</p>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {variants.map(({ key, label }) =>
+                      badgeClickable ? (
+                        <button key={key} className={cn(badgeVariants({ variant: "outline" }), sizeClass, outlineStyles[key], clickableClass)}>
+                          {BadgeIcon && <BadgeIcon className={iconSize} />}
+                          {label}
+                        </button>
+                      ) : (
+                        <Badge key={key} variant="outline" className={cn(sizeClass, outlineStyles[key], staticClass)}>
+                          {BadgeIcon && <BadgeIcon className={iconSize} />}
+                          {label}
+                        </Badge>
+                      )
+                    )}
+                  </div>
+                </div>
+
                 {badgeClickable && (
                   <p className="text-[11px] text-muted-foreground">↑ Hover or click to see the interactive states</p>
                 )}
