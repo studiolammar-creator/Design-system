@@ -2005,7 +2005,7 @@ export default function App() {
               {/* Stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
-                  { label: "Components",   value: "47" },
+                  { label: "Components",   value: "54" },
                   { label: "Color tokens", value: "70+" },
                   { label: "Type styles",  value: "9" },
                   { label: "Themes",       value: "2" },
