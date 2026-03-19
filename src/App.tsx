@@ -1112,12 +1112,12 @@ ${outlineRows}
             badge: {
               sm: { cls: "!rounded-sm px-1.5 py-px text-[10px] gap-1",  icon: "h-2.5 w-2.5" },
               md: { cls: "!rounded px-2.5 py-0.5 text-xs gap-1",        icon: "h-3 w-3" },
-              lg: { cls: "!rounded px-3.5 py-1 text-sm gap-1.5",        icon: "h-3.5 w-3.5" },
+              lg: { cls: "!rounded px-4 py-1 text-sm gap-1.5",          icon: "h-3.5 w-3.5" },
             },
             pill: {
               sm: { cls: "px-3 py-0.5 text-xs gap-1",                  icon: "h-3 w-3" },
               md: { cls: "px-4 py-1.5 text-sm gap-1.5",                icon: "h-4 w-4" },
-              lg: { cls: "px-5 py-2 text-base gap-2",                  icon: "h-5 w-5" },
+              lg: { cls: "px-5 py-1 text-sm gap-1.5",                  icon: "h-4 w-4" },
             },
           };
           const { cls: sizeClass, icon: iconSize } = sizeLookup[badgeStyle][badgeSize];
