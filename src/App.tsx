@@ -3863,48 +3863,44 @@ export default function App() {
 
           {/* ── Overview ── */}
           {page === "overview" && (
-            <div className="animate-fade-in max-w-5xl">
+            <div className="animate-fade-in max-w-5xl space-y-0">
 
               {/* Hero */}
-              <div className="border-b border-border pb-16 mb-16">
-                <div className="space-y-6">
-                  <div className="flex gap-2 flex-wrap">
-                    <Badge variant="outline" className="gap-1.5 font-mono text-xs">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block" />
-                      v1.0.0
-                    </Badge>
-                    <Badge variant="secondary">Pau-based</Badge>
-                    <Badge variant="outline">Open Source</Badge>
-                  </div>
-
-                  <h1 className="text-6xl font-extrabold tracking-tight leading-[1.05] max-w-3xl">
-                    The design foundation<br />
-                    <span className="text-primary">for Pau.</span>
-                  </h1>
-
-                  <p className="text-muted-foreground text-xl max-w-2xl leading-relaxed">
-                    A production-ready component library — tailored with Pau's brand tokens,
-                    accessible by default, and built to scale across every product we ship.
-                  </p>
-
-                  <div className="flex gap-3 flex-wrap pt-2">
-                    <Button size="lg" onClick={() => setPage("components")}>
-                      Browse components <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                    <Button size="lg" variant="outline" onClick={() => setPage("tokens")}>
-                      View tokens
-                    </Button>
-                  </div>
+              <div className="border-b border-border pb-12 mb-12">
+                <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground mb-4">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block" />
+                  <span>v1.0.0</span>
+                  <span className="text-border">·</span>
+                  <span>Pau Design System</span>
+                </div>
+                <h1 className="text-5xl font-extrabold tracking-tight leading-[1.08] max-w-3xl mb-5">
+                  The design foundation<br />
+                  <span className="text-primary">for Pau.</span>
+                </h1>
+                <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed mb-8">
+                  A production-ready component library — tailored with Pau's brand tokens,
+                  accessible by default, and built to scale across every product we ship.
+                </p>
+                <div className="flex gap-3 flex-wrap">
+                  <Button size="lg" onClick={() => setPage("components")}>
+                    Browse components <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                  <Button size="lg" variant="outline" onClick={() => setPage("tokens")}>
+                    View tokens
+                  </Button>
+                  <Button size="lg" variant="ghost" onClick={() => setPage("icons")}>
+                    Icons
+                  </Button>
                 </div>
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-xl overflow-hidden border border-border mb-16">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-xl overflow-hidden border border-border mb-12">
                 {[
-                  { label: "Components",   value: "54",  desc: "Production-ready UI blocks" },
-                  { label: "Color tokens", value: "70+", desc: "Semantic & brand tokens" },
-                  { label: "Type styles",  value: "9",   desc: "Consistent typographic scale" },
-                  { label: "Themes",       value: "2",   desc: "Light & dark mode" },
+                  { label: "Components",   value: "54",   desc: "Production-ready UI blocks" },
+                  { label: "Icons",        value: "218",  desc: "Lucide icon library" },
+                  { label: "Color tokens", value: "85+",  desc: "Semantic & brand tokens" },
+                  { label: "Themes",       value: "2",    desc: "Light & dark mode" },
                 ].map(({ label, value, desc }) => (
                   <div key={label} className="bg-background px-6 py-8">
                     <p className="text-4xl font-black text-foreground tabular-nums">{value}</p>
@@ -3915,93 +3911,98 @@ export default function App() {
               </div>
 
               {/* Component showcase */}
-              <div className="mb-16">
+              <div className="mb-12">
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h2 className="text-xl font-bold">Component showcase</h2>
-                    <p className="text-sm text-muted-foreground mt-0.5">A live preview of available components</p>
+                    <p className="text-xs font-mono text-muted-foreground uppercase tracking-wide mb-1">Preview</p>
+                    <h2 className="text-xl font-bold tracking-tight">Component showcase</h2>
+                    <p className="text-sm text-muted-foreground mt-0.5">A live look at key building blocks</p>
                   </div>
-                  <Button variant="ghost" size="sm" onClick={() => setPage("components")} className="gap-1.5">
+                  <Button variant="ghost" size="sm" onClick={() => setPage("components")} className="gap-1.5 text-xs">
                     View all <ArrowRight className="h-3 w-3" />
                   </Button>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {/* Buttons */}
-                  <Card>
-                    <CardContent className="p-6 space-y-4">
-                      <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Buttons</p>
-                      <div className="flex flex-wrap gap-2">
-                        <Button size="sm">Primary</Button>
-                        <Button size="sm" variant="secondary">Secondary</Button>
-                        <Button size="sm" variant="outline">Outline</Button>
-                        <Button size="sm" variant="ghost">Ghost</Button>
-                        <Button size="sm" variant="destructive">Destructive</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <div className="border border-border rounded-xl p-5 bg-card space-y-4 hover:bg-muted/30 transition-colors">
+                    <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Buttons</p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button size="sm">Primary</Button>
+                      <Button size="sm" variant="secondary">Secondary</Button>
+                      <Button size="sm" variant="outline">Outline</Button>
+                      <Button size="sm" variant="ghost">Ghost</Button>
+                      <Button size="sm" variant="destructive">Destructive</Button>
+                    </div>
+                  </div>
 
-                  {/* Badges + Alerts */}
-                  <Card>
-                    <CardContent className="p-6 space-y-4">
-                      <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Badges</p>
-                      <div className="flex flex-wrap gap-2">
-                        <Badge>Default</Badge>
-                        <Badge variant="secondary">Secondary</Badge>
-                        <Badge variant="outline">Outline</Badge>
-                        <Badge variant="destructive">Destructive</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  {/* Badges */}
+                  <div className="border border-border rounded-xl p-5 bg-card space-y-4 hover:bg-muted/30 transition-colors">
+                    <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Badges</p>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge>Default</Badge>
+                      <Badge variant="secondary">Secondary</Badge>
+                      <Badge variant="accent">Accent</Badge>
+                      <Badge variant="outline">Outline</Badge>
+                      <Badge variant="destructive">Destructive</Badge>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge variant="outline" className="bg-transparent border-primary/60 text-primary">Default</Badge>
+                      <Badge variant="outline" className="bg-transparent border-secondary text-secondary-foreground">Secondary</Badge>
+                      <Badge variant="outline" className="bg-transparent border-accent text-accent-foreground">Accent</Badge>
+                      <Badge variant="outline" className="bg-transparent border-destructive/60 text-destructive">Destructive</Badge>
+                    </div>
+                  </div>
 
                   {/* Brand palette */}
-                  <Card>
-                    <CardContent className="p-6 space-y-4">
-                      <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Brand palette</p>
-                      <div className="grid grid-cols-4 gap-2">
-                        {[
-                          { label: "Primary",   hex: "#013229" },
-                          { label: "Secondary", hex: "#FFD653" },
-                          { label: "Accent",    hex: "#61CAA0" },
-                          { label: "Neutral",   hex: "#333333" },
-                        ].map((c) => (
-                          <div key={c.label} className="space-y-1.5">
-                            <div className="h-10 rounded-md border border-border/20" style={{ backgroundColor: c.hex }} />
-                            <p className="text-[10px] text-muted-foreground font-mono truncate">{c.hex}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <div className="border border-border rounded-xl p-5 bg-card space-y-4 hover:bg-muted/30 transition-colors">
+                    <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">Brand palette</p>
+                    <div className="grid grid-cols-4 gap-2">
+                      {[
+                        { label: "Primary",   hex: "#013229" },
+                        { label: "Secondary", hex: "#FFD653" },
+                        { label: "Accent",    hex: "#61CAA0" },
+                        { label: "Neutral",   hex: "#333333" },
+                      ].map((c) => (
+                        <div key={c.label} className="space-y-1.5">
+                          <div className="h-10 rounded-md border border-border/20" style={{ backgroundColor: c.hex }} />
+                          <p className="text-[10px] text-muted-foreground font-mono truncate">{c.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Principles */}
-              <div className="mb-16">
-                <h2 className="text-xl font-bold mb-6">Built on strong foundations</h2>
+              <div className="mb-12">
+                <div className="mb-6">
+                  <p className="text-xs font-mono text-muted-foreground uppercase tracking-wide mb-1">Foundations</p>
+                  <h2 className="text-xl font-bold tracking-tight">Built to last</h2>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {[
                     {
                       icon: Layers,
                       title: "Pau-based",
-                      desc: "Built on Pau — copy-paste components you own, with full access to source code and zero vendor lock-in.",
+                      desc: "Copy-paste components you own — full access to source code, zero vendor lock-in.",
                     },
                     {
                       icon: Palette,
                       title: "Brand tokens",
-                      desc: "Every color, spacing, and typography value is tokenized — keeping design and code in sync across every surface.",
+                      desc: "Every color, spacing, and type value is tokenized, keeping design and code in sync.",
                     },
                     {
                       icon: Zap,
                       title: "Accessible by default",
-                      desc: "Components follow WAI-ARIA patterns with keyboard navigation, focus management, and screen-reader support built in.",
+                      desc: "WAI-ARIA patterns, keyboard navigation, focus management, and screen-reader support built in.",
                     },
                   ].map(({ icon: Icon, title, desc }) => (
                     <div key={title} className="border border-border rounded-xl p-6 space-y-3 bg-card hover:bg-muted/40 transition-colors">
                       <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
                         <Icon className="h-4 w-4 text-primary" />
                       </div>
-                      <h3 className="font-semibold">{title}</h3>
+                      <p className="font-semibold text-sm">{title}</p>
                       <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
                     </div>
                   ))}
@@ -4011,15 +4012,15 @@ export default function App() {
               {/* CTA strip */}
               <div className="rounded-xl border border-border bg-muted/30 px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                 <div className="space-y-1">
-                  <h2 className="text-lg font-bold">Ready to build?</h2>
-                  <p className="text-sm text-muted-foreground">Explore 54 ready-to-use components and start shipping faster with Pau's design system.</p>
+                  <h2 className="text-base font-bold">Ready to build?</h2>
+                  <p className="text-sm text-muted-foreground">54 components · 218 icons · light &amp; dark mode — all pre-themed with Pau's brand tokens.</p>
                 </div>
                 <div className="flex gap-3 shrink-0">
                   <Button onClick={() => setPage("components")}>
-                    View components <ArrowRight className="ml-2 h-4 w-4" />
+                    Components <ArrowRight className="ml-1 h-4 w-4" />
                   </Button>
                   <Button variant="outline" onClick={() => setPage("tokens")}>
-                    Design tokens
+                    Tokens
                   </Button>
                 </div>
               </div>
