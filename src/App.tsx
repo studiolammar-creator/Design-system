@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {
   AlertCircle, AlignCenter, AlignLeft, AlignRight, ArrowRight, Bell, Bold, Check, ChevronDown,
   Copy, FileText, Home, Info, Italic, Layers, LayoutDashboard, LogOut, Moon,
-  Palette, Settings, Sun, User, Zap, Search, AtSign, ImageOff, Plus,
+  Palette, Settings, Shield, Star, Sun, Tag, User, X, Zap, Search, AtSign, ImageOff, Plus,
 } from "lucide-react";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -13,7 +13,8 @@ import {
   AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import { Badge, badgeVariants } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
@@ -675,6 +676,8 @@ function ComponentsPage() {
   const [radioValue, setRadioValue] = useState("option-1");
   const [collapsibleOpen, setCollapsibleOpen] = useState(false);
   const [sizeTabVariant, setSizeTabVariant] = useState<"default" | "secondary" | "accent" | "destructive" | "outline" | "ghost" | "link">("default");
+  const [badgeClickable, setBadgeClickable] = useState(false);
+  const [badgeIconName, setBadgeIconName] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [view, setView] = useState<"grid" | "detail">("grid");
@@ -969,27 +972,123 @@ export function ButtonDemo() {
       </Section>
 
       {/* Badges */}
-      <Section hidden={selectedComponent !== "Badges"} title="Badges" description="Status indicators and labels." code={`import { Badge } from "@/components/ui/badge"
-
+      <Section hidden={selectedComponent !== "Badges"} title="Badges" description="Status indicators and labels." code={
+        (() => {
+          const iconImport = badgeIconName ? `\nimport { ${badgeIconName} } from "lucide-react"` : "";
+          const iconJsx = badgeIconName ? `<${badgeIconName} className="h-3 w-3" /> ` : "";
+          return `import { Badge } from "@/components/ui/badge"${iconImport}
+${badgeClickable ? `import { badgeVariants } from "@/components/ui/badge"\n` : ""}
 export function BadgeDemo() {
   return (
     <div className="flex flex-wrap gap-3">
-      <Badge>Default</Badge>
-      <Badge variant="secondary">Secondary</Badge>
-      <Badge variant="outline">Outline</Badge>
-      <Badge variant="destructive">Destructive</Badge>
-      <Badge variant="accent">Accent</Badge>
+${badgeClickable
+  ? `      <button className={badgeVariants({ variant: "default" })}>${iconJsx}Default</button>
+      <button className={badgeVariants({ variant: "secondary" })}>${iconJsx}Secondary</button>
+      <button className={badgeVariants({ variant: "accent" })}>${iconJsx}Accent</button>
+      <button className={badgeVariants({ variant: "success" })}>${iconJsx}Success</button>
+      <button className={badgeVariants({ variant: "destructive" })}>${iconJsx}Destructive</button>
+      <button className={badgeVariants({ variant: "outline" })}>${iconJsx}Outline</button>`
+  : `      <Badge>${iconJsx}Default</Badge>
+      <Badge variant="secondary">${iconJsx}Secondary</Badge>
+      <Badge variant="accent">${iconJsx}Accent</Badge>
+      <Badge variant="success">${iconJsx}Success</Badge>
+      <Badge variant="destructive">${iconJsx}Destructive</Badge>
+      <Badge variant="outline">${iconJsx}Outline</Badge>`}
     </div>
   )
-}`}>
-        <div className="flex flex-wrap gap-3">
-          <Badge>Default</Badge>
-          <Badge variant="secondary">Secondary</Badge>
-          <Badge variant="accent">Accent</Badge>
-          <Badge variant="success">Success</Badge>
-          <Badge variant="destructive">Destructive</Badge>
-          <Badge variant="outline">Outline</Badge>
-        </div>
+}`;
+        })()
+      }>
+        {(() => {
+          const badgeIcons: Record<string, React.ElementType> = {
+            Check, Star, Zap, Shield, Tag, Info, AlertCircle, X,
+          };
+          const BadgeIcon = badgeIconName ? badgeIcons[badgeIconName] : null;
+          const variants = [
+            { key: "default",     label: "Default" },
+            { key: "secondary",   label: "Secondary" },
+            { key: "accent",      label: "Accent" },
+            { key: "success",     label: "Success" },
+            { key: "destructive", label: "Destructive" },
+            { key: "outline",     label: "Outline" },
+          ] as const;
+
+          return (
+            <div className="space-y-6">
+              {/* Controls row */}
+              <div className="flex flex-wrap gap-6">
+                {/* Clickable toggle */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground">Interaction</p>
+                  <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                    {[{ val: false, label: "Static" }, { val: true, label: "Clickable" }].map(({ val, label }) => (
+                      <button
+                        key={label}
+                        onClick={() => setBadgeClickable(val)}
+                        className={`px-3 py-1 text-xs rounded font-medium transition-colors ${
+                          badgeClickable === val ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Icon picker */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground">Icon</p>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <button
+                      onClick={() => setBadgeIconName(null)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                        !badgeIconName ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      None
+                    </button>
+                    {(["Check", "Star", "Zap", "Shield", "Tag", "Info", "AlertCircle", "X"] as const).map((name) => {
+                      const Ic = badgeIcons[name];
+                      return (
+                        <button
+                          key={name}
+                          onClick={() => setBadgeIconName(badgeIconName === name ? null : name)}
+                          title={name}
+                          className={`h-7 w-7 rounded-full border flex items-center justify-center transition-colors ${
+                            badgeIconName === name ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          <Ic className="h-3.5 w-3.5" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Badge preview */}
+              <div className="flex flex-wrap gap-3">
+                {variants.map(({ key, label }) =>
+                  badgeClickable ? (
+                    <button
+                      key={key}
+                      className={cn(badgeVariants({ variant: key }), "cursor-pointer")}
+                      onClick={() => {}}
+                    >
+                      {BadgeIcon && <BadgeIcon className="h-3 w-3 mr-1" />}
+                      {label}
+                    </button>
+                  ) : (
+                    <Badge key={key} variant={key}>
+                      {BadgeIcon && <BadgeIcon className="h-3 w-3 mr-1" />}
+                      {label}
+                    </Badge>
+                  )
+                )}
+              </div>
+            </div>
+          );
+        })()}
       </Section>
 
       {/* Cards */}
