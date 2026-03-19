@@ -381,43 +381,43 @@ function TokensPage({ dark }: { dark: boolean }) {
               {semanticColorTokens.map((group) => (
                 <div key={group.group} className="space-y-2">
                   <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{group.group}</p>
-                  <div className="rounded-lg border border-border overflow-hidden">
+                  <div className="rounded-lg border border-border overflow-hidden overflow-x-auto">
                     <Table>
                       <TableHeader>
                         <TableRow className="bg-muted/50">
-                          <TableHead className="w-[180px]">Token</TableHead>
-                          <TableHead className="w-[160px]">CSS Variable</TableHead>
-                          <TableHead className="w-[200px]">Tailwind</TableHead>
+                          <TableHead className="w-[140px] sm:w-[180px]">Token</TableHead>
+                          <TableHead className="hidden sm:table-cell w-[160px]">CSS Variable</TableHead>
+                          <TableHead className="hidden md:table-cell w-[200px]">Tailwind</TableHead>
                           <TableHead>Light</TableHead>
                           <TableHead>Dark</TableHead>
-                          <TableHead className="hidden md:table-cell">Usage</TableHead>
+                          <TableHead className="hidden lg:table-cell">Usage</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {group.tokens.map((t) => (
                           <TableRow key={t.token}>
-                            <TableCell className="font-mono text-sm font-medium">{t.token}</TableCell>
-                            <TableCell className="font-mono text-xs text-muted-foreground">{t.cssVar}</TableCell>
-                            <TableCell className="font-mono text-xs text-muted-foreground">{t.tailwind}</TableCell>
+                            <TableCell className="font-mono text-xs sm:text-sm font-medium">{t.token}</TableCell>
+                            <TableCell className="hidden sm:table-cell font-mono text-xs text-muted-foreground">{t.cssVar}</TableCell>
+                            <TableCell className="hidden md:table-cell font-mono text-xs text-muted-foreground">{t.tailwind}</TableCell>
                             <TableCell>
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-1.5 sm:gap-2">
                                 <div
-                                  className="h-6 w-6 rounded border border-border shrink-0"
+                                  className="h-5 w-5 sm:h-6 sm:w-6 rounded border border-border shrink-0"
                                   style={{ backgroundColor: t.lightHex }}
                                 />
-                                <span className="font-mono text-xs">{t.lightHex}</span>
+                                <span className="font-mono text-xs hidden sm:inline">{t.lightHex}</span>
                               </div>
                             </TableCell>
                             <TableCell>
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-1.5 sm:gap-2">
                                 <div
-                                  className="h-6 w-6 rounded border border-border shrink-0"
+                                  className="h-5 w-5 sm:h-6 sm:w-6 rounded border border-border shrink-0"
                                   style={{ backgroundColor: t.darkHex }}
                                 />
-                                <span className="font-mono text-xs">{t.darkHex}</span>
+                                <span className="font-mono text-xs hidden sm:inline">{t.darkHex}</span>
                               </div>
                             </TableCell>
-                            <TableCell className="text-xs text-muted-foreground hidden md:table-cell">{t.description}</TableCell>
+                            <TableCell className="text-xs text-muted-foreground hidden lg:table-cell">{t.description}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -1640,7 +1640,8 @@ export default function App() {
 
         {/* Header */}
         <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
-          <div className="container flex h-16 items-center justify-between gap-4">
+          {/* Top row: logo + actions */}
+          <div className="container flex h-14 items-center justify-between gap-4">
             <div className="flex items-center gap-3 shrink-0">
               <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center">
                 <Zap className="h-4 w-4 text-primary-foreground" />
@@ -1649,13 +1650,13 @@ export default function App() {
               <Badge variant="secondary" className="hidden sm:inline-flex">v1.0.0</Badge>
             </div>
 
-            {/* Page nav */}
-            <nav className="flex items-center gap-1">
+            {/* Page nav — hidden on mobile, shown inline on sm+ */}
+            <nav className="hidden sm:flex items-center gap-0.5">
               {(["overview", "tokens", "components"] as Page[]).map((p) => (
                 <button
                   key={p}
                   onClick={() => setPage(p)}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium capitalize transition-colors ${
+                  className={`px-3 py-1.5 rounded-md text-sm font-medium capitalize transition-colors whitespace-nowrap ${
                     page === p
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -1696,6 +1697,24 @@ export default function App() {
               </DropdownMenu>
             </div>
           </div>
+          {/* Mobile-only bottom nav row */}
+          <div className="sm:hidden border-t border-border">
+            <nav className="container flex h-10 items-center gap-1">
+              {(["overview", "tokens", "components"] as Page[]).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={`flex-1 py-1.5 rounded-md text-xs font-medium capitalize transition-colors ${
+                    page === p
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  }`}
+                >
+                  {p}
+                </button>
+              ))}
+            </nav>
+          </div>
         </header>
 
         <main className="container py-12">
@@ -1723,7 +1742,7 @@ export default function App() {
               {/* Quick colour preview */}
               <div>
                 <p className="text-sm font-medium text-muted-foreground mb-3">Brand palette</p>
-                <div className="grid grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {[
                     { label: "Primary",   hex: "#013229", textClass: "text-white" },
                     { label: "Secondary", hex: "#FFD653", textClass: "text-neutral-800" },
