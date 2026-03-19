@@ -677,6 +677,7 @@ function ComponentsPage() {
   const [collapsibleOpen, setCollapsibleOpen] = useState(false);
   const [sizeTabVariant, setSizeTabVariant] = useState<"default" | "secondary" | "accent" | "destructive" | "outline" | "ghost" | "link">("default");
   const [badgeClickable, setBadgeClickable] = useState(false);
+  const [badgeStyle, setBadgeStyle] = useState<"badge" | "pill">("badge");
   const [badgeIconName, setBadgeIconName] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -972,38 +973,31 @@ export function ButtonDemo() {
       </Section>
 
       {/* Badges */}
-      <Section hidden={selectedComponent !== "Badges"} title="Badges" description="Status indicators and labels." code={
-        (() => {
+      <Section hidden={selectedComponent !== "Badges"} title="Badges" description="Status indicators and labels." code={(() => {
+          const isPill = badgeStyle === "pill";
           const iconImport = badgeIconName ? `\nimport { ${badgeIconName} } from "lucide-react"` : "";
-          const iconJsx = badgeIconName ? `<${badgeIconName} className="h-3 w-3" /> ` : "";
-          return `import { Badge } from "@/components/ui/badge"${iconImport}
-${badgeClickable ? `import { badgeVariants } from "@/components/ui/badge"\n` : ""}
+          const iconJsx = badgeIconName ? `<${badgeIconName} className="${isPill ? "h-4 w-4" : "h-3 w-3"}" /> ` : "";
+          const pillClass = isPill ? ` className="px-4 py-1.5 text-sm gap-1.5"` : "";
+          const clickClass = badgeClickable ? ` cursor-pointer active:scale-95 transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 hover:shadow-sm` : "";
+          const rows = ["default","secondary","accent","success","destructive","outline"].map((v) =>
+            badgeClickable
+              ? `      <button className={cn(badgeVariants({ variant: "${v}" }),"${clickClass.trim()}"${isPill ? `,"px-4 py-1.5 text-sm gap-1.5"` : ""})}>${iconJsx}${v.charAt(0).toUpperCase()+v.slice(1)}</button>`
+              : `      <Badge variant="${v}"${pillClass}${isPill ? ` className="px-4 py-1.5 text-sm gap-1.5"` : ""}>${iconJsx}${v.charAt(0).toUpperCase()+v.slice(1)}</Badge>`
+          ).join("\n");
+          return `import { Badge${badgeClickable ? ", badgeVariants" : ""} } from "@/components/ui/badge"${iconImport}${badgeClickable ? `\nimport { cn } from "@/lib/utils"` : ""}
+
 export function BadgeDemo() {
   return (
     <div className="flex flex-wrap gap-3">
-${badgeClickable
-  ? `      <button className={badgeVariants({ variant: "default" })}>${iconJsx}Default</button>
-      <button className={badgeVariants({ variant: "secondary" })}>${iconJsx}Secondary</button>
-      <button className={badgeVariants({ variant: "accent" })}>${iconJsx}Accent</button>
-      <button className={badgeVariants({ variant: "success" })}>${iconJsx}Success</button>
-      <button className={badgeVariants({ variant: "destructive" })}>${iconJsx}Destructive</button>
-      <button className={badgeVariants({ variant: "outline" })}>${iconJsx}Outline</button>`
-  : `      <Badge>${iconJsx}Default</Badge>
-      <Badge variant="secondary">${iconJsx}Secondary</Badge>
-      <Badge variant="accent">${iconJsx}Accent</Badge>
-      <Badge variant="success">${iconJsx}Success</Badge>
-      <Badge variant="destructive">${iconJsx}Destructive</Badge>
-      <Badge variant="outline">${iconJsx}Outline</Badge>`}
+${rows}
     </div>
   )
 }`;
-        })()
-      }>
+        })()}>
         {(() => {
-          const badgeIcons: Record<string, React.ElementType> = {
-            Check, Star, Zap, Shield, Tag, Info, AlertCircle, X,
-          };
+          const badgeIcons: Record<string, React.ElementType> = { Check, Star, Zap, Shield, Tag, Info, AlertCircle, X };
           const BadgeIcon = badgeIconName ? badgeIcons[badgeIconName] : null;
+          const isPill = badgeStyle === "pill";
           const variants = [
             { key: "default",     label: "Default" },
             { key: "secondary",   label: "Secondary" },
@@ -1013,51 +1007,64 @@ ${badgeClickable
             { key: "outline",     label: "Outline" },
           ] as const;
 
+          // Size classes driven by style toggle
+          const sizeClass   = isPill ? "px-4 py-1.5 text-sm gap-1.5" : "";
+          const iconSize    = isPill ? "h-4 w-4" : "h-3 w-3";
+
+          // Interaction classes
+          const staticClass    = "pointer-events-none opacity-90";
+          const clickableClass = "cursor-pointer active:scale-95 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 hover:shadow-sm hover:brightness-105";
+
           return (
             <div className="space-y-6">
-              {/* Controls row */}
-              <div className="flex flex-wrap gap-6">
-                {/* Clickable toggle */}
+              {/* Controls */}
+              <div className="flex flex-wrap gap-6 items-start">
+
+                {/* Interaction */}
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">Interaction</p>
                   <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
-                    {[{ val: false, label: "Static" }, { val: true, label: "Clickable" }].map(({ val, label }) => (
-                      <button
-                        key={label}
-                        onClick={() => setBadgeClickable(val)}
-                        className={`px-3 py-1 text-xs rounded font-medium transition-colors ${
-                          badgeClickable === val ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
+                    {([{ val: false, label: "Static" }, { val: true, label: "Clickable" }] as const).map(({ val, label }) => (
+                      <button key={label} onClick={() => setBadgeClickable(val)}
+                        className={`px-3 py-1 text-xs rounded font-medium transition-colors ${badgeClickable === val ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
                         {label}
                       </button>
                     ))}
                   </div>
+                  <p className="text-[10px] text-muted-foreground max-w-[160px] leading-snug">
+                    {badgeClickable ? "Rendered as <button> — hover, active scale & focus ring active." : "Rendered as <div> — hover effects disabled, purely informational."}
+                  </p>
+                </div>
+
+                {/* Style */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground">Style</p>
+                  <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                    {([{ val: "badge", label: "Badge" }, { val: "pill", label: "Pill" }] as const).map(({ val, label }) => (
+                      <button key={label} onClick={() => setBadgeStyle(val)}
+                        className={`px-3 py-1 text-xs rounded font-medium transition-colors ${badgeStyle === val ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-[10px] text-muted-foreground max-w-[160px] leading-snug">
+                    {isPill ? "Larger padding & text — use for filter chips or tags." : "Compact — use for status labels and counts."}
+                  </p>
                 </div>
 
                 {/* Icon picker */}
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-muted-foreground">Icon</p>
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <button
-                      onClick={() => setBadgeIconName(null)}
-                      className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                        !badgeIconName ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
+                    <button onClick={() => setBadgeIconName(null)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${!badgeIconName ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"}`}>
                       None
                     </button>
-                    {(["Check", "Star", "Zap", "Shield", "Tag", "Info", "AlertCircle", "X"] as const).map((name) => {
+                    {(["Check","Star","Zap","Shield","Tag","Info","AlertCircle","X"] as const).map((name) => {
                       const Ic = badgeIcons[name];
                       return (
-                        <button
-                          key={name}
-                          onClick={() => setBadgeIconName(badgeIconName === name ? null : name)}
-                          title={name}
-                          className={`h-7 w-7 rounded-full border flex items-center justify-center transition-colors ${
-                            badgeIconName === name ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"
-                          }`}
-                        >
+                        <button key={name} onClick={() => setBadgeIconName(badgeIconName === name ? null : name)} title={name}
+                          className={`h-7 w-7 rounded-full border flex items-center justify-center transition-colors ${badgeIconName === name ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"}`}>
                           <Ic className="h-3.5 w-3.5" />
                         </button>
                       );
@@ -1066,24 +1073,30 @@ ${badgeClickable
                 </div>
               </div>
 
+              {/* Divider */}
+              <div className="h-px bg-border" />
+
               {/* Badge preview */}
-              <div className="flex flex-wrap gap-3">
-                {variants.map(({ key, label }) =>
-                  badgeClickable ? (
-                    <button
-                      key={key}
-                      className={cn(badgeVariants({ variant: key }), "cursor-pointer")}
-                      onClick={() => {}}
-                    >
-                      {BadgeIcon && <BadgeIcon className="h-3 w-3 mr-1" />}
-                      {label}
-                    </button>
-                  ) : (
-                    <Badge key={key} variant={key}>
-                      {BadgeIcon && <BadgeIcon className="h-3 w-3 mr-1" />}
-                      {label}
-                    </Badge>
-                  )
+              <div className="space-y-3">
+                <div className="flex flex-wrap gap-3">
+                  {variants.map(({ key, label }) =>
+                    badgeClickable ? (
+                      <button key={key}
+                        className={cn(badgeVariants({ variant: key }), sizeClass, clickableClass)}>
+                        {BadgeIcon && <BadgeIcon className={iconSize} />}
+                        {label}
+                      </button>
+                    ) : (
+                      <Badge key={key} variant={key} className={cn(sizeClass, staticClass)}>
+                        {BadgeIcon && <BadgeIcon className={iconSize} />}
+                        {label}
+                      </Badge>
+                    )
+                  )}
+                </div>
+                {/* Affordance hint */}
+                {badgeClickable && (
+                  <p className="text-[11px] text-muted-foreground">↑ Hover or click to see the interactive states</p>
                 )}
               </div>
             </div>
