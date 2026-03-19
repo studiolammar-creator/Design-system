@@ -400,7 +400,7 @@ function Section({ title, description, children, hidden, code }: {
             {copied ? "Copied!" : "Copy"}
           </button>
           <pre style={{ backgroundColor: "#0a0a0a", color: "#ffffff" }} className="rounded-xl p-5 pr-24 text-xs font-mono overflow-x-auto leading-relaxed whitespace-pre">
-            <code style={{ color: "inherit" }}>{code}</code>
+            <code style={{ color: "inherit", backgroundColor: "transparent" }}>{code}</code>
           </pre>
         </div>
       )}
