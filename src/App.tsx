@@ -1077,17 +1077,28 @@ ${outlineRows}
 
           // Outlined variant overrides — transparent bg + colored border/text
           const outlineStyles: Record<string, string> = {
-            default:     "!bg-transparent border-primary/60 text-primary",
-            secondary:   "!bg-transparent border-secondary text-secondary-foreground",
-            accent:      "!bg-transparent border-accent text-accent-foreground",
-            success:     "!bg-transparent border-intense-400/70 text-intense-400",
-            destructive: "!bg-transparent border-destructive/60 text-destructive",
-            outline:     "!bg-transparent border-border text-muted-foreground",
+            default:     "bg-transparent border-primary/60 text-primary",
+            secondary:   "bg-transparent border-secondary text-secondary-foreground",
+            accent:      "bg-transparent border-accent text-accent-foreground",
+            success:     "bg-transparent border-intense-400/70 text-intense-400",
+            destructive: "bg-transparent border-destructive/60 text-destructive",
+            outline:     "bg-transparent border-border text-muted-foreground",
+          };
+
+          // Hover tint for outlined clickable — lowest opacity of each variant's colour
+          const outlineHoverStyles: Record<string, string> = {
+            default:     "hover:bg-primary/8",
+            secondary:   "hover:bg-secondary/20",
+            accent:      "hover:bg-accent/15",
+            success:     "hover:bg-intense-400/10",
+            destructive: "hover:bg-destructive/8",
+            outline:     "hover:bg-muted",
           };
 
           // Interaction classes
-          const staticClass    = "pointer-events-none opacity-90";
-          const clickableClass = "cursor-pointer active:scale-95 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 hover:shadow-sm hover:brightness-105";
+          const staticClass           = "pointer-events-none opacity-90";
+          const clickableClass        = "cursor-pointer active:scale-95 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 hover:shadow-sm hover:brightness-105";
+          const clickableClassOutline = "cursor-pointer active:scale-95 transition-all duration-150 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1";
 
           const segmentBtn = (active: boolean, onClick: () => void, label: string) => (
             <button key={label} onClick={onClick}
@@ -1187,7 +1198,7 @@ ${outlineRows}
                   <div className="flex flex-wrap items-center gap-3">
                     {variants.map(({ key, label }) =>
                       badgeClickable ? (
-                        <button key={key} className={cn(badgeVariants({ variant: "outline" }), sizeClass, outlineStyles[key], clickableClass)}>
+                        <button key={key} className={cn(badgeVariants({ variant: "outline" }), sizeClass, outlineStyles[key], outlineHoverStyles[key], clickableClassOutline)}>
                           {BadgeIcon && <BadgeIcon className={iconSize} />}
                           {label}
                         </button>
