@@ -675,6 +675,7 @@ function ComponentsPage() {
   const [radioValue, setRadioValue] = useState("option-1");
   const [collapsibleOpen, setCollapsibleOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [view, setView] = useState<"grid" | "detail">("grid");
   const [selectedComponent, setSelectedComponent] = useState<string | null>(null);
 
@@ -715,6 +716,11 @@ function ComponentsPage() {
     { title: "Empty",                    category: "Display",    description: "Zero-state placeholder.",                       preview: <div className="pointer-events-none select-none flex flex-col items-center justify-center gap-1.5 py-2"><div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center"><FileText className="h-4 w-4 text-muted-foreground" /></div><p className="text-[10px] font-medium">No files found</p><p className="text-[9px] text-muted-foreground">Upload to get started</p></div> },
     { title: "Field",                    category: "Forms",      description: "Form field with label, hint, and error.",       preview: <div className="pointer-events-none select-none space-y-1 w-full"><p className="text-[10px] font-medium">Email</p><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">you@example.com</span></div><p className="text-[9px] text-muted-foreground">We'll never share your email.</p></div> },
     { title: "Item",                     category: "Display",    description: "Flexible list row primitive.",                  preview: <div className="pointer-events-none select-none divide-y divide-border rounded-md border border-border w-full overflow-hidden"><div className="flex items-center gap-2 px-2 py-1.5"><div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-[8px] text-primary-foreground font-bold shrink-0">EL</div><div className="flex-1 min-w-0"><p className="text-[10px] font-medium truncate">Erhan Lammar</p><p className="text-[9px] text-muted-foreground">Designer</p></div><Badge className="text-[8px] h-3.5 px-1">Admin</Badge></div></div> },
+    { title: "Avatar",                   category: "Display",    description: "User profile image with initials fallback.",    preview: <div className="flex items-center gap-2 pointer-events-none select-none"><div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-primary-foreground shrink-0">EL</div><div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground shrink-0">JD</div><div className="h-6 w-6 rounded-full bg-secondary flex items-center justify-center text-[9px] font-bold text-secondary-foreground shrink-0">SL</div></div> },
+    { title: "Dialog",                   category: "Overlay",    description: "Modal dialogs for focused interactions.",       preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card shadow-sm space-y-2"><p className="text-[10px] font-semibold">Edit profile</p><div className="h-5 rounded border border-input bg-background px-2 flex items-center"><span className="text-[9px] text-muted-foreground">Display name</span></div><div className="flex gap-1.5 mt-1.5"><div className="h-5 flex-1 rounded bg-primary flex items-center justify-center"><span className="text-[9px] text-primary-foreground font-medium">Save</span></div><div className="h-5 flex-1 rounded border border-border flex items-center justify-center"><span className="text-[9px]">Cancel</span></div></div></div> },
+    { title: "Dropdown Menu",            category: "Overlay",    description: "Context menus and action dropdowns.",           preview: <div className="pointer-events-none select-none w-full"><div className="border border-border rounded-md p-1 bg-popover shadow-sm space-y-0.5 w-28"><div className="rounded px-2 py-0.5 bg-accent text-[9px]">Profile</div><div className="rounded px-2 py-0.5 text-[9px] text-muted-foreground">Settings</div><div className="h-px bg-border my-0.5" /><div className="rounded px-2 py-0.5 text-[9px] text-destructive">Log out</div></div></div> },
+    { title: "Tabs",                     category: "Navigation", description: "Tab panels for switching between views.",       preview: <div className="pointer-events-none select-none w-full space-y-2"><div className="flex gap-0 border-b border-border"><span className="text-[9px] font-semibold border-b-2 border-primary pb-1 px-2 -mb-px">Account</span><span className="text-[9px] text-muted-foreground pb-1 px-2">Password</span><span className="text-[9px] text-muted-foreground pb-1 px-2">Settings</span></div><div className="space-y-1 pt-1"><div className="h-1.5 w-20 rounded bg-muted" /><div className="h-1.5 w-14 rounded bg-muted" /></div></div> },
+    { title: "Tooltip",                  category: "Overlay",    description: "Contextual hints on hover or focus.",           preview: <div className="pointer-events-none select-none flex flex-col items-center gap-2"><div className="rounded border border-border bg-popover px-2 py-1 text-[9px] shadow-md font-medium">Add to library</div><div className="h-0 w-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-border -mt-0.5" /><div className="h-6 w-6 rounded-md border border-border flex items-center justify-center"><Plus className="h-3 w-3 text-muted-foreground" /></div></div> },
   ];
 
   return (
@@ -752,11 +758,45 @@ function ComponentsPage() {
             </div>
           </div>
 
+          {/* Category chips */}
+          {(() => {
+            const categories = Array.from(new Set(componentMeta.map((c) => c.category))).sort();
+            return (
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setSelectedCategory(null)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                    !selectedCategory
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+                  }`}
+                >
+                  All
+                </button>
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
+                    className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                      selectedCategory === cat
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            );
+          })()}
+
           {/* Grid */}
           {(() => {
-            const filtered = componentMeta.filter((c) =>
-              !query.trim() || c.title.toLowerCase().includes(query.toLowerCase()) || c.category.toLowerCase().includes(query.toLowerCase())
-            );
+            const filtered = componentMeta.filter((c) => {
+              const matchesQuery = !query.trim() || c.title.toLowerCase().includes(query.toLowerCase()) || c.category.toLowerCase().includes(query.toLowerCase());
+              const matchesCategory = !selectedCategory || c.category === selectedCategory;
+              return matchesQuery && matchesCategory;
+            });
             if (filtered.length === 0) {
               return (
                 <div className="py-20 text-center text-muted-foreground text-sm">
@@ -2658,6 +2698,335 @@ export function ItemDemo() {
               <Button variant="ghost" size="sm">Open</Button>
             </ItemEnd>
           </Item>
+        </div>
+      </Section>
+
+      {/* Avatar */}
+      <Section hidden={selectedComponent !== "Avatar"} title="Avatar" description="User profile image with initials fallback." code={`import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
+export function AvatarDemo() {
+  return (
+    <div className="flex items-center gap-4">
+      <Avatar>
+        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+        <AvatarFallback>EL</AvatarFallback>
+      </Avatar>
+      <Avatar>
+        <AvatarFallback>JD</AvatarFallback>
+      </Avatar>
+      <Avatar className="h-12 w-12">
+        <AvatarFallback className="text-lg">SL</AvatarFallback>
+      </Avatar>
+    </div>
+  )
+}`}>
+        <div className="flex flex-wrap items-end gap-6">
+          <div className="space-y-3">
+            <p className="text-xs text-muted-foreground font-medium">With image fallback</p>
+            <div className="flex items-center gap-3">
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" alt="EL" />
+                <AvatarFallback>EL</AvatarFallback>
+              </Avatar>
+              <Avatar>
+                <AvatarFallback>JD</AvatarFallback>
+              </Avatar>
+              <Avatar>
+                <AvatarFallback>SL</AvatarFallback>
+              </Avatar>
+            </div>
+          </div>
+          <div className="space-y-3">
+            <p className="text-xs text-muted-foreground font-medium">Sizes</p>
+            <div className="flex items-center gap-3">
+              <Avatar className="h-6 w-6"><AvatarFallback className="text-[10px]">XS</AvatarFallback></Avatar>
+              <Avatar className="h-8 w-8"><AvatarFallback className="text-xs">SM</AvatarFallback></Avatar>
+              <Avatar><AvatarFallback>MD</AvatarFallback></Avatar>
+              <Avatar className="h-12 w-12"><AvatarFallback className="text-lg">LG</AvatarFallback></Avatar>
+              <Avatar className="h-16 w-16"><AvatarFallback className="text-xl">XL</AvatarFallback></Avatar>
+            </div>
+          </div>
+          <div className="space-y-3">
+            <p className="text-xs text-muted-foreground font-medium">Avatar group</p>
+            <div className="flex -space-x-2">
+              {["EL", "JD", "SL", "MK"].map((init, i) => (
+                <Avatar key={init} className="border-2 border-background" style={{ zIndex: 4 - i }}>
+                  <AvatarFallback className="text-xs">{init}</AvatarFallback>
+                </Avatar>
+              ))}
+              <div className="h-10 w-10 rounded-full border-2 border-background bg-muted flex items-center justify-center text-xs text-muted-foreground">+3</div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Dialog */}
+      <Section hidden={selectedComponent !== "Dialog"} title="Dialog" description="Modal dialogs for focused interactions." code={`import {
+  Dialog, DialogContent, DialogDescription, DialogFooter,
+  DialogHeader, DialogTitle, DialogTrigger,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+
+export function DialogDemo() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Edit profile</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit profile</DialogTitle>
+          <DialogDescription>
+            Make changes to your profile here. Click save when you're done.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input id="name" defaultValue="Erhan Lammar" />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}`}>
+        <div className="flex flex-wrap gap-3">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">Edit profile</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Edit profile</DialogTitle>
+                <DialogDescription>
+                  Make changes to your profile here. Click save when you're done.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="dialog-name">Name</Label>
+                  <Input id="dialog-name" defaultValue="Erhan Lammar" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="dialog-role">Role</Label>
+                  <Input id="dialog-role" defaultValue="UI Designer" />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit">Save changes</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="destructive">Delete project</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[400px]">
+              <DialogHeader>
+                <DialogTitle>Delete project?</DialogTitle>
+                <DialogDescription>
+                  This will permanently delete the project and all its data. This action cannot be undone.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter className="gap-2">
+                <Button variant="outline">Cancel</Button>
+                <Button variant="destructive">Delete</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </Section>
+
+      {/* Dropdown Menu */}
+      <Section hidden={selectedComponent !== "Dropdown Menu"} title="Dropdown Menu" description="Context menus and action dropdowns." code={`import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+
+export function DropdownDemo() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">Open menu</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>My account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem>Settings</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="text-destructive">Log out</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}`}>
+        <div className="flex flex-wrap gap-3">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">My account</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48">
+              <DropdownMenuLabel>My account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem><User className="mr-2 h-4 w-4" />Profile</DropdownMenuItem>
+              <DropdownMenuItem><Settings className="mr-2 h-4 w-4" />Settings</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-destructive"><LogOut className="mr-2 h-4 w-4" />Log out</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button>Actions <ChevronDown className="ml-2 h-4 w-4" /></Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-40">
+              <DropdownMenuItem>Duplicate</DropdownMenuItem>
+              <DropdownMenuItem>Rename</DropdownMenuItem>
+              <DropdownMenuItem>Archive</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </Section>
+
+      {/* Tabs */}
+      <Section hidden={selectedComponent !== "Tabs"} title="Tabs" description="Tab panels for switching between views." code={`import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
+export function TabsDemo() {
+  return (
+    <Tabs defaultValue="account">
+      <TabsList>
+        <TabsTrigger value="account">Account</TabsTrigger>
+        <TabsTrigger value="password">Password</TabsTrigger>
+        <TabsTrigger value="settings">Settings</TabsTrigger>
+      </TabsList>
+      <TabsContent value="account">
+        <p className="text-sm text-muted-foreground">Account settings go here.</p>
+      </TabsContent>
+      <TabsContent value="password">
+        <p className="text-sm text-muted-foreground">Password settings go here.</p>
+      </TabsContent>
+      <TabsContent value="settings">
+        <p className="text-sm text-muted-foreground">General settings go here.</p>
+      </TabsContent>
+    </Tabs>
+  )
+}`}>
+        <Tabs defaultValue="account" className="max-w-lg">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="account">Account</TabsTrigger>
+            <TabsTrigger value="password">Password</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
+          </TabsList>
+          <TabsContent value="account">
+            <Card>
+              <CardHeader>
+                <CardTitle>Account</CardTitle>
+                <CardDescription>Manage your account details and preferences.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="space-y-1.5">
+                  <Label htmlFor="tabs-name">Display name</Label>
+                  <Input id="tabs-name" defaultValue="Erhan Lammar" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="tabs-email">Email</Label>
+                  <Input id="tabs-email" defaultValue="erhan@studiolammar.com" type="email" />
+                </div>
+                <Button size="sm">Save changes</Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="password">
+            <Card>
+              <CardHeader>
+                <CardTitle>Password</CardTitle>
+                <CardDescription>Change your password here. You'll be logged out after saving.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="space-y-1.5">
+                  <Label htmlFor="tabs-current">Current password</Label>
+                  <Input id="tabs-current" type="password" />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="tabs-new">New password</Label>
+                  <Input id="tabs-new" type="password" />
+                </div>
+                <Button size="sm">Update password</Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="settings">
+            <Card>
+              <CardHeader>
+                <CardTitle>Settings</CardTitle>
+                <CardDescription>Manage notification and appearance preferences.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">Email notifications</p>
+                    <p className="text-xs text-muted-foreground">Receive updates by email.</p>
+                  </div>
+                  <Switch />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">Marketing emails</p>
+                    <p className="text-xs text-muted-foreground">Receive news and promotions.</p>
+                  </div>
+                  <Switch />
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </Section>
+
+      {/* Tooltip */}
+      <Section hidden={selectedComponent !== "Tooltip"} title="Tooltip" description="Contextual hints shown on hover or focus." code={`import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button"
+
+export function TooltipDemo() {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button variant="outline">Hover me</Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Add to library</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}`}>
+        <div className="flex flex-wrap gap-4 items-center">
+          {(["top", "right", "bottom", "left"] as const).map((side) => (
+            <Tooltip key={side}>
+              <TooltipTrigger asChild>
+                <Button variant="outline" className="capitalize">{side}</Button>
+              </TooltipTrigger>
+              <TooltipContent side={side}>
+                <p>Tooltip on the {side}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button size="icon" variant="ghost"><Info className="h-4 w-4" /></Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>More information</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </Section>
 
