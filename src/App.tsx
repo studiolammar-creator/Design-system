@@ -579,35 +579,31 @@ function TokensPage({ dark }: { dark: boolean }) {
     <div className="space-y-16">
 
       {/* ── Intro ── */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-        <div className="space-y-3">
-          <h1 className="text-4xl font-extrabold tracking-tight">Design Tokens</h1>
-          <p className="text-muted-foreground text-lg max-w-2xl">
-            All tokens are defined as CSS custom properties and mapped to Tailwind utilities.
-            Download <code>pau-tokens.json</code> and import it into Tokens Studio for Figma.
-          </p>
-        </div>
-        <div className="flex flex-col items-start sm:items-end gap-2 shrink-0">
-          <Button onClick={handleDownload} className="gap-2" variant="default">
-            {downloadCopied
-              ? <><Check className="h-4 w-4" /> Downloaded!</>
-              : <><Download className="h-4 w-4" /> Download tokens.json</>
-            }
-          </Button>
-          <p className="text-[11px] text-muted-foreground">
-            Figma → Tokens Studio plugin → Import → select file
-          </p>
-        </div>
+      <div className="space-y-3">
+        <h1 className="text-4xl font-extrabold tracking-tight">Design Tokens</h1>
+        <p className="text-muted-foreground text-lg max-w-2xl">
+          All tokens are defined as CSS custom properties and mapped to Tailwind utilities.
+          Download <code>pau-tokens.json</code> and import it into Tokens Studio for Figma.
+        </p>
       </div>
 
       <Tabs defaultValue="colors">
-        <TabsList className="flex-wrap h-auto gap-1">
-          <TabsTrigger value="colors">Colors</TabsTrigger>
-          <TabsTrigger value="typography">Typography</TabsTrigger>
-          <TabsTrigger value="spacing">Spacing</TabsTrigger>
-          <TabsTrigger value="radius">Radius</TabsTrigger>
-          <TabsTrigger value="shadows">Shadows</TabsTrigger>
-        </TabsList>
+        {/* Tab bar + download button side-by-side */}
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <TabsList className="flex-wrap h-auto gap-1">
+            <TabsTrigger value="colors">Colors</TabsTrigger>
+            <TabsTrigger value="typography">Typography</TabsTrigger>
+            <TabsTrigger value="spacing">Spacing</TabsTrigger>
+            <TabsTrigger value="radius">Radius</TabsTrigger>
+            <TabsTrigger value="shadows">Shadows</TabsTrigger>
+          </TabsList>
+          <Button onClick={handleDownload} size="sm" variant="outline" className="gap-2 shrink-0">
+            {downloadCopied
+              ? <><Check className="h-3.5 w-3.5" /> Downloaded!</>
+              : <><Download className="h-3.5 w-3.5" /> Download tokens.json</>
+            }
+          </Button>
+        </div>
 
         {/* ─── Colors ─────────────────────────────── */}
         <TabsContent value="colors" className="space-y-12 pt-6">
