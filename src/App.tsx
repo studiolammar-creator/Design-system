@@ -340,7 +340,8 @@ const invoices = [
    SMALL REUSABLE PIECES
 ═══════════════════════════════════════════════════════════ */
 
-function Section({ title, description, children }: { title: string; description?: string; children: React.ReactNode }) {
+function Section({ title, description, children, hidden }: { title: string; description?: string; children: React.ReactNode; hidden?: boolean }) {
+  if (hidden) return null;
   return (
     <section className="space-y-4">
       <div>
@@ -619,18 +620,58 @@ function ComponentsPage() {
   const [sliderValue, setSliderValue] = useState([40]);
   const [radioValue, setRadioValue] = useState("option-1");
   const [collapsibleOpen, setCollapsibleOpen] = useState(false);
+  const [query, setQuery] = useState("");
+
+  const show = (title: string) =>
+    !query.trim() || title.toLowerCase().includes(query.toLowerCase());
+
+  const allSectionTitles = [
+    "Typography","Buttons","Badges","Cards","Form Controls","Alerts","Table",
+    "Accordion","Alert Dialog","Sheet","Progress & Slider","Radio Group & Textarea",
+    "Toggle & Toggle Group","Skeleton","Scroll Area","Popover & Hover Card",
+    "Menubar & Navigation Menu","Collapsible & Context Menu","Breadcrumb & Pagination",
+    "Aspect Ratio & Carousel","Calendar","Command","Drawer","Input OTP","Sonner (Toast)",
+    "Resizable","Chart","Sidebar","Spinner","Kbd","Native Select","Input Group",
+    "Button Group","Empty","Field","Item",
+  ];
+  const noResults = query.trim() !== "" && allSectionTitles.every((t) => !show(t));
 
   return (
     <div className="space-y-16">
-      <div className="space-y-3">
-        <h1 className="text-4xl font-extrabold tracking-tight">Components</h1>
-        <p className="text-muted-foreground text-lg max-w-2xl">
-          All Pau components, pre-themed with Pau's brand tokens. Copy any variant directly into your project.
-        </p>
+      <div className="space-y-5">
+        <div className="space-y-3">
+          <h1 className="text-4xl font-extrabold tracking-tight">Components</h1>
+          <p className="text-muted-foreground text-lg max-w-2xl">
+            All Pau components, pre-themed with Pau's brand tokens. Copy any variant directly into your project.
+          </p>
+        </div>
+        <div className="relative max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search components…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full h-9 rounded-md border border-input bg-background pl-9 pr-9 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          />
+          {query && (
+            <button
+              onClick={() => setQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          )}
+        </div>
+        {noResults && (
+          <div className="py-16 text-center text-muted-foreground text-sm">
+            No components found for "<span className="font-medium text-foreground">{query}</span>"
+          </div>
+        )}
       </div>
 
       {/* Typography */}
-      <Section title="Typography" description="Unigeo32 — headings to captions.">
+      <Section hidden={!show("Typography")} title="Typography" description="Unigeo32 — headings to captions.">
         <div className="space-y-1">
           {[
             { label: "Heading 1",   cls: "text-4xl font-extrabold tracking-tight" },
@@ -652,7 +693,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Buttons */}
-      <Section title="Buttons" description="Seven variants × four sizes.">
+      <Section hidden={!show("Buttons")} title="Buttons" description="Seven variants × four sizes.">
         <Tabs defaultValue="variants">
           <TabsList>
             <TabsTrigger value="variants">Variants</TabsTrigger>
@@ -689,7 +730,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Badges */}
-      <Section title="Badges" description="Status indicators and labels.">
+      <Section hidden={!show("Badges")} title="Badges" description="Status indicators and labels.">
         <div className="flex flex-wrap gap-3">
           <Badge>Default</Badge>
           <Badge variant="secondary">Secondary</Badge>
@@ -701,7 +742,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Cards */}
-      <Section title="Cards" description="Content containers with header, body, and footer.">
+      <Section hidden={!show("Cards")} title="Cards" description="Content containers with header, body, and footer.">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader>
@@ -769,7 +810,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Form Controls */}
-      <Section title="Form Controls" description="Inputs, selects, checkboxes, and switches.">
+      <Section hidden={!show("Form Controls")} title="Form Controls" description="Inputs, selects, checkboxes, and switches.">
         <div className="grid gap-8 sm:grid-cols-2">
           <div className="space-y-4">
             <div className="space-y-2">
@@ -854,7 +895,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Alerts */}
-      <Section title="Alerts" description="Four semantic variants.">
+      <Section hidden={!show("Alerts")} title="Alerts" description="Four semantic variants.">
         <div className="space-y-3">
           <Alert><Info className="h-4 w-4" /><AlertTitle>Heads up!</AlertTitle><AlertDescription>You can add components to your app using the CLI.</AlertDescription></Alert>
           <Alert variant="success"><Check className="h-4 w-4" /><AlertTitle>All systems operational</AlertTitle><AlertDescription>Everything is running smoothly.</AlertDescription></Alert>
@@ -864,7 +905,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Table */}
-      <Section title="Table" description="Data display with status badges.">
+      <Section hidden={!show("Table")} title="Table" description="Data display with status badges.">
         <Card>
           <Table>
             <TableCaption>Recent invoices — Q1 2026</TableCaption>
@@ -895,7 +936,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Accordion */}
-      <Section title="Accordion" description="Collapsible sections for progressive disclosure.">
+      <Section hidden={!show("Accordion")} title="Accordion" description="Collapsible sections for progressive disclosure.">
         <Accordion type="single" collapsible className="w-full max-w-lg">
           {[
             { value: "item-1", trigger: "What is Pau Design System?", content: "Pau is a fully-themed component library built on Radix UI primitives, tailored with brand tokens for Forest Green, Golden Yellow, and Mint Teal." },
@@ -911,7 +952,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Alert Dialog */}
-      <Section title="Alert Dialog" description="Blocking confirmation dialogs for destructive actions.">
+      <Section hidden={!show("Alert Dialog")} title="Alert Dialog" description="Blocking confirmation dialogs for destructive actions.">
         <div className="flex gap-3 flex-wrap">
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -951,7 +992,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Sheet */}
-      <Section title="Sheet" description="Slide-in panels from any edge of the screen.">
+      <Section hidden={!show("Sheet")} title="Sheet" description="Slide-in panels from any edge of the screen.">
         <div className="flex gap-3 flex-wrap">
           {(["right", "left", "top", "bottom"] as const).map((side) => (
             <Sheet key={side}>
@@ -983,7 +1024,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Progress & Slider */}
-      <Section title="Progress & Slider" description="Linear progress indicators and range inputs.">
+      <Section hidden={!show("Progress & Slider")} title="Progress & Slider" description="Linear progress indicators and range inputs.">
         <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
           <div className="space-y-4">
             <Label className="text-sm font-semibold">Progress bars</Label>
@@ -1018,7 +1059,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Radio Group & Textarea */}
-      <Section title="Radio Group & Textarea" description="Single-selection controls and multi-line text input.">
+      <Section hidden={!show("Radio Group & Textarea")} title="Radio Group & Textarea" description="Single-selection controls and multi-line text input.">
         <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
           <div className="space-y-3">
             <Label className="text-sm font-semibold">Plan selection</Label>
@@ -1050,7 +1091,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Toggle & Toggle Group */}
-      <Section title="Toggle & Toggle Group" description="Single and grouped toggle buttons.">
+      <Section hidden={!show("Toggle & Toggle Group")} title="Toggle & Toggle Group" description="Single and grouped toggle buttons.">
         <div className="space-y-6">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">Single toggles</Label>
@@ -1080,7 +1121,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Skeleton */}
-      <Section title="Skeleton" description="Loading placeholders that mimic content layout.">
+      <Section hidden={!show("Skeleton")} title="Skeleton" description="Loading placeholders that mimic content layout.">
         <div className="grid gap-6 sm:grid-cols-2 max-w-2xl">
           <div className="space-y-3">
             <div className="flex items-center space-x-3">
@@ -1112,7 +1153,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Scroll Area */}
-      <Section title="Scroll Area" description="Custom-styled scrollable containers.">
+      <Section hidden={!show("Scroll Area")} title="Scroll Area" description="Custom-styled scrollable containers.">
         <div className="flex gap-6 flex-wrap">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">Vertical scroll</Label>
@@ -1143,7 +1184,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Popover & Hover Card */}
-      <Section title="Popover & Hover Card" description="Floating content triggered by click or hover.">
+      <Section hidden={!show("Popover & Hover Card")} title="Popover & Hover Card" description="Floating content triggered by click or hover.">
         <div className="flex gap-4 flex-wrap items-start">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">Popover (click)</Label>
@@ -1187,7 +1228,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Menubar & Navigation Menu */}
-      <Section title="Menubar & Navigation Menu" description="Desktop-style application menus and site navigation.">
+      <Section hidden={!show("Menubar & Navigation Menu")} title="Menubar & Navigation Menu" description="Desktop-style application menus and site navigation.">
         <div className="space-y-8">
           <div className="space-y-3">
             <Label className="text-sm text-muted-foreground">Menubar</Label>
@@ -1268,7 +1309,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Collapsible & Context Menu */}
-      <Section title="Collapsible & Context Menu" description="Expand/collapse sections and right-click menus.">
+      <Section hidden={!show("Collapsible & Context Menu")} title="Collapsible & Context Menu" description="Expand/collapse sections and right-click menus.">
         <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">Collapsible</Label>
@@ -1312,7 +1353,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Breadcrumb & Pagination */}
-      <Section title="Breadcrumb & Pagination" description="Navigation trails and page navigation.">
+      <Section hidden={!show("Breadcrumb & Pagination")} title="Breadcrumb & Pagination" description="Navigation trails and page navigation.">
         <div className="space-y-8">
           <div className="space-y-3">
             <Label className="text-sm text-muted-foreground">Breadcrumb</Label>
@@ -1355,7 +1396,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Aspect Ratio & Carousel */}
-      <Section title="Aspect Ratio & Carousel" description="Fixed-ratio containers and scrollable slide shows.">
+      <Section hidden={!show("Aspect Ratio & Carousel")} title="Aspect Ratio & Carousel" description="Fixed-ratio containers and scrollable slide shows.">
         <div className="grid gap-8 sm:grid-cols-2">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">Aspect Ratio (16:9)</Label>
@@ -1387,7 +1428,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Calendar */}
-      <Section title="Calendar" description="Date picker with range selection support.">
+      <Section hidden={!show("Calendar")} title="Calendar" description="Date picker with range selection support.">
         <div className="flex gap-6 flex-wrap">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">Single date</Label>
@@ -1399,7 +1440,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Command */}
-      <Section title="Command" description="Keyboard-driven searchable command palette.">
+      <Section hidden={!show("Command")} title="Command" description="Keyboard-driven searchable command palette.">
         <div className="rounded-md border w-full max-w-sm">
           <Command>
             <CommandInput placeholder="Search components…" />
@@ -1421,7 +1462,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Drawer */}
-      <Section title="Drawer" description="Mobile-optimised bottom sheet with swipe-to-close.">
+      <Section hidden={!show("Drawer")} title="Drawer" description="Mobile-optimised bottom sheet with swipe-to-close.">
         <Drawer>
           <DrawerTrigger asChild>
             <Button variant="outline">Open Drawer</Button>
@@ -1454,7 +1495,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Input OTP */}
-      <Section title="Input OTP" description="One-time password input with slot groups.">
+      <Section hidden={!show("Input OTP")} title="Input OTP" description="One-time password input with slot groups.">
         <div className="space-y-6">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">6-digit OTP</Label>
@@ -1487,7 +1528,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Sonner Toast */}
-      <Section title="Sonner (Toast)" description="Notification toasts for success, error, and info states.">
+      <Section hidden={!show("Sonner (Toast)")} title="Sonner (Toast)" description="Notification toasts for success, error, and info states.">
         <div className="flex flex-wrap gap-3">
           <Button onClick={() => toast("Event created", { description: "Your design sprint has been scheduled." })}>Default toast</Button>
           <Button variant="secondary" onClick={() => toast.success("Changes saved", { description: "Your tokens have been published." })}>Success</Button>
@@ -1500,7 +1541,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Resizable */}
-      <Section title="Resizable" description="Drag-to-resize panel layouts.">
+      <Section hidden={!show("Resizable")} title="Resizable" description="Drag-to-resize panel layouts.">
         <div className="space-y-6">
           <div className="space-y-2">
             <Label className="text-sm text-muted-foreground">Horizontal panels</Label>
@@ -1530,7 +1571,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Chart */}
-      <Section title="Chart" description="Data visualisation built on Recharts with brand tokens.">
+      <Section hidden={!show("Chart")} title="Chart" description="Data visualisation built on Recharts with brand tokens.">
         <div className="grid gap-6 sm:grid-cols-2">
           <Card>
             <CardHeader>
@@ -1570,7 +1611,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Sidebar */}
-      <Section title="Sidebar" description="Collapsible navigation sidebar with icon mode.">
+      <Section hidden={!show("Sidebar")} title="Sidebar" description="Collapsible navigation sidebar with icon mode.">
         <div className="rounded-lg border overflow-hidden flex" style={{ height: 320 }}>
           <SidebarProvider defaultOpen style={{ "--sidebar-width": "14rem" } as React.CSSProperties}>
             <Sidebar collapsible="none" className="border-r border-sidebar-border">
@@ -1622,7 +1663,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Spinner */}
-      <Section title="Spinner" description="Animated loading indicator with size and colour variants.">
+      <Section hidden={!show("Spinner")} title="Spinner" description="Animated loading indicator with size and colour variants.">
         <div className="space-y-6">
           <div>
             <p className="text-xs font-mono text-muted-foreground mb-3">Sizes</p>
@@ -1655,7 +1696,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Kbd */}
-      <Section title="Kbd" description="Keyboard key display for shortcuts and hotkeys.">
+      <Section hidden={!show("Kbd")} title="Kbd" description="Keyboard key display for shortcuts and hotkeys.">
         <div className="space-y-4">
           <div className="flex flex-wrap items-center gap-3">
             <Kbd>⌘</Kbd>
@@ -1681,7 +1722,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Native Select */}
-      <Section title="Native Select" description="Browser-native <select> styled to match the design system — zero JS overhead.">
+      <Section hidden={!show("Native Select")} title="Native Select" description="Browser-native <select> styled to match the design system — zero JS overhead.">
         <div className="flex flex-wrap gap-4 max-w-sm">
           <NativeSelect className="w-full">
             <option value="">Choose a framework…</option>
@@ -1697,7 +1738,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Input Group */}
-      <Section title="Input Group" description="Compose an input with prefix / suffix addons — icons, text, or actions.">
+      <Section hidden={!show("Input Group")} title="Input Group" description="Compose an input with prefix / suffix addons — icons, text, or actions.">
         <div className="flex flex-col gap-4 max-w-sm">
           <InputGroup>
             <InputGroupAddon position="left"><Search className="h-4 w-4" /></InputGroupAddon>
@@ -1720,7 +1761,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Button Group */}
-      <Section title="Button Group" description="Segmented strip of attached buttons — layouts, alignments, filters.">
+      <Section hidden={!show("Button Group")} title="Button Group" description="Segmented strip of attached buttons — layouts, alignments, filters.">
         <div className="flex flex-col gap-4">
           <div>
             <p className="text-xs font-mono text-muted-foreground mb-3">Icon strip</p>
@@ -1750,7 +1791,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Empty */}
-      <Section title="Empty" description="Zero-state placeholder with icon, title, description, and optional action.">
+      <Section hidden={!show("Empty")} title="Empty" description="Zero-state placeholder with icon, title, description, and optional action.">
         <div className="grid gap-4 sm:grid-cols-2">
           <Empty
             icon={<ImageOff className="h-6 w-6" />}
@@ -1768,7 +1809,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Field */}
-      <Section title="Field" description="Form field wrapper — label, control, hint text, and error state.">
+      <Section hidden={!show("Field")} title="Field" description="Form field wrapper — label, control, hint text, and error state.">
         <div className="grid gap-6 sm:grid-cols-2 max-w-2xl">
           <Field>
             <FieldLabel htmlFor="field-name" required>Full name</FieldLabel>
@@ -1798,7 +1839,7 @@ function ComponentsPage() {
       </Section>
 
       {/* Item */}
-      <Section title="Item" description="Flexible list row primitive — start slot, title, description, end slot.">
+      <Section hidden={!show("Item")} title="Item" description="Flexible list row primitive — start slot, title, description, end slot.">
         <div className="rounded-md border border-border divide-y divide-border max-w-md">
           <Item>
             <ItemStart>
