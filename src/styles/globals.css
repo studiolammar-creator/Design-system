@@ -165,6 +165,16 @@
 
     /* Border radius base (ShadCN convention) */
     --radius: 0.75rem;
+
+    /* Sidebar */
+    --sidebar-background:    169 96% 10%;
+    --sidebar-foreground:    169 80% 97%;
+    --sidebar-primary:       46 100% 66%;
+    --sidebar-primary-foreground: 169 96% 10%;
+    --sidebar-accent:        169 60% 16%;
+    --sidebar-accent-foreground: 169 80% 97%;
+    --sidebar-border:        169 60% 16%;
+    --sidebar-ring:          156 49% 59%;
   }
 
   .dark {

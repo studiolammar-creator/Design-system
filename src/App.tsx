@@ -1,7 +1,8 @@
 import { useState } from "react";
 import {
   AlertCircle, AlignCenter, AlignLeft, AlignRight, Bell, Bold, Check, ChevronDown,
-  Copy, Info, Italic, LogOut, Moon, Settings, Sun, User, Zap,
+  Copy, FileText, Home, Info, Italic, LayoutDashboard, LogOut, Moon,
+  Settings, Sun, User, Zap,
 } from "lucide-react";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -66,6 +67,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Toggle } from "@/components/ui/toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Calendar } from "@/components/ui/calendar";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "@/components/ui/command";
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from "@/components/ui/chart";
+import { Bar, BarChart, Line, LineChart, XAxis, YAxis } from "recharts";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 /* ═══════════════════════════════════════════════════════════
    TOKEN DATA
@@ -1285,6 +1300,319 @@ function ComponentsPage() {
               </ContextMenuContent>
             </ContextMenu>
           </div>
+        </div>
+      </Section>
+
+      {/* Breadcrumb & Pagination */}
+      <Section title="Breadcrumb & Pagination" description="Navigation trails and page navigation.">
+        <div className="space-y-8">
+          <div className="space-y-3">
+            <Label className="text-sm text-muted-foreground">Breadcrumb</Label>
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem><BreadcrumbLink href="#">Home</BreadcrumbLink></BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem><BreadcrumbLink href="#">Components</BreadcrumbLink></BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem><BreadcrumbPage>Breadcrumb</BreadcrumbPage></BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem><BreadcrumbLink href="#">Pau</BreadcrumbLink></BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem><BreadcrumbLink href="#">Tokens</BreadcrumbLink></BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem><BreadcrumbLink href="#">Colors</BreadcrumbLink></BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem><BreadcrumbPage>Primary</BreadcrumbPage></BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+          <div className="space-y-3">
+            <Label className="text-sm text-muted-foreground">Pagination</Label>
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem><PaginationPrevious href="#" /></PaginationItem>
+                <PaginationItem><PaginationLink href="#">1</PaginationLink></PaginationItem>
+                <PaginationItem><PaginationLink href="#" isActive>2</PaginationLink></PaginationItem>
+                <PaginationItem><PaginationLink href="#">3</PaginationLink></PaginationItem>
+                <PaginationItem><PaginationEllipsis /></PaginationItem>
+                <PaginationItem><PaginationLink href="#">8</PaginationLink></PaginationItem>
+                <PaginationItem><PaginationNext href="#" /></PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        </div>
+      </Section>
+
+      {/* Aspect Ratio & Carousel */}
+      <Section title="Aspect Ratio & Carousel" description="Fixed-ratio containers and scrollable slide shows.">
+        <div className="grid gap-8 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">Aspect Ratio (16:9)</Label>
+            <AspectRatio ratio={16 / 9} className="rounded-md overflow-hidden bg-muted">
+              <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary to-intense-500 text-primary-foreground">
+                <span className="text-lg font-semibold">16 / 9</span>
+              </div>
+            </AspectRatio>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">Carousel</Label>
+            <Carousel className="w-full max-w-xs mx-auto">
+              <CarouselContent>
+                {["Forest Green", "Golden Yellow", "Mint Teal", "Neutral Grey"].map((name, i) => (
+                  <CarouselItem key={i}>
+                    <Card>
+                      <CardContent className="flex aspect-square items-center justify-center p-6">
+                        <span className="text-sm font-semibold text-center">{name}</span>
+                      </CardContent>
+                    </Card>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
+            </Carousel>
+          </div>
+        </div>
+      </Section>
+
+      {/* Calendar */}
+      <Section title="Calendar" description="Date picker with range selection support.">
+        <div className="flex gap-6 flex-wrap">
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">Single date</Label>
+            <div className="rounded-md border w-fit">
+              <Calendar mode="single" />
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Command */}
+      <Section title="Command" description="Keyboard-driven searchable command palette.">
+        <div className="rounded-md border w-full max-w-sm">
+          <Command>
+            <CommandInput placeholder="Search components…" />
+            <CommandList>
+              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandGroup heading="Components">
+                <CommandItem><Bell className="mr-2 h-4 w-4" />Button<CommandShortcut>⌘B</CommandShortcut></CommandItem>
+                <CommandItem><User className="mr-2 h-4 w-4" />Avatar<CommandShortcut>⌘A</CommandShortcut></CommandItem>
+                <CommandItem><FileText className="mr-2 h-4 w-4" />Card<CommandShortcut>⌘C</CommandShortcut></CommandItem>
+              </CommandGroup>
+              <CommandSeparator />
+              <CommandGroup heading="Settings">
+                <CommandItem><Settings className="mr-2 h-4 w-4" />Preferences</CommandItem>
+                <CommandItem><LogOut className="mr-2 h-4 w-4" />Sign out</CommandItem>
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </div>
+      </Section>
+
+      {/* Drawer */}
+      <Section title="Drawer" description="Mobile-optimised bottom sheet with swipe-to-close.">
+        <Drawer>
+          <DrawerTrigger asChild>
+            <Button variant="outline">Open Drawer</Button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <div className="mx-auto w-full max-w-sm">
+              <DrawerHeader>
+                <DrawerTitle>Edit profile</DrawerTitle>
+                <DrawerDescription>Make changes to your profile here.</DrawerDescription>
+              </DrawerHeader>
+              <div className="p-4 space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="drawer-name">Name</Label>
+                  <Input id="drawer-name" defaultValue="Erhan Lammar" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="drawer-role">Role</Label>
+                  <Input id="drawer-role" defaultValue="UI Designer" />
+                </div>
+              </div>
+              <DrawerFooter>
+                <Button>Save changes</Button>
+                <DrawerClose asChild>
+                  <Button variant="outline">Cancel</Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </div>
+          </DrawerContent>
+        </Drawer>
+      </Section>
+
+      {/* Input OTP */}
+      <Section title="Input OTP" description="One-time password input with slot groups.">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">6-digit OTP</Label>
+            <InputOTP maxLength={6}>
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+              </InputOTPGroup>
+              <InputOTPSeparator />
+              <InputOTPGroup>
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">4-digit PIN</Label>
+            <InputOTP maxLength={4}>
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
+        </div>
+      </Section>
+
+      {/* Sonner Toast */}
+      <Section title="Sonner (Toast)" description="Notification toasts for success, error, and info states.">
+        <div className="flex flex-wrap gap-3">
+          <Button onClick={() => toast("Event created", { description: "Your design sprint has been scheduled." })}>Default toast</Button>
+          <Button variant="secondary" onClick={() => toast.success("Changes saved", { description: "Your tokens have been published." })}>Success</Button>
+          <Button variant="destructive" onClick={() => toast.error("Build failed", { description: "Check your config and try again." })}>Error</Button>
+          <Button variant="outline" onClick={() => toast.warning("Approaching limit", { description: "You've used 80% of your storage." })}>Warning</Button>
+          <Button variant="ghost" onClick={() => toast.info("New version available", { description: "Pau Design System v1.1.0 is out." })}>Info</Button>
+          <Button variant="outline" onClick={() => toast.promise(new Promise((r) => setTimeout(r, 2000)), { loading: "Publishing tokens…", success: "Tokens published!", error: "Publish failed." })}>Promise</Button>
+        </div>
+        <Toaster />
+      </Section>
+
+      {/* Resizable */}
+      <Section title="Resizable" description="Drag-to-resize panel layouts.">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">Horizontal panels</Label>
+            <ResizablePanelGroup orientation="horizontal" className="min-h-[120px] max-w-xl rounded-lg border">
+              <ResizablePanel defaultSize={30}>
+                <div className="flex h-full items-center justify-center p-4 text-sm text-muted-foreground">Sidebar</div>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={70}>
+                <div className="flex h-full items-center justify-center p-4 text-sm text-muted-foreground">Content</div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-sm text-muted-foreground">Vertical panels</Label>
+            <ResizablePanelGroup orientation="vertical" className="min-h-[160px] max-w-xl rounded-lg border">
+              <ResizablePanel defaultSize={60}>
+                <div className="flex h-full items-center justify-center p-4 text-sm text-muted-foreground">Editor</div>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={40}>
+                <div className="flex h-full items-center justify-center p-4 text-sm text-muted-foreground">Terminal</div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </div>
+        </div>
+      </Section>
+
+      {/* Chart */}
+      <Section title="Chart" description="Data visualisation built on Recharts with brand tokens.">
+        <div className="grid gap-6 sm:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Bar Chart</CardTitle>
+              <CardDescription>Component usage — Q1 2026</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={{ button: { label: "Button", color: "hsl(var(--primary))" }, card: { label: "Card", color: "hsl(var(--accent))" } } satisfies ChartConfig} className="h-[160px]">
+                <BarChart data={[{ month: "Jan", button: 186, card: 80 }, { month: "Feb", button: 305, card: 200 }, { month: "Mar", button: 237, card: 120 }]}>
+                  <XAxis dataKey="month" tickLine={false} axisLine={false} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="button" fill="var(--color-button)" radius={4} />
+                  <Bar dataKey="card" fill="var(--color-card)" radius={4} />
+                </BarChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Line Chart</CardTitle>
+              <CardDescription>Token adoption over time</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={{ primary: { label: "Primary", color: "hsl(var(--primary))" }, secondary: { label: "Secondary", color: "hsl(var(--secondary))" } } satisfies ChartConfig} className="h-[160px]">
+                <LineChart data={[{ month: "Jan", primary: 40, secondary: 24 }, { month: "Feb", primary: 60, secondary: 45 }, { month: "Mar", primary: 85, secondary: 70 }, { month: "Apr", primary: 95, secondary: 88 }]}>
+                  <XAxis dataKey="month" tickLine={false} axisLine={false} />
+                  <YAxis hide />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Line type="monotone" dataKey="primary" stroke="var(--color-primary)" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="secondary" stroke="var(--color-secondary)" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+        </div>
+      </Section>
+
+      {/* Sidebar */}
+      <Section title="Sidebar" description="Collapsible navigation sidebar with icon mode.">
+        <div className="rounded-lg border overflow-hidden" style={{ height: 320 }}>
+          <SidebarProvider defaultOpen>
+            <Sidebar collapsible="icon">
+              <SidebarHeader>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton tooltip="Pau Design System" className="font-semibold">
+                      <Zap className="h-4 w-4" /><span>Pau</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarHeader>
+              <SidebarContent>
+                <SidebarGroup>
+                  <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+                  <SidebarMenu>
+                    {[
+                      { icon: Home, label: "Overview" },
+                      { icon: LayoutDashboard, label: "Tokens" },
+                      { icon: FileText, label: "Components" },
+                    ].map(({ icon: Icon, label }) => (
+                      <SidebarMenuItem key={label}>
+                        <SidebarMenuButton tooltip={label} isActive={label === "Components"}>
+                          <Icon className="h-4 w-4" /><span>{label}</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroup>
+              </SidebarContent>
+              <SidebarFooter>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton tooltip="Settings">
+                      <Settings className="h-4 w-4" /><span>Settings</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarFooter>
+            </Sidebar>
+            <main className="flex flex-1 flex-col gap-2 p-4">
+              <div className="flex items-center gap-2">
+                <SidebarTrigger />
+                <span className="text-sm text-muted-foreground">Click trigger to collapse/expand</span>
+              </div>
+              <div className="flex-1 rounded-md border border-dashed flex items-center justify-center text-sm text-muted-foreground">
+                Page content
+              </div>
+            </main>
+          </SidebarProvider>
         </div>
       </Section>
     </div>
