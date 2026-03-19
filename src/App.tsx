@@ -399,8 +399,8 @@ function Section({ title, description, children, hidden, code }: {
             {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
             {copied ? "Copied!" : "Copy"}
           </button>
-          <pre className="rounded-xl bg-neutral-950 text-neutral-100 p-5 pr-24 text-xs font-mono overflow-x-auto leading-relaxed whitespace-pre">
-            <code>{code}</code>
+          <pre style={{ backgroundColor: "#0a0a0a", color: "#e5e5e5" }} className="rounded-xl p-5 pr-24 text-xs font-mono overflow-x-auto leading-relaxed whitespace-pre">
+            <code style={{ color: "inherit" }}>{code}</code>
           </pre>
         </div>
       )}
