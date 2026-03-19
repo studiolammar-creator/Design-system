@@ -718,7 +718,10 @@ function ComponentsPage() {
   const [badgeClickable, setBadgeClickable] = useState(false);
   const [badgeStyle, setBadgeStyle] = useState<"badge" | "pill">("badge");
   const [badgeSize, setBadgeSize] = useState<"sm" | "md" | "lg">("md");
-  const [badgeIconName, setBadgeIconName] = useState<string | null>(null);
+  const [badgeLeadingIcon, setBadgeLeadingIcon] = useState<string | null>(null);
+  const [badgeTrailingIcon, setBadgeTrailingIcon] = useState<string | null>(null);
+  const [btnLeadingIcon, setBtnLeadingIcon] = useState<string | null>(null);
+  const [btnTrailingIcon, setBtnTrailingIcon] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [view, setView] = useState<"grid" | "detail">("grid");
@@ -966,16 +969,56 @@ export function ButtonDemo() {
             <TabsTrigger value="sizes">Sizes</TabsTrigger>
             <TabsTrigger value="states">States</TabsTrigger>
           </TabsList>
-          <TabsContent value="variants" className="pt-4">
-            <div className="flex flex-wrap gap-3">
-              <Button>Default</Button>
-              <Button variant="secondary">Secondary</Button>
-              <Button variant="accent">Accent</Button>
-              <Button variant="destructive">Destructive</Button>
-              <Button variant="outline">Outline</Button>
-              <Button variant="ghost">Ghost</Button>
-              <Button variant="link">Link</Button>
-            </div>
+          <TabsContent value="variants" className="pt-4 space-y-5">
+            {/* Icon controls */}
+            {(() => {
+              const btnIcons: Record<string, React.ElementType> = { ArrowRight, Zap, Star, Check, Plus, Bell, Settings, Search };
+              const iconPicker = (
+                label: string,
+                active: string | null,
+                setActive: (v: string | null) => void
+              ) => (
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-muted-foreground">{label}</p>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <button
+                      onClick={() => setActive(null)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${!active ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"}`}>
+                      None
+                    </button>
+                    {(["ArrowRight","Zap","Star","Check","Plus","Bell","Settings","Search"] as const).map((name) => {
+                      const Ic = btnIcons[name];
+                      return (
+                        <button key={name} onClick={() => setActive(active === name ? null : name)} title={name}
+                          className={`h-7 w-7 rounded-full border flex items-center justify-center transition-colors ${active === name ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"}`}>
+                          <Ic className="h-3.5 w-3.5" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+              const BtnLeading  = btnLeadingIcon  ? btnIcons[btnLeadingIcon]  : null;
+              const BtnTrailing = btnTrailingIcon ? btnIcons[btnTrailingIcon] : null;
+              return (
+                <div className="space-y-5">
+                  <div className="flex flex-wrap gap-6 items-start">
+                    {iconPicker("Leading icon",  btnLeadingIcon,  setBtnLeadingIcon)}
+                    {iconPicker("Trailing icon", btnTrailingIcon, setBtnTrailingIcon)}
+                  </div>
+                  <div className="h-px bg-border" />
+                  <div className="flex flex-wrap gap-3">
+                    {(["default","secondary","accent","destructive","outline","ghost","link"] as const).map((v) => (
+                      <Button key={v} variant={v}>
+                        {BtnLeading  && <BtnLeading  className="h-4 w-4" />}
+                        {v.charAt(0).toUpperCase() + v.slice(1)}
+                        {BtnTrailing && <BtnTrailing className="h-4 w-4" />}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
           </TabsContent>
           <TabsContent value="sizes" className="pt-4 space-y-5">
             {/* Variant switcher */}
@@ -1015,20 +1058,23 @@ export function ButtonDemo() {
       {/* Badges */}
       <Section hidden={selectedComponent !== "Badges"} title="Badges" description="Status indicators and labels." code={(() => {
           const isPill = badgeStyle === "pill";
-          const iconImport = badgeIconName ? `\nimport { ${badgeIconName} } from "lucide-react"` : "";
-          const iconJsx = badgeIconName ? `<${badgeIconName} className="${isPill ? "h-4 w-4" : "h-3 w-3"}" /> ` : "";
+          const usedIcons = [...new Set([badgeLeadingIcon, badgeTrailingIcon].filter(Boolean))] as string[];
+          const iconImport = usedIcons.length ? `\nimport { ${usedIcons.join(", ")} } from "lucide-react"` : "";
+          const iSz = isPill ? "h-4 w-4" : "h-3 w-3";
+          const leadJsx  = badgeLeadingIcon  ? `<${badgeLeadingIcon} className="${iSz}" /> ` : "";
+          const trailJsx = badgeTrailingIcon ? ` <${badgeTrailingIcon} className="${iSz}" />` : "";
           const pillClass = isPill ? ` className="px-4 py-1.5 text-sm gap-1.5"` : "";
           const clickClass = badgeClickable ? ` cursor-pointer active:scale-95 transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 hover:shadow-sm` : "";
           const variants6 = ["default","secondary","accent","success","destructive","outline"];
           const filledRows = variants6.map((v) =>
             badgeClickable
-              ? `      <button className={cn(badgeVariants({ variant: "${v}" }),"${clickClass.trim()}"${isPill ? `,"px-4 py-1.5 text-sm gap-1.5"` : ""})}>${iconJsx}${v.charAt(0).toUpperCase()+v.slice(1)}</button>`
-              : `      <Badge variant="${v}"${pillClass}>${iconJsx}${v.charAt(0).toUpperCase()+v.slice(1)}</Badge>`
+              ? `      <button className={cn(badgeVariants({ variant: "${v}" }),"${clickClass.trim()}"${isPill ? `,"px-4 py-1.5 text-sm gap-1.5"` : ""})}>${leadJsx}${v.charAt(0).toUpperCase()+v.slice(1)}${trailJsx}</button>`
+              : `      <Badge variant="${v}"${pillClass}>${leadJsx}${v.charAt(0).toUpperCase()+v.slice(1)}${trailJsx}</Badge>`
           ).join("\n");
           const outlineRows = variants6.map((v) =>
             badgeClickable
-              ? `      <button className={cn(badgeVariants({ variant: "outline" }),"${clickClass.trim()}"${isPill ? `,"px-4 py-1.5 text-sm gap-1.5"` : ""})}>${iconJsx}${v.charAt(0).toUpperCase()+v.slice(1)}</button>`
-              : `      <Badge variant="outline"${pillClass}>${iconJsx}${v.charAt(0).toUpperCase()+v.slice(1)}</Badge>`
+              ? `      <button className={cn(badgeVariants({ variant: "outline" }),"${clickClass.trim()}"${isPill ? `,"px-4 py-1.5 text-sm gap-1.5"` : ""})}>${leadJsx}${v.charAt(0).toUpperCase()+v.slice(1)}${trailJsx}</button>`
+              : `      <Badge variant="outline"${pillClass}>${leadJsx}${v.charAt(0).toUpperCase()+v.slice(1)}${trailJsx}</Badge>`
           ).join("\n");
           return `import { Badge${badgeClickable ? ", badgeVariants" : ""} } from "@/components/ui/badge"${iconImport}${badgeClickable ? `\nimport { cn } from "@/lib/utils"` : ""}
 
@@ -1049,7 +1095,8 @@ ${outlineRows}
         })()}>
         {(() => {
           const badgeIcons: Record<string, React.ElementType> = { Check, Star, Zap, Shield, Tag, Info, AlertCircle, X };
-          const BadgeIcon = badgeIconName ? badgeIcons[badgeIconName] : null;
+          const BadgeLeading  = badgeLeadingIcon  ? badgeIcons[badgeLeadingIcon]  : null;
+          const BadgeTrailing = badgeTrailingIcon ? badgeIcons[badgeTrailingIcon] : null;
           const isPill = badgeStyle === "pill";
           const variants = [
             { key: "default",     label: "Default" },
@@ -1146,25 +1193,35 @@ ${outlineRows}
                   </div>
                 </div>
 
-                {/* Icon picker */}
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground">Icon</p>
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <button onClick={() => setBadgeIconName(null)}
-                      className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${!badgeIconName ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"}`}>
-                      None
-                    </button>
-                    {(["Check","Star","Zap","Shield","Tag","Info","AlertCircle","X"] as const).map((name) => {
-                      const Ic = badgeIcons[name];
-                      return (
-                        <button key={name} onClick={() => setBadgeIconName(badgeIconName === name ? null : name)} title={name}
-                          className={`h-7 w-7 rounded-full border flex items-center justify-center transition-colors ${badgeIconName === name ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"}`}>
-                          <Ic className="h-3.5 w-3.5" />
+                {/* Leading icon picker */}
+                {(() => {
+                  const iconRow = (label: string, active: string | null, setActive: (v: string | null) => void) => (
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium text-muted-foreground">{label}</p>
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <button onClick={() => setActive(null)}
+                          className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${!active ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"}`}>
+                          None
                         </button>
-                      );
-                    })}
-                  </div>
-                </div>
+                        {(["Check","Star","Zap","Shield","Tag","Info","AlertCircle","X"] as const).map((name) => {
+                          const Ic = badgeIcons[name];
+                          return (
+                            <button key={name} onClick={() => setActive(active === name ? null : name)} title={name}
+                              className={`h-7 w-7 rounded-full border flex items-center justify-center transition-colors ${active === name ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"}`}>
+                              <Ic className="h-3.5 w-3.5" />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                  return (
+                    <>
+                      {iconRow("Leading icon",  badgeLeadingIcon,  setBadgeLeadingIcon)}
+                      {iconRow("Trailing icon", badgeTrailingIcon, setBadgeTrailingIcon)}
+                    </>
+                  );
+                })()}
               </div>
 
               {/* Divider */}
@@ -1179,13 +1236,15 @@ ${outlineRows}
                     {variants.map(({ key, label }) =>
                       badgeClickable ? (
                         <button key={key} className={cn(badgeVariants({ variant: key }), sizeClass, clickableClass)}>
-                          {BadgeIcon && <BadgeIcon className={iconSize} />}
+                          {BadgeLeading  && <BadgeLeading  className={iconSize} />}
                           {label}
+                          {BadgeTrailing && <BadgeTrailing className={iconSize} />}
                         </button>
                       ) : (
                         <Badge key={key} variant={key} className={cn(sizeClass, staticClass)}>
-                          {BadgeIcon && <BadgeIcon className={iconSize} />}
+                          {BadgeLeading  && <BadgeLeading  className={iconSize} />}
                           {label}
+                          {BadgeTrailing && <BadgeTrailing className={iconSize} />}
                         </Badge>
                       )
                     )}
@@ -1199,13 +1258,15 @@ ${outlineRows}
                     {variants.map(({ key, label }) =>
                       badgeClickable ? (
                         <button key={key} className={cn(badgeVariants({ variant: "outline" }), sizeClass, outlineStyles[key], outlineHoverStyles[key], clickableClassOutline)}>
-                          {BadgeIcon && <BadgeIcon className={iconSize} />}
+                          {BadgeLeading  && <BadgeLeading  className={iconSize} />}
                           {label}
+                          {BadgeTrailing && <BadgeTrailing className={iconSize} />}
                         </button>
                       ) : (
                         <Badge key={key} variant="outline" className={cn(sizeClass, outlineStyles[key], staticClass)}>
-                          {BadgeIcon && <BadgeIcon className={iconSize} />}
+                          {BadgeLeading  && <BadgeLeading  className={iconSize} />}
                           {label}
+                          {BadgeTrailing && <BadgeTrailing className={iconSize} />}
                         </Badge>
                       )
                     )}
