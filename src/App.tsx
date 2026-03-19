@@ -1,8 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
+  /* ── existing ── */
   AlertCircle, AlignCenter, AlignLeft, AlignRight, ArrowRight, Bell, Bold, Check, ChevronDown,
   Copy, FileText, Home, Info, Italic, Layers, LayoutDashboard, LogOut, Moon,
   Palette, Settings, Shield, Star, Sun, Tag, User, X, Zap, Search, AtSign, ImageOff, Plus,
+  /* ── arrows & navigation ── */
+  ArrowLeft, ArrowUp, ArrowDown, ArrowUpRight, ArrowDownLeft, ArrowUpLeft, ArrowDownRight,
+  ArrowLeftRight, ArrowUpDown, ChevronLeft, ChevronRight, ChevronUp,
+  ChevronsLeft, ChevronsRight, ChevronsUp, ChevronsDown,
+  MoveLeft, MoveRight, MoveUp, MoveDown, MoveUpRight, MoveDownLeft,
+  CornerDownLeft, CornerDownRight, CornerUpLeft, CornerUpRight,
+  RefreshCw, RefreshCcw, RotateCcw, RotateCw, Undo, Redo, Repeat, Repeat2,
+  /* ── general / ui ── */
+  AlertTriangle, CheckCircle, CheckCircle2, XCircle, HelpCircle, Eye, EyeOff,
+  Lock, Unlock, BellOff, BookmarkCheck, Bookmark, Heart, ThumbsUp, ThumbsDown,
+  Trash, Trash2, Edit, Edit2, Edit3, Pencil, Pen, Slash, Minus, Divide, Hash,
+  /* ── layout ── */
+  Grid, Grid2X2, Grid3X3, List, ListOrdered, ListChecks, Columns, Rows, LayoutGrid, LayoutList,
+  PanelLeft, PanelRight, PanelTop, PanelBottom, Menu, MoreHorizontal, MoreVertical,
+  Maximize, Maximize2, Minimize, Minimize2, Expand, Shrink, AlignJustify,
+  /* ── files & data ── */
+  File, FilePlus, FileMinus, FileCheck, FileX, FileCode, FileJson, FileImage,
+  Folder, FolderOpen, FolderPlus, FolderMinus, Archive, Download, Upload,
+  Link, Link2, Paperclip, Clipboard, ClipboardCheck, ClipboardList,
+  /* ── communication ── */
+  Mail, MailOpen, MessageSquare, MessageCircle, Phone, PhoneCall, PhoneOff,
+  Video, VideoOff, Mic, MicOff, Globe, Send, Share2, Rss,
+  /* ── data & analytics ── */
+  BarChart2, BarChart3, BarChart4, PieChart, TrendingUp, TrendingDown,
+  Activity, Database, Server, Cpu, Wifi, WifiOff, Signal,
+  /* ── media ── */
+  Play, Pause, Square, SkipForward, SkipBack, FastForward, Rewind,
+  Volume, Volume1, Volume2, VolumeX, Music, Music2, Image, Camera, Film, Tv, Radio,
+  /* ── users ── */
+  Users, UserPlus, UserMinus, UserCheck, UserX, Contact, Fingerprint,
+  /* ── system & tools ── */
+  Settings2, SlidersHorizontal, Sliders, Filter, ZoomIn, ZoomOut,
+  Power, Loader, Loader2, Clock, Clock1, Calendar as CalendarLucide, CalendarCheck, CalendarPlus,
+  Terminal, Code, Code2, Bug, Wrench, Hammer, Package,
+  /* ── shapes & design ── */
+  Circle, Triangle, Hexagon, Pentagon, Diamond, Octagon,
+  /* ── maps & places ── */
+  MapPin, Map, Navigation, Compass, Locate, Globe2,
 } from "lucide-react";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -3185,15 +3224,418 @@ export function TooltipDemo() {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   ICONS PAGE
+═══════════════════════════════════════════════════════════ */
+
+type IconEntry = { name: string; component: React.ComponentType<{ className?: string }>; category: string };
+
+const ICON_REGISTRY: IconEntry[] = [
+  /* Arrows & Navigation */
+  { name: "ArrowLeft",         component: ArrowLeft,         category: "Arrows" },
+  { name: "ArrowRight",        component: ArrowRight,        category: "Arrows" },
+  { name: "ArrowUp",           component: ArrowUp,           category: "Arrows" },
+  { name: "ArrowDown",         component: ArrowDown,         category: "Arrows" },
+  { name: "ArrowUpRight",      component: ArrowUpRight,      category: "Arrows" },
+  { name: "ArrowDownLeft",     component: ArrowDownLeft,     category: "Arrows" },
+  { name: "ArrowUpLeft",       component: ArrowUpLeft,       category: "Arrows" },
+  { name: "ArrowDownRight",    component: ArrowDownRight,    category: "Arrows" },
+  { name: "ArrowLeftRight",    component: ArrowLeftRight,    category: "Arrows" },
+  { name: "ArrowUpDown",       component: ArrowUpDown,       category: "Arrows" },
+  { name: "ChevronLeft",       component: ChevronLeft,       category: "Arrows" },
+  { name: "ChevronRight",      component: ChevronRight,      category: "Arrows" },
+  { name: "ChevronUp",         component: ChevronUp,         category: "Arrows" },
+  { name: "ChevronDown",       component: ChevronDown,       category: "Arrows" },
+  { name: "ChevronsLeft",      component: ChevronsLeft,      category: "Arrows" },
+  { name: "ChevronsRight",     component: ChevronsRight,     category: "Arrows" },
+  { name: "ChevronsUp",        component: ChevronsUp,        category: "Arrows" },
+  { name: "ChevronsDown",      component: ChevronsDown,      category: "Arrows" },
+  { name: "MoveLeft",          component: MoveLeft,          category: "Arrows" },
+  { name: "MoveRight",         component: MoveRight,         category: "Arrows" },
+  { name: "MoveUp",            component: MoveUp,            category: "Arrows" },
+  { name: "MoveDown",          component: MoveDown,          category: "Arrows" },
+  { name: "MoveUpRight",       component: MoveUpRight,       category: "Arrows" },
+  { name: "MoveDownLeft",      component: MoveDownLeft,      category: "Arrows" },
+  { name: "CornerDownLeft",    component: CornerDownLeft,    category: "Arrows" },
+  { name: "CornerDownRight",   component: CornerDownRight,   category: "Arrows" },
+  { name: "CornerUpLeft",      component: CornerUpLeft,      category: "Arrows" },
+  { name: "CornerUpRight",     component: CornerUpRight,     category: "Arrows" },
+  { name: "RefreshCw",         component: RefreshCw,         category: "Arrows" },
+  { name: "RefreshCcw",        component: RefreshCcw,        category: "Arrows" },
+  { name: "RotateCcw",         component: RotateCcw,         category: "Arrows" },
+  { name: "RotateCw",          component: RotateCw,          category: "Arrows" },
+  { name: "Undo",              component: Undo,              category: "Arrows" },
+  { name: "Redo",              component: Redo,              category: "Arrows" },
+  { name: "Repeat",            component: Repeat,            category: "Arrows" },
+  { name: "Repeat2",           component: Repeat2,           category: "Arrows" },
+  /* General / UI */
+  { name: "AlertCircle",       component: AlertCircle,       category: "General" },
+  { name: "AlertTriangle",     component: AlertTriangle,     category: "General" },
+  { name: "Check",             component: Check,             category: "General" },
+  { name: "CheckCircle",       component: CheckCircle,       category: "General" },
+  { name: "CheckCircle2",      component: CheckCircle2,      category: "General" },
+  { name: "X",                 component: X,                 category: "General" },
+  { name: "XCircle",           component: XCircle,           category: "General" },
+  { name: "Info",              component: Info,              category: "General" },
+  { name: "HelpCircle",        component: HelpCircle,        category: "General" },
+  { name: "Eye",               component: Eye,               category: "General" },
+  { name: "EyeOff",            component: EyeOff,            category: "General" },
+  { name: "Lock",              component: Lock,              category: "General" },
+  { name: "Unlock",            component: Unlock,            category: "General" },
+  { name: "Bell",              component: Bell,              category: "General" },
+  { name: "BellOff",           component: BellOff,           category: "General" },
+  { name: "Bookmark",          component: Bookmark,          category: "General" },
+  { name: "BookmarkCheck",     component: BookmarkCheck,     category: "General" },
+  { name: "Star",              component: Star,              category: "General" },
+  { name: "Heart",             component: Heart,             category: "General" },
+  { name: "ThumbsUp",          component: ThumbsUp,          category: "General" },
+  { name: "ThumbsDown",        component: ThumbsDown,        category: "General" },
+  { name: "Trash",             component: Trash,             category: "General" },
+  { name: "Trash2",            component: Trash2,            category: "General" },
+  { name: "Edit",              component: Edit,              category: "General" },
+  { name: "Edit2",             component: Edit2,             category: "General" },
+  { name: "Edit3",             component: Edit3,             category: "General" },
+  { name: "Pencil",            component: Pencil,            category: "General" },
+  { name: "Pen",               component: Pen,               category: "General" },
+  { name: "Slash",             component: Slash,             category: "General" },
+  { name: "Minus",             component: Minus,             category: "General" },
+  { name: "Plus",              component: Plus,              category: "General" },
+  { name: "Divide",            component: Divide,            category: "General" },
+  { name: "Hash",              component: Hash,              category: "General" },
+  { name: "Search",            component: Search,            category: "General" },
+  { name: "ZoomIn",            component: ZoomIn,            category: "General" },
+  { name: "ZoomOut",           component: ZoomOut,           category: "General" },
+  { name: "Filter",            component: Filter,            category: "General" },
+  { name: "Tag",               component: Tag,               category: "General" },
+  { name: "Shield",            component: Shield,            category: "General" },
+  { name: "Fingerprint",       component: Fingerprint,       category: "General" },
+  /* Layout */
+  { name: "Grid",              component: Grid,              category: "Layout" },
+  { name: "Grid2X2",           component: Grid2X2,           category: "Layout" },
+  { name: "Grid3X3",           component: Grid3X3,           category: "Layout" },
+  { name: "List",              component: List,              category: "Layout" },
+  { name: "ListOrdered",       component: ListOrdered,       category: "Layout" },
+  { name: "ListChecks",        component: ListChecks,        category: "Layout" },
+  { name: "Columns",           component: Columns,           category: "Layout" },
+  { name: "Rows",              component: Rows,              category: "Layout" },
+  { name: "LayoutDashboard",   component: LayoutDashboard,   category: "Layout" },
+  { name: "LayoutGrid",        component: LayoutGrid,        category: "Layout" },
+  { name: "LayoutList",        component: LayoutList,        category: "Layout" },
+  { name: "PanelLeft",         component: PanelLeft,         category: "Layout" },
+  { name: "PanelRight",        component: PanelRight,        category: "Layout" },
+  { name: "PanelTop",          component: PanelTop,          category: "Layout" },
+  { name: "PanelBottom",       component: PanelBottom,       category: "Layout" },
+  { name: "Menu",              component: Menu,              category: "Layout" },
+  { name: "MoreHorizontal",    component: MoreHorizontal,    category: "Layout" },
+  { name: "MoreVertical",      component: MoreVertical,      category: "Layout" },
+  { name: "Maximize",          component: Maximize,          category: "Layout" },
+  { name: "Maximize2",         component: Maximize2,         category: "Layout" },
+  { name: "Minimize",          component: Minimize,          category: "Layout" },
+  { name: "Minimize2",         component: Minimize2,         category: "Layout" },
+  { name: "Expand",            component: Expand,            category: "Layout" },
+  { name: "Shrink",            component: Shrink,            category: "Layout" },
+  { name: "AlignLeft",         component: AlignLeft,         category: "Layout" },
+  { name: "AlignCenter",       component: AlignCenter,       category: "Layout" },
+  { name: "AlignRight",        component: AlignRight,        category: "Layout" },
+  { name: "AlignJustify",      component: AlignJustify,      category: "Layout" },
+  { name: "Bold",              component: Bold,              category: "Layout" },
+  { name: "Italic",            component: Italic,            category: "Layout" },
+  /* Files & Data */
+  { name: "File",              component: File,              category: "Files" },
+  { name: "FileText",          component: FileText,          category: "Files" },
+  { name: "FilePlus",          component: FilePlus,          category: "Files" },
+  { name: "FileMinus",         component: FileMinus,         category: "Files" },
+  { name: "FileCheck",         component: FileCheck,         category: "Files" },
+  { name: "FileX",             component: FileX,             category: "Files" },
+  { name: "FileCode",          component: FileCode,          category: "Files" },
+  { name: "FileJson",          component: FileJson,          category: "Files" },
+  { name: "FileImage",         component: FileImage,         category: "Files" },
+  { name: "Folder",            component: Folder,            category: "Files" },
+  { name: "FolderOpen",        component: FolderOpen,        category: "Files" },
+  { name: "FolderPlus",        component: FolderPlus,        category: "Files" },
+  { name: "FolderMinus",       component: FolderMinus,       category: "Files" },
+  { name: "Archive",           component: Archive,           category: "Files" },
+  { name: "Download",          component: Download,          category: "Files" },
+  { name: "Upload",            component: Upload,            category: "Files" },
+  { name: "Link",              component: Link,              category: "Files" },
+  { name: "Link2",             component: Link2,             category: "Files" },
+  { name: "Paperclip",         component: Paperclip,         category: "Files" },
+  { name: "Clipboard",         component: Clipboard,         category: "Files" },
+  { name: "ClipboardCheck",    component: ClipboardCheck,    category: "Files" },
+  { name: "ClipboardList",     component: ClipboardList,     category: "Files" },
+  { name: "Copy",              component: Copy,              category: "Files" },
+  { name: "Package",           component: Package,           category: "Files" },
+  /* Communication */
+  { name: "Mail",              component: Mail,              category: "Communication" },
+  { name: "MailOpen",          component: MailOpen,          category: "Communication" },
+  { name: "MessageSquare",     component: MessageSquare,     category: "Communication" },
+  { name: "MessageCircle",     component: MessageCircle,     category: "Communication" },
+  { name: "Phone",             component: Phone,             category: "Communication" },
+  { name: "PhoneCall",         component: PhoneCall,         category: "Communication" },
+  { name: "PhoneOff",          component: PhoneOff,          category: "Communication" },
+  { name: "Video",             component: Video,             category: "Communication" },
+  { name: "VideoOff",          component: VideoOff,          category: "Communication" },
+  { name: "Mic",               component: Mic,               category: "Communication" },
+  { name: "MicOff",            component: MicOff,            category: "Communication" },
+  { name: "Globe",             component: Globe,             category: "Communication" },
+  { name: "Globe2",            component: Globe2,            category: "Communication" },
+  { name: "AtSign",            component: AtSign,            category: "Communication" },
+  { name: "Send",              component: Send,              category: "Communication" },
+  { name: "Share2",            component: Share2,            category: "Communication" },
+  { name: "Rss",               component: Rss,               category: "Communication" },
+  /* Analytics */
+  { name: "BarChart2",         component: BarChart2,         category: "Analytics" },
+  { name: "BarChart3",         component: BarChart3,         category: "Analytics" },
+  { name: "BarChart4",         component: BarChart4,         category: "Analytics" },
+  { name: "PieChart",          component: PieChart,          category: "Analytics" },
+  { name: "TrendingUp",        component: TrendingUp,        category: "Analytics" },
+  { name: "TrendingDown",      component: TrendingDown,      category: "Analytics" },
+  { name: "Activity",          component: Activity,          category: "Analytics" },
+  { name: "Database",          component: Database,          category: "Analytics" },
+  { name: "Server",            component: Server,            category: "Analytics" },
+  { name: "Cpu",               component: Cpu,               category: "Analytics" },
+  { name: "Wifi",              component: Wifi,              category: "Analytics" },
+  { name: "WifiOff",           component: WifiOff,           category: "Analytics" },
+  { name: "Signal",            component: Signal,            category: "Analytics" },
+  /* Media */
+  { name: "Play",              component: Play,              category: "Media" },
+  { name: "Pause",             component: Pause,             category: "Media" },
+  { name: "Square",            component: Square,            category: "Media" },
+  { name: "SkipForward",       component: SkipForward,       category: "Media" },
+  { name: "SkipBack",          component: SkipBack,          category: "Media" },
+  { name: "FastForward",       component: FastForward,       category: "Media" },
+  { name: "Rewind",            component: Rewind,            category: "Media" },
+  { name: "Volume",            component: Volume,            category: "Media" },
+  { name: "Volume1",           component: Volume1,           category: "Media" },
+  { name: "Volume2",           component: Volume2,           category: "Media" },
+  { name: "VolumeX",           component: VolumeX,           category: "Media" },
+  { name: "Music",             component: Music,             category: "Media" },
+  { name: "Music2",            component: Music2,            category: "Media" },
+  { name: "Image",             component: Image,             category: "Media" },
+  { name: "ImageOff",          component: ImageOff,          category: "Media" },
+  { name: "Camera",            component: Camera,            category: "Media" },
+  { name: "Film",              component: Film,              category: "Media" },
+  { name: "Tv",                component: Tv,                category: "Media" },
+  { name: "Radio",             component: Radio,             category: "Media" },
+  /* Users */
+  { name: "User",              component: User,              category: "Users" },
+  { name: "Users",             component: Users,             category: "Users" },
+  { name: "UserPlus",          component: UserPlus,          category: "Users" },
+  { name: "UserMinus",         component: UserMinus,         category: "Users" },
+  { name: "UserCheck",         component: UserCheck,         category: "Users" },
+  { name: "UserX",             component: UserX,             category: "Users" },
+  { name: "Contact",           component: Contact,           category: "Users" },
+  /* System */
+  { name: "Settings",          component: Settings,          category: "System" },
+  { name: "Settings2",         component: Settings2,         category: "System" },
+  { name: "SlidersHorizontal", component: SlidersHorizontal, category: "System" },
+  { name: "Sliders",           component: Sliders,           category: "System" },
+  { name: "Power",             component: Power,             category: "System" },
+  { name: "Loader",            component: Loader,            category: "System" },
+  { name: "Loader2",           component: Loader2,           category: "System" },
+  { name: "Clock",             component: Clock,             category: "System" },
+  { name: "Clock1",            component: Clock1,            category: "System" },
+  { name: "Calendar",          component: CalendarLucide,    category: "System" },
+  { name: "CalendarCheck",     component: CalendarCheck,     category: "System" },
+  { name: "CalendarPlus",      component: CalendarPlus,      category: "System" },
+  { name: "Terminal",          component: Terminal,          category: "System" },
+  { name: "Code",              component: Code,              category: "System" },
+  { name: "Code2",             component: Code2,             category: "System" },
+  { name: "Bug",               component: Bug,               category: "System" },
+  { name: "Wrench",            component: Wrench,            category: "System" },
+  { name: "Hammer",            component: Hammer,            category: "System" },
+  { name: "Zap",               component: Zap,               category: "System" },
+  { name: "LogOut",            component: LogOut,            category: "System" },
+  /* Shapes */
+  { name: "Circle",            component: Circle,            category: "Shapes" },
+  { name: "Triangle",          component: Triangle,          category: "Shapes" },
+  { name: "Hexagon",           component: Hexagon,           category: "Shapes" },
+  { name: "Pentagon",          component: Pentagon,          category: "Shapes" },
+  { name: "Diamond",           component: Diamond,           category: "Shapes" },
+  { name: "Octagon",           component: Octagon,           category: "Shapes" },
+  /* Maps */
+  { name: "MapPin",            component: MapPin,            category: "Maps" },
+  { name: "Map",               component: Map,               category: "Maps" },
+  { name: "Navigation",        component: Navigation,        category: "Maps" },
+  { name: "Compass",           component: Compass,           category: "Maps" },
+  { name: "Locate",            component: Locate,            category: "Maps" },
+];
+
+const ICON_CATEGORIES = ["All", ...Array.from(new Set(ICON_REGISTRY.map((i) => i.category)))];
+const ICON_SIZES = [16, 20, 24, 32] as const;
+
+function IconsPage() {
+  const [query, setQuery]       = useState("");
+  const [category, setCategory] = useState("All");
+  const [size, setSize]         = useState<16 | 20 | 24 | 32>(24);
+  const ICON_SIZE_CLS: Record<number, string> = { 16: "h-4 w-4", 20: "h-5 w-5", 24: "h-6 w-6", 32: "h-8 w-8" };
+  const [copied, setCopied]     = useState<string | null>(null);
+
+  const filtered = useMemo(() => {
+    return ICON_REGISTRY.filter((icon) => {
+      const matchQuery    = icon.name.toLowerCase().includes(query.toLowerCase());
+      const matchCategory = category === "All" || icon.category === category;
+      return matchQuery && matchCategory;
+    });
+  }, [query, category]);
+
+  const handleCopy = (name: string) => {
+    navigator.clipboard.writeText(`import { ${name} } from "lucide-react";`);
+    setCopied(name);
+    setTimeout(() => setCopied(null), 1800);
+  };
+
+  return (
+    <div className="max-w-5xl space-y-10 animate-fade-in">
+
+      {/* Header */}
+      <div className="border-b border-border pb-10">
+        <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground mb-3">
+          <span className="px-1.5 py-0.5 rounded bg-muted">lucide-react</span>
+          <span>{ICON_REGISTRY.length} icons</span>
+        </div>
+        <h1 className="text-3xl font-bold tracking-tight mb-3">Icons</h1>
+        <p className="text-muted-foreground max-w-xl leading-relaxed">
+          Pau ships with <a href="https://lucide.dev" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">Lucide</a> — a clean, consistent icon family with {ICON_REGISTRY.length}+ icons ready to import. Click any icon to copy its import statement.
+        </p>
+      </div>
+
+      {/* Controls */}
+      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+        {/* Search */}
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search icons…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full pl-9 pr-4 h-9 text-sm rounded-md border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-0 transition"
+          />
+          {query && (
+            <button onClick={() => setQuery("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+
+        {/* Size picker */}
+        <div className="flex items-center gap-1 rounded-md border border-border p-0.5">
+          {ICON_SIZES.map((s) => (
+            <button
+              key={s}
+              onClick={() => setSize(s)}
+              className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+                size === s
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              }`}
+            >
+              {s}px
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Category chips */}
+      <div className="flex flex-wrap gap-2">
+        {ICON_CATEGORIES.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setCategory(cat)}
+            className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+              category === cat
+                ? "bg-primary text-primary-foreground border-primary"
+                : "border-border text-muted-foreground hover:border-primary/60 hover:text-foreground"
+            }`}
+          >
+            {cat}
+            {cat !== "All" && (
+              <span className="ml-1 opacity-60">
+                {ICON_REGISTRY.filter((i) => i.category === cat).length}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Results count */}
+      {query || category !== "All" ? (
+        <p className="text-sm text-muted-foreground -mt-4">
+          {filtered.length === 0 ? "No icons found" : `${filtered.length} icon${filtered.length === 1 ? "" : "s"}`}
+        </p>
+      ) : null}
+
+      {/* Grid */}
+      {filtered.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 text-center gap-3">
+          <ImageOff className="h-10 w-10 text-muted-foreground/40" />
+          <p className="text-muted-foreground">No icons match <strong>"{query}"</strong></p>
+          <button onClick={() => { setQuery(""); setCategory("All"); }} className="text-sm text-primary underline underline-offset-2">Clear search</button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-2">
+          {filtered.map(({ name, component: Icon }) => (
+            <TooltipProvider key={name} delayDuration={300}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => handleCopy(name)}
+                    className={`group relative flex flex-col items-center justify-center gap-2 p-3 rounded-xl border transition-all text-center ${
+                      copied === name
+                        ? "border-primary bg-primary/5 text-primary"
+                        : "border-border bg-card hover:border-primary/50 hover:bg-muted/60 text-foreground"
+                    }`}
+                  >
+                    {copied === name ? (
+                      <Check className={`${ICON_SIZE_CLS[size]} text-primary`} />
+                    ) : (
+                      <Icon className={ICON_SIZE_CLS[size]} />
+                    )}
+                    <span className="text-[10px] leading-tight text-muted-foreground group-hover:text-foreground break-all transition-colors line-clamp-2">
+                      {name}
+                    </span>
+                    {copied === name && (
+                      <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary flex items-center justify-center">
+                        <Check className="h-2.5 w-2.5 text-primary-foreground" />
+                      </span>
+                    )}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="text-xs font-mono">
+                  {copied === name ? "Copied!" : `import { ${name} } from "lucide-react"`}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ))}
+        </div>
+      )}
+
+      {/* Usage note */}
+      <div className="rounded-xl border border-border bg-muted/30 p-5 space-y-2">
+        <p className="text-sm font-medium">Usage</p>
+        <pre className="text-xs text-muted-foreground font-mono bg-muted rounded-md p-3 overflow-x-auto">
+{`import { Star } from "lucide-react";
+
+<Star className="h-4 w-4" />`}
+        </pre>
+        <p className="text-xs text-muted-foreground">All icons accept a <code className="px-1 py-0.5 bg-muted rounded text-[11px] font-mono">className</code> prop. Use Tailwind's <code className="px-1 py-0.5 bg-muted rounded text-[11px] font-mono">h-*</code> / <code className="px-1 py-0.5 bg-muted rounded text-[11px] font-mono">w-*</code> utilities to control size.</p>
+      </div>
+
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    APP SHELL
 ═══════════════════════════════════════════════════════════ */
 
-type Page = "overview" | "tokens" | "components";
+type Page = "overview" | "tokens" | "components" | "icons";
 
 const navItems: { id: Page; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { id: "overview",    label: "Overview",    icon: Home },
   { id: "tokens",      label: "Tokens",      icon: Palette },
   { id: "components",  label: "Components",  icon: Layers },
+  { id: "icons",       label: "Icons",       icon: Grid2X2 },
 ];
 
 export default function App() {
@@ -3470,6 +3912,9 @@ export default function App() {
 
           {/* ── Components ── */}
           {page === "components" && <ComponentsPage />}
+
+          {/* ── Icons ── */}
+          {page === "icons" && <IconsPage />}
 
               </main>
 
