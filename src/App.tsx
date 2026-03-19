@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   AlertCircle, AlignCenter, AlignLeft, AlignRight, Bell, Bold, Check, ChevronDown,
   Copy, FileText, Home, Info, Italic, Layers, LayoutDashboard, LogOut, Moon,
-  Palette, Settings, Sun, User, Zap,
+  Palette, Settings, Sun, User, Zap, Search, AtSign, ImageOff, Plus,
 } from "lucide-react";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -81,6 +81,14 @@ import { toast } from "sonner";
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from "@/components/ui/chart";
 import { Bar, BarChart, Line, LineChart, XAxis, YAxis } from "recharts";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Spinner } from "@/components/ui/spinner";
+import { Kbd } from "@/components/ui/kbd";
+import { NativeSelect } from "@/components/ui/native-select";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { ButtonGroup } from "@/components/ui/button-group";
+import { Empty } from "@/components/ui/empty";
+import { Field, FieldLabel, FieldHint, FieldError } from "@/components/ui/field";
+import { Item, ItemStart, ItemContent, ItemTitle, ItemDescription, ItemEnd } from "@/components/ui/item";
 
 /* ═══════════════════════════════════════════════════════════
    TOKEN DATA
@@ -1612,6 +1620,227 @@ function ComponentsPage() {
           </SidebarProvider>
         </div>
       </Section>
+
+      {/* Spinner */}
+      <Section title="Spinner" description="Animated loading indicator with size and colour variants.">
+        <div className="space-y-6">
+          <div>
+            <p className="text-xs font-mono text-muted-foreground mb-3">Sizes</p>
+            <div className="flex items-center gap-6">
+              <Spinner size="sm" />
+              <Spinner size="default" />
+              <Spinner size="lg" />
+              <Spinner size="xl" />
+            </div>
+          </div>
+          <div>
+            <p className="text-xs font-mono text-muted-foreground mb-3">Variants</p>
+            <div className="flex items-center gap-6">
+              <Spinner variant="default" />
+              <Spinner variant="muted" />
+              <Spinner variant="destructive" />
+              <span className="flex items-center justify-center rounded bg-primary p-2">
+                <Spinner variant="white" />
+              </span>
+            </div>
+          </div>
+          <div>
+            <p className="text-xs font-mono text-muted-foreground mb-3">Inside a button</p>
+            <Button disabled>
+              <Spinner size="sm" variant="white" />
+              Saving…
+            </Button>
+          </div>
+        </div>
+      </Section>
+
+      {/* Kbd */}
+      <Section title="Kbd" description="Keyboard key display for shortcuts and hotkeys.">
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center gap-3">
+            <Kbd>⌘</Kbd>
+            <Kbd>K</Kbd>
+            <Kbd>Enter</Kbd>
+            <Kbd>Esc</Kbd>
+            <Kbd>⇧</Kbd>
+            <Kbd>Tab</Kbd>
+            <Kbd>⌫</Kbd>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+            <span>Press</span>
+            <Kbd>⌘</Kbd>
+            <Kbd>K</Kbd>
+            <span>to open the command palette</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+            <span>Submit with</span>
+            <Kbd>⌘</Kbd>
+            <Kbd>Enter</Kbd>
+          </div>
+        </div>
+      </Section>
+
+      {/* Native Select */}
+      <Section title="Native Select" description="Browser-native <select> styled to match the design system — zero JS overhead.">
+        <div className="flex flex-wrap gap-4 max-w-sm">
+          <NativeSelect className="w-full">
+            <option value="">Choose a framework…</option>
+            <option value="react">React</option>
+            <option value="vue">Vue</option>
+            <option value="svelte">Svelte</option>
+            <option value="solid">SolidJS</option>
+          </NativeSelect>
+          <NativeSelect className="w-full" disabled>
+            <option>Disabled state</option>
+          </NativeSelect>
+        </div>
+      </Section>
+
+      {/* Input Group */}
+      <Section title="Input Group" description="Compose an input with prefix / suffix addons — icons, text, or actions.">
+        <div className="flex flex-col gap-4 max-w-sm">
+          <InputGroup>
+            <InputGroupAddon position="left"><Search className="h-4 w-4" /></InputGroupAddon>
+            <InputGroupInput placeholder="Search…" className="rounded-r-md" />
+          </InputGroup>
+          <InputGroup>
+            <InputGroupAddon position="left"><AtSign className="h-4 w-4" /></InputGroupAddon>
+            <InputGroupInput placeholder="username" className="rounded-r-md" />
+          </InputGroup>
+          <InputGroup>
+            <InputGroupInput placeholder="Amount" className="rounded-l-md" />
+            <InputGroupAddon position="right">USD</InputGroupAddon>
+          </InputGroup>
+          <InputGroup>
+            <InputGroupAddon position="left">https://</InputGroupAddon>
+            <InputGroupInput placeholder="yourdomain.com" />
+            <InputGroupAddon position="right">/path</InputGroupAddon>
+          </InputGroup>
+        </div>
+      </Section>
+
+      {/* Button Group */}
+      <Section title="Button Group" description="Segmented strip of attached buttons — layouts, alignments, filters.">
+        <div className="flex flex-col gap-4">
+          <div>
+            <p className="text-xs font-mono text-muted-foreground mb-3">Icon strip</p>
+            <ButtonGroup>
+              <Button variant="outline"><AlignLeft className="h-4 w-4" /></Button>
+              <Button variant="outline"><AlignCenter className="h-4 w-4" /></Button>
+              <Button variant="outline"><AlignRight className="h-4 w-4" /></Button>
+            </ButtonGroup>
+          </div>
+          <div>
+            <p className="text-xs font-mono text-muted-foreground mb-3">Text labels</p>
+            <ButtonGroup>
+              <Button variant="outline">Day</Button>
+              <Button variant="outline">Week</Button>
+              <Button variant="outline">Month</Button>
+              <Button variant="outline">Year</Button>
+            </ButtonGroup>
+          </div>
+          <div>
+            <p className="text-xs font-mono text-muted-foreground mb-3">Split button</p>
+            <ButtonGroup>
+              <Button>Save</Button>
+              <Button><ChevronDown className="h-4 w-4" /></Button>
+            </ButtonGroup>
+          </div>
+        </div>
+      </Section>
+
+      {/* Empty */}
+      <Section title="Empty" description="Zero-state placeholder with icon, title, description, and optional action.">
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Empty
+            icon={<ImageOff className="h-6 w-6" />}
+            title="No results found"
+            description="Try adjusting your search or filter to find what you're looking for."
+            action={<Button variant="outline" size="sm">Clear filters</Button>}
+          />
+          <Empty
+            icon={<FileText className="h-6 w-6" />}
+            title="No documents yet"
+            description="Create your first document to get started."
+            action={<Button size="sm"><Plus className="h-4 w-4" />New document</Button>}
+          />
+        </div>
+      </Section>
+
+      {/* Field */}
+      <Section title="Field" description="Form field wrapper — label, control, hint text, and error state.">
+        <div className="grid gap-6 sm:grid-cols-2 max-w-2xl">
+          <Field>
+            <FieldLabel htmlFor="field-name" required>Full name</FieldLabel>
+            <Input id="field-name" placeholder="Erhan Lammar" />
+            <FieldHint>Displayed on your public profile.</FieldHint>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="field-email" required>Email</FieldLabel>
+            <Input id="field-email" type="email" placeholder="you@example.com" className="border-destructive focus-visible:ring-destructive" />
+            <FieldError>This email is already in use.</FieldError>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="field-bio">Bio</FieldLabel>
+            <Textarea id="field-bio" placeholder="Tell us about yourself…" />
+            <FieldHint>Max 160 characters.</FieldHint>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="field-role">Role</FieldLabel>
+            <NativeSelect id="field-role">
+              <option value="">Select a role…</option>
+              <option value="designer">Designer</option>
+              <option value="engineer">Engineer</option>
+              <option value="pm">Product Manager</option>
+            </NativeSelect>
+          </Field>
+        </div>
+      </Section>
+
+      {/* Item */}
+      <Section title="Item" description="Flexible list row primitive — start slot, title, description, end slot.">
+        <div className="rounded-md border border-border divide-y divide-border max-w-md">
+          <Item>
+            <ItemStart>
+              <Avatar className="h-8 w-8"><AvatarFallback>EL</AvatarFallback></Avatar>
+            </ItemStart>
+            <ItemContent>
+              <ItemTitle>Erhan Lammar</ItemTitle>
+              <ItemDescription>UI Designer · studio lammar</ItemDescription>
+            </ItemContent>
+            <ItemEnd>
+              <Badge variant="secondary">Admin</Badge>
+            </ItemEnd>
+          </Item>
+          <Item>
+            <ItemStart>
+              <Avatar className="h-8 w-8"><AvatarFallback>SL</AvatarFallback></Avatar>
+            </ItemStart>
+            <ItemContent>
+              <ItemTitle>Studio Lammar</ItemTitle>
+              <ItemDescription>Design system maintainer</ItemDescription>
+            </ItemContent>
+            <ItemEnd>
+              <Badge>Owner</Badge>
+            </ItemEnd>
+          </Item>
+          <Item>
+            <ItemStart>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+                <FileText className="h-4 w-4 text-muted-foreground" />
+              </span>
+            </ItemStart>
+            <ItemContent>
+              <ItemTitle>Pau Design System</ItemTitle>
+              <ItemDescription>Last updated today</ItemDescription>
+            </ItemContent>
+            <ItemEnd>
+              <Button variant="ghost" size="sm">Open</Button>
+            </ItemEnd>
+          </Item>
+        </div>
+      </Section>
+
     </div>
   );
 }
