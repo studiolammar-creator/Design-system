@@ -907,7 +907,7 @@ function FoundationPage({ dark }: { dark: boolean }) {
    TOKENS PAGE — raw token definitions & values
 ═══════════════════════════════════════════════════════════ */
 
-function TokensPage({ dark }: { dark: boolean }) {
+function TokensPage({ dark: _dark }: { dark: boolean }) {
   const [downloadCopied, setDownloadCopied] = useState(false);
 
   const handleDownload = () => {
