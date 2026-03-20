@@ -971,12 +971,12 @@ function FoundationPage({ dark }: { dark: boolean }) {
           </Section>
 
           <Section title="Color Scales" description="Primitive palettes — 11 steps from 50 to 950, each linked to its CSS token.">
-            <div className="space-y-10">
+            <div className="space-y-14">
 
               {/* Brand Colors */}
-              <div className="space-y-6">
+              <div className="space-y-6 pt-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-semibold tracking-widest uppercase text-muted-foreground">Brand</span>
+                  <span className="text-[10px] font-medium tracking-widest uppercase text-muted-foreground">Brand</span>
                   <div className="flex-1 h-px bg-border" />
                 </div>
                 <div className="space-y-8">
@@ -1005,7 +1005,7 @@ function FoundationPage({ dark }: { dark: boolean }) {
               {/* Feedback Colors */}
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
-                  <span className="text-xs font-semibold tracking-widest uppercase text-muted-foreground">Feedback</span>
+                  <span className="text-[10px] font-medium tracking-widest uppercase text-muted-foreground">Feedback</span>
                   <div className="flex-1 h-px bg-border" />
                 </div>
                 <div className="space-y-8">
