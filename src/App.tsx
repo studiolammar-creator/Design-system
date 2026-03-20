@@ -726,6 +726,51 @@ function downloadTokenStudioJSON() {
 ═══════════════════════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════════════════════════
+   CONTRAST / ACCESSIBILITY UTILITIES
+═══════════════════════════════════════════════════════════ */
+
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace("#", "");
+  return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+}
+
+function getLuminance(hex: string): number {
+  const [r, g, b] = hexToRgb(hex).map((c) => {
+    const s = c / 255;
+    return s <= 0.04045 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function getContrastRatio(hex1: string, hex2: string): number {
+  const l1 = getLuminance(hex1);
+  const l2 = getLuminance(hex2);
+  const lighter = Math.max(l1, l2);
+  const darker = Math.min(l1, l2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function wcagLevel(ratio: number) {
+  return {
+    aa:      ratio >= 4.5,  /* normal text AA   */
+    aaLarge: ratio >= 3,    /* large text / UI AA */
+    aaa:     ratio >= 7,    /* normal text AAA  */
+    aaaLarge: ratio >= 4.5, /* large text AAA   */
+  };
+}
+
+/* Semantic foreground / background pairs for contrast audit */
+const contrastPairs = [
+  { label: "Body text",       fgName: "foreground",             bgName: "background",  lightFg: "#333333", lightBg: "#FFFFFF", darkFg: "#FAFAFA", darkBg: "#0D0D0D" },
+  { label: "Primary button",  fgName: "primary-foreground",     bgName: "primary",     lightFg: "#F0FBF8", lightBg: "#013229", darkFg: "#001A16", darkBg: "#61CAA0" },
+  { label: "Secondary",       fgName: "secondary-foreground",   bgName: "secondary",   lightFg: "#013229", lightBg: "#FFD653", darkFg: "#013229", darkBg: "#FFD653" },
+  { label: "Accent",          fgName: "accent-foreground",      bgName: "accent",      lightFg: "#013229", lightBg: "#61CAA0", darkFg: "#F0FBF7", darkBg: "#28956E" },
+  { label: "Muted text",      fgName: "muted-foreground",       bgName: "muted",       lightFg: "#737373", lightBg: "#F5F5F5", darkFg: "#A3A3A3", darkBg: "#333333" },
+  { label: "Error / danger",  fgName: "destructive-foreground", bgName: "destructive", lightFg: "#FAFAFA", lightBg: "#EF4444", darkFg: "#FAFAFA", darkBg: "#991B1B" },
+  { label: "Card",            fgName: "card-foreground",        bgName: "card",        lightFg: "#333333", lightBg: "#FFFFFF", darkFg: "#FAFAFA", darkBg: "#1A1A1A" },
+];
+
+/* ═══════════════════════════════════════════════════════════
    FOUNDATION PAGE — visual elements linked to tokens
 ═══════════════════════════════════════════════════════════ */
 
@@ -773,6 +818,80 @@ function FoundationPage({ dark }: { dark: boolean }) {
                   <span className="font-mono text-[10px] text-primary/70 px-0.5">{cssVar}</span>
                 </div>
               ))}
+            </div>
+          </Section>
+
+          <Section
+            title="Contrast Ratios"
+            description="WCAG 2.1 compliance for each semantic color pair. AA requires ≥ 4.5 : 1 for normal text, ≥ 3 : 1 for large text & UI. AAA requires ≥ 7 : 1 for normal text."
+          >
+            {/* WCAG legend */}
+            <div className="flex flex-wrap gap-4 mb-6 p-4 rounded-lg bg-muted/40 border border-border text-xs">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-foreground">AA Normal</span>
+                <span className="text-muted-foreground">≥ 4.5 : 1</span>
+              </div>
+              <span className="text-border">·</span>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-foreground">AA Large / UI</span>
+                <span className="text-muted-foreground">≥ 3 : 1</span>
+              </div>
+              <span className="text-border">·</span>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-foreground">AAA Normal</span>
+                <span className="text-muted-foreground">≥ 7 : 1</span>
+              </div>
+              <span className="text-border">·</span>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-foreground">AAA Large</span>
+                <span className="text-muted-foreground">≥ 4.5 : 1</span>
+              </div>
+            </div>
+
+            <div className="rounded-lg border border-border overflow-hidden">
+              {contrastPairs.map((pair, i) => {
+                const fg = dark ? pair.darkFg : pair.lightFg;
+                const bg = dark ? pair.darkBg : pair.lightBg;
+                const ratio = getContrastRatio(fg, bg);
+                const { aa, aaLarge, aaa, aaaLarge } = wcagLevel(ratio);
+                const passClass = "px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-green-50 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-400 dark:border-green-800";
+                const failClass = "px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-muted text-muted-foreground border-border";
+
+                return (
+                  <div key={pair.label} className={`flex flex-wrap items-center gap-4 px-5 py-4 ${i < contrastPairs.length - 1 ? "border-b border-border" : ""} hover:bg-muted/30 transition-colors`}>
+
+                    {/* Preview swatch */}
+                    <div
+                      className="h-12 w-16 rounded-lg flex items-center justify-center shrink-0 font-bold text-xl border border-border/30"
+                      style={{ backgroundColor: bg, color: fg }}
+                    >
+                      Aa
+                    </div>
+
+                    {/* Label + tokens */}
+                    <div className="flex flex-col gap-0.5 min-w-[140px]">
+                      <span className="text-sm font-semibold">{pair.label}</span>
+                      <span className="font-mono text-[10px] text-muted-foreground">
+                        {pair.fgName} <span className="opacity-50">on</span> {pair.bgName}
+                      </span>
+                    </div>
+
+                    {/* Ratio */}
+                    <div className="flex flex-col items-start gap-0.5 min-w-[80px]">
+                      <span className="text-2xl font-extrabold tabular-nums leading-none">{ratio.toFixed(2)}</span>
+                      <span className="text-xs text-muted-foreground font-mono">: 1 ratio</span>
+                    </div>
+
+                    {/* WCAG badges */}
+                    <div className="flex flex-wrap gap-2 ml-auto">
+                      <span className={aa ? passClass : failClass}>AA {aa ? "✓" : "✗"}</span>
+                      <span className={aaLarge ? passClass : failClass}>AA Large {aaLarge ? "✓" : "✗"}</span>
+                      <span className={aaa ? passClass : failClass}>AAA {aaa ? "✓" : "✗"}</span>
+                      <span className={aaaLarge ? passClass : failClass}>AAA Large {aaaLarge ? "✓" : "✗"}</span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </Section>
 
