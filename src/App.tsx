@@ -210,6 +210,29 @@ const semanticColorTokens: { group: string; tokens: SemanticToken[] }[] = [
   },
 ];
 
+/* Semantic → Primitive references (from tokens.css) */
+const semanticPrimRefs: Record<string, { light: string; dark: string }> = {
+  "background":             { light: "--color-white",            dark: "--color-neutral-950" },
+  "foreground":             { light: "--color-neutral-800",      dark: "--color-neutral-50"  },
+  "card":                   { light: "--color-white",            dark: "--color-neutral-900" },
+  "card-foreground":        { light: "--color-neutral-800",      dark: "--color-neutral-50"  },
+  "popover":                { light: "--color-white",            dark: "--color-neutral-900" },
+  "popover-foreground":     { light: "--color-neutral-800",      dark: "--color-neutral-50"  },
+  "primary":                { light: "--color-primary-900",      dark: "--color-intense-400" },
+  "primary-foreground":     { light: "--color-primary-50",       dark: "--color-primary-950" },
+  "secondary":              { light: "--color-secondary-300",    dark: "--color-secondary-300" },
+  "secondary-foreground":   { light: "--color-primary-900",      dark: "--color-primary-900" },
+  "muted":                  { light: "--color-neutral-100",      dark: "--color-neutral-800" },
+  "muted-foreground":       { light: "--color-neutral-500",      dark: "--color-neutral-400" },
+  "accent":                 { light: "--color-intense-400",      dark: "--color-intense-600" },
+  "accent-foreground":      { light: "--color-primary-900",      dark: "--color-intense-50"  },
+  "destructive":            { light: "--color-destructive-600",  dark: "--color-destructive-800" },
+  "destructive-foreground": { light: "--color-white",            dark: "--color-neutral-50"  },
+  "border":                 { light: "--color-neutral-200",      dark: "--color-neutral-700" },
+  "input":                  { light: "--color-neutral-200",      dark: "--color-neutral-700" },
+  "ring":                   { light: "--color-primary-900",      dark: "--color-intense-400" },
+};
+
 type ColorSwatch = { name: string; hex: string; textClass: string };
 type Palette = { label: string; key: string; swatches: ColorSwatch[] };
 
@@ -347,15 +370,15 @@ const spacingTokens = [
 ];
 
 const radiusTokens = [
-  { token: "rounded-none", value: "0px",    cls: "rounded-none" },
-  { token: "rounded-sm",   value: "2px",    cls: "rounded-sm" },
-  { token: "rounded",      value: "4px",    cls: "rounded" },
-  { token: "rounded-md",   value: "6px",    cls: "rounded-md" },
-  { token: "rounded-lg",   value: "8px",    cls: "rounded-lg" },
-  { token: "rounded-xl",   value: "12px",   cls: "rounded-xl" },
-  { token: "rounded-2xl",  value: "16px",   cls: "rounded-2xl" },
-  { token: "rounded-3xl",  value: "24px",   cls: "rounded-3xl" },
-  { token: "rounded-full", value: "9999px", cls: "rounded-full" },
+  { token: "rounded-none", value: "0px",    cls: "rounded-none", cssVar: null },
+  { token: "rounded-sm",   value: "8px",    cls: "rounded-sm",   cssVar: "calc(var(--radius) - 4px)" },
+  { token: "rounded",      value: "4px",    cls: "rounded",      cssVar: null },
+  { token: "rounded-md",   value: "10px",   cls: "rounded-md",   cssVar: "calc(var(--radius) - 2px)" },
+  { token: "rounded-lg",   value: "12px",   cls: "rounded-lg",   cssVar: "var(--radius)" },
+  { token: "rounded-xl",   value: "12px",   cls: "rounded-xl",   cssVar: null },
+  { token: "rounded-2xl",  value: "16px",   cls: "rounded-2xl",  cssVar: null },
+  { token: "rounded-3xl",  value: "24px",   cls: "rounded-3xl",  cssVar: null },
+  { token: "rounded-full", value: "9999px", cls: "rounded-full", cssVar: null },
 ];
 
 const shadowTokens = [
@@ -367,6 +390,142 @@ const shadowTokens = [
   { token: "shadow-xl",    value: "0 20px 25px rgba(0,0,0,0.10)",    cls: "shadow-xl" },
   { token: "shadow-2xl",   value: "0 25px 50px rgba(0,0,0,0.25)",    cls: "shadow-2xl" },
   { token: "shadow-inner", value: "inset 0 2px 4px rgba(0,0,0,0.06)", cls: "shadow-inner" },
+];
+
+/* Named type styles — combine multiple tokens into one style */
+const typeStyles = [
+  {
+    name: "Display",
+    cls: "text-5xl font-extrabold leading-tight tracking-tight",
+    sample: "Design Systems",
+    tokens: [
+      { tw: "text-5xl",       cssVar: "--text-5xl",              val: "3rem / 48px"  },
+      { tw: "font-extrabold", cssVar: "--font-weight-extrabold", val: "800"          },
+      { tw: "leading-tight",  cssVar: "--leading-tight",         val: "1.25"         },
+      { tw: "tracking-tight", cssVar: "--tracking-tight",        val: "-0.025em"     },
+      { tw: "font-sans",      cssVar: "--font-sans",             val: "Unigeo32"     },
+    ],
+  },
+  {
+    name: "Heading 1",
+    cls: "text-4xl font-bold leading-tight tracking-tight",
+    sample: "Page Title",
+    tokens: [
+      { tw: "text-4xl",       cssVar: "--text-4xl",              val: "2.25rem / 36px" },
+      { tw: "font-bold",      cssVar: "--font-weight-bold",      val: "700"            },
+      { tw: "leading-tight",  cssVar: "--leading-tight",         val: "1.25"           },
+      { tw: "tracking-tight", cssVar: "--tracking-tight",        val: "-0.025em"       },
+      { tw: "font-sans",      cssVar: "--font-sans",             val: "Unigeo32"       },
+    ],
+  },
+  {
+    name: "Heading 2",
+    cls: "text-3xl font-semibold leading-snug tracking-tight",
+    sample: "Section Title",
+    tokens: [
+      { tw: "text-3xl",        cssVar: "--text-3xl",              val: "1.875rem / 30px" },
+      { tw: "font-semibold",   cssVar: "--font-weight-semibold",  val: "600"             },
+      { tw: "leading-snug",    cssVar: "--leading-snug",          val: "1.375"           },
+      { tw: "tracking-tight",  cssVar: "--tracking-tight",        val: "-0.025em"        },
+      { tw: "font-sans",       cssVar: "--font-sans",             val: "Unigeo32"        },
+    ],
+  },
+  {
+    name: "Heading 3",
+    cls: "text-2xl font-semibold leading-snug",
+    sample: "Subsection Title",
+    tokens: [
+      { tw: "text-2xl",       cssVar: "--text-2xl",             val: "1.5rem / 24px" },
+      { tw: "font-semibold",  cssVar: "--font-weight-semibold", val: "600"           },
+      { tw: "leading-snug",   cssVar: "--leading-snug",         val: "1.375"         },
+      { tw: "tracking-normal",cssVar: "--tracking-normal",      val: "0em"           },
+      { tw: "font-sans",      cssVar: "--font-sans",            val: "Unigeo32"      },
+    ],
+  },
+  {
+    name: "Heading 4",
+    cls: "text-xl font-medium leading-normal",
+    sample: "Card Title",
+    tokens: [
+      { tw: "text-xl",        cssVar: "--text-xl",              val: "1.25rem / 20px" },
+      { tw: "font-medium",    cssVar: "--font-weight-medium",   val: "500"            },
+      { tw: "leading-normal", cssVar: "--leading-normal",       val: "1.5"            },
+      { tw: "tracking-normal",cssVar: "--tracking-normal",      val: "0em"            },
+      { tw: "font-sans",      cssVar: "--font-sans",            val: "Unigeo32"       },
+    ],
+  },
+  {
+    name: "Body Large",
+    cls: "text-lg font-normal leading-relaxed",
+    sample: "The quick brown fox jumps over the lazy dog.",
+    tokens: [
+      { tw: "text-lg",         cssVar: "--text-lg",              val: "1.125rem / 18px" },
+      { tw: "font-normal",     cssVar: "--font-weight-regular",  val: "400"             },
+      { tw: "leading-relaxed", cssVar: "--leading-relaxed",      val: "1.625"           },
+      { tw: "tracking-normal", cssVar: "--tracking-normal",      val: "0em"             },
+      { tw: "font-sans",       cssVar: "--font-sans",            val: "Unigeo32"        },
+    ],
+  },
+  {
+    name: "Body",
+    cls: "text-base font-normal leading-normal",
+    sample: "The quick brown fox jumps over the lazy dog.",
+    tokens: [
+      { tw: "text-base",      cssVar: "--text-base",            val: "1rem / 16px" },
+      { tw: "font-normal",    cssVar: "--font-weight-regular",  val: "400"         },
+      { tw: "leading-normal", cssVar: "--leading-normal",       val: "1.5"         },
+      { tw: "tracking-normal",cssVar: "--tracking-normal",      val: "0em"         },
+      { tw: "font-sans",      cssVar: "--font-sans",            val: "Unigeo32"    },
+    ],
+  },
+  {
+    name: "Body Small",
+    cls: "text-sm font-normal leading-normal",
+    sample: "The quick brown fox jumps over the lazy dog.",
+    tokens: [
+      { tw: "text-sm",        cssVar: "--text-sm",              val: "0.875rem / 14px" },
+      { tw: "font-normal",    cssVar: "--font-weight-regular",  val: "400"             },
+      { tw: "leading-normal", cssVar: "--leading-normal",       val: "1.5"             },
+      { tw: "tracking-normal",cssVar: "--tracking-normal",      val: "0em"             },
+      { tw: "font-sans",      cssVar: "--font-sans",            val: "Unigeo32"        },
+    ],
+  },
+  {
+    name: "Caption",
+    cls: "text-xs font-normal leading-normal tracking-wide",
+    sample: "Helper text, captions, metadata",
+    tokens: [
+      { tw: "text-xs",        cssVar: "--text-xs",              val: "0.75rem / 12px" },
+      { tw: "font-normal",    cssVar: "--font-weight-regular",  val: "400"            },
+      { tw: "leading-normal", cssVar: "--leading-normal",       val: "1.5"            },
+      { tw: "tracking-wide",  cssVar: "--tracking-wide",        val: "0.025em"        },
+      { tw: "font-sans",      cssVar: "--font-sans",            val: "Unigeo32"       },
+    ],
+  },
+  {
+    name: "Label",
+    cls: "text-xs font-medium leading-none tracking-wide uppercase",
+    sample: "FORM LABEL",
+    tokens: [
+      { tw: "text-xs",        cssVar: "--text-xs",              val: "0.75rem / 12px" },
+      { tw: "font-medium",    cssVar: "--font-weight-medium",   val: "500"            },
+      { tw: "leading-none",   cssVar: "--leading-none",         val: "1"              },
+      { tw: "tracking-wide",  cssVar: "--tracking-wide",        val: "0.025em"        },
+      { tw: "font-sans",      cssVar: "--font-sans",            val: "Unigeo32"       },
+    ],
+  },
+  {
+    name: "Code",
+    cls: "text-sm font-normal leading-relaxed font-mono",
+    sample: "const token = 'var(--primary)';",
+    tokens: [
+      { tw: "text-sm",         cssVar: "--text-sm",              val: "0.875rem / 14px" },
+      { tw: "font-normal",     cssVar: "--font-weight-regular",  val: "400"             },
+      { tw: "leading-relaxed", cssVar: "--leading-relaxed",      val: "1.625"           },
+      { tw: "tracking-normal", cssVar: "--tracking-normal",      val: "0em"             },
+      { tw: "font-mono",       cssVar: "--font-mono",            val: "Space Mono"      },
+    ],
+  },
 ];
 
 const invoices = [
@@ -566,6 +725,188 @@ function downloadTokenStudioJSON() {
    TOKENS PAGE
 ═══════════════════════════════════════════════════════════ */
 
+/* ═══════════════════════════════════════════════════════════
+   FOUNDATION PAGE — visual elements linked to tokens
+═══════════════════════════════════════════════════════════ */
+
+function FoundationPage({ dark }: { dark: boolean }) {
+  return (
+    <div className="space-y-16">
+
+      {/* ── Intro ── */}
+      <div className="space-y-3">
+        <h1 className="text-4xl font-extrabold tracking-tight">Foundation</h1>
+        <p className="text-muted-foreground text-lg max-w-2xl">
+          The core visual language — colors, type, spacing, radius, and shadow.
+          Each element is linked to its design token.
+        </p>
+      </div>
+
+      <Tabs defaultValue="colors">
+        <TabsList className="flex-wrap h-auto gap-1">
+          <TabsTrigger value="colors">Colors</TabsTrigger>
+          <TabsTrigger value="typography">Typography</TabsTrigger>
+          <TabsTrigger value="spacing">Spacing</TabsTrigger>
+          <TabsTrigger value="radius">Radius</TabsTrigger>
+          <TabsTrigger value="shadows">Shadows</TabsTrigger>
+        </TabsList>
+
+        {/* ─── Colors ─────────────────────────────── */}
+        <TabsContent value="colors" className="space-y-12 pt-6">
+
+          <Section title="Semantic Palette" description={`Semantic colors as rendered in ${dark ? "dark" : "light"} mode.`}>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { label: "background",  cssVar: "--background",  bg: "bg-background border border-border",   text: "text-foreground" },
+                { label: "primary",     cssVar: "--primary",     bg: "bg-primary",                            text: "text-primary-foreground" },
+                { label: "secondary",   cssVar: "--secondary",   bg: "bg-secondary",                          text: "text-secondary-foreground" },
+                { label: "accent",      cssVar: "--accent",      bg: "bg-accent",                             text: "text-accent-foreground" },
+                { label: "muted",       cssVar: "--muted",       bg: "bg-muted",                              text: "text-muted-foreground" },
+                { label: "card",        cssVar: "--card",        bg: "bg-card border border-border",          text: "text-card-foreground" },
+                { label: "destructive", cssVar: "--destructive", bg: "bg-destructive",                        text: "text-destructive-foreground" },
+                { label: "border",      cssVar: "--border",      bg: "bg-border",                             text: "text-foreground" },
+              ].map(({ label, cssVar, bg, text }) => (
+                <div key={label} className="flex flex-col gap-1.5">
+                  <div className={`${bg} rounded-lg p-4 flex items-center justify-center h-20`}>
+                    <span className={`${text} text-xs font-mono font-semibold`}>{label}</span>
+                  </div>
+                  <span className="font-mono text-[10px] text-primary/70 px-0.5">{cssVar}</span>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section title="Color Scales" description="Primitive palettes — 11 steps from 50 to 950, each linked to its CSS token.">
+            <div className="space-y-8">
+              {palettes.map((p) => (
+                <div key={p.key} className="space-y-2">
+                  <p className="text-sm font-medium">{p.label}</p>
+                  <div className="grid grid-cols-11 gap-1">
+                    {p.swatches.map((s) => (
+                      <div key={s.name} className="flex flex-col gap-1 min-w-0">
+                        <div
+                          className={`h-14 w-full rounded-md flex items-end p-1.5 ${s.textClass}`}
+                          style={{ backgroundColor: s.hex }}
+                        >
+                          <span className="text-[9px] font-mono leading-none opacity-80">{s.name}</span>
+                        </div>
+                        <span className="text-[9px] font-mono text-primary/70 truncate">{`--color-${p.key}-${s.name}`}</span>
+                        <span className="text-[9px] font-mono text-muted-foreground truncate">{s.hex}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Section>
+        </TabsContent>
+
+        {/* ─── Typography ─────────────────────────── */}
+        <TabsContent value="typography" className="space-y-12 pt-6">
+
+          <Section title="Type Styles" description="Named styles combining size, weight, leading, and tracking tokens.">
+            <div className="space-y-2">
+              {typeStyles.map((style) => (
+                <div key={style.name} className="rounded-lg border border-border overflow-hidden">
+                  <div className="flex items-start gap-6 px-5 py-4 border-b border-border bg-muted/20">
+                    <span className="font-mono text-xs text-muted-foreground w-24 shrink-0 pt-0.5">{style.name}</span>
+                    <p className={style.cls}>{style.sample}</p>
+                  </div>
+                  <div className="px-5 py-3 flex flex-wrap gap-3">
+                    {style.tokens.map((tok) => (
+                      <button
+                        key={tok.cssVar}
+                        onClick={() => navigator.clipboard?.writeText(tok.cssVar)}
+                        title={`Copy ${tok.cssVar}`}
+                        className="flex flex-col items-start gap-0.5 group cursor-pointer"
+                      >
+                        <span className="inline-flex items-center px-2 py-0.5 rounded bg-muted font-mono text-xs text-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                          {tok.tw}
+                        </span>
+                        <span className="font-mono text-[10px] text-muted-foreground px-1">{tok.cssVar}</span>
+                        <span className="font-mono text-[10px] text-muted-foreground/60 px-1">{tok.val}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Section>
+        </TabsContent>
+
+        {/* ─── Spacing ────────────────────────────── */}
+        <TabsContent value="spacing" className="pt-6">
+          <Section title="Spacing Scale" description="4px base unit — 32 steps from 0 to 128px.">
+            <div className="rounded-lg border border-border overflow-hidden">
+              {spacingTokens.map((s, i) => (
+                <div key={s.token} className={`group flex items-center gap-4 px-5 py-2 hover:bg-muted/50 transition-colors ${i < spacingTokens.length - 1 ? "border-b border-border" : ""}`}>
+                  <span className="font-mono text-xs text-muted-foreground w-28 shrink-0">{s.token}</span>
+                  <span className="font-mono text-[10px] text-primary/60 w-32 shrink-0 hidden sm:inline">{`--${s.token.replace(".", "-")}`}</span>
+                  <span className="font-mono text-xs text-muted-foreground w-12 shrink-0">{s.value}</span>
+                  <div className="flex-1 flex items-center">
+                    <div
+                      className="h-4 rounded-sm bg-primary/60 min-w-[2px]"
+                      style={{ width: `${Math.min(s.px, 256)}px` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Section>
+        </TabsContent>
+
+        {/* ─── Radius ─────────────────────────────── */}
+        <TabsContent value="radius" className="pt-6">
+          <Section title="Border Radius" description="From none (0) to full (9999px). Three steps are linked to the --radius base token.">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {radiusTokens.map((r) => (
+                <div key={r.token} className="flex flex-col gap-3 items-start">
+                  <div
+                    className={`${r.cls} w-full aspect-square bg-primary/15 border-2 border-primary/40 flex items-center justify-center max-w-[100px]`}
+                  />
+                  <div>
+                    <p className="font-mono text-sm font-medium">{r.token}</p>
+                    {r.cssVar && (
+                      <p className="font-mono text-[10px] text-primary/70 mt-0.5">{r.cssVar}</p>
+                    )}
+                    <p className="font-mono text-xs text-muted-foreground">{r.value}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Section>
+        </TabsContent>
+
+        {/* ─── Shadows ────────────────────────────── */}
+        <TabsContent value="shadows" className="pt-6">
+          <Section title="Box Shadows" description="Eight levels from none to 2xl, plus inner.">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {shadowTokens.map((s) => (
+                <div key={s.token} className="flex flex-col gap-4">
+                  <div className={`${s.cls} rounded-xl bg-card border border-border h-24 flex items-center justify-center`}>
+                    <span className="font-mono text-sm font-semibold text-muted-foreground">{s.token}</span>
+                  </div>
+                  <div>
+                    <p className="font-mono text-sm font-medium">{s.token}</p>
+                    {s.token !== "shadow-none" && (
+                      <p className="font-mono text-[10px] text-primary/70 mt-0.5">{`--${s.token}`}</p>
+                    )}
+                    <p className="font-mono text-xs text-muted-foreground mt-0.5 break-all">{s.value}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Section>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TOKENS PAGE — raw token definitions & values
+═══════════════════════════════════════════════════════════ */
+
 function TokensPage({ dark }: { dark: boolean }) {
   const [downloadCopied, setDownloadCopied] = useState(false);
 
@@ -582,7 +923,7 @@ function TokensPage({ dark }: { dark: boolean }) {
       <div className="space-y-3">
         <h1 className="text-4xl font-extrabold tracking-tight">Design Tokens</h1>
         <p className="text-muted-foreground text-lg max-w-2xl">
-          All tokens are defined as CSS custom properties and mapped to Tailwind utilities.
+          Raw token definitions as CSS custom properties, mapped to Tailwind utilities.
           Download <code>pau-tokens.json</code> and import it into Tokens Studio for Figma.
         </p>
       </div>
@@ -607,9 +948,7 @@ function TokensPage({ dark }: { dark: boolean }) {
 
         {/* ─── Colors ─────────────────────────────── */}
         <TabsContent value="colors" className="space-y-12 pt-6">
-
-          {/* Semantic tokens */}
-          <Section title="Semantic Tokens" description="CSS variables that switch value between light and dark mode.">
+          <Section title="Semantic Tokens" description="CSS variables that switch value between light and dark mode. Each is linked to a primitive color token.">
             <div className="space-y-8">
               {semanticColorTokens.map((group) => (
                 <div key={group.group} className="space-y-2">
@@ -634,20 +973,24 @@ function TokensPage({ dark }: { dark: boolean }) {
                             <TableCell className="hidden md:table-cell font-mono text-xs text-muted-foreground">{t.tailwind}</TableCell>
                             <TableCell>
                               <div className="flex items-center gap-1.5 sm:gap-2">
-                                <div
-                                  className="h-5 w-5 sm:h-6 sm:w-6 rounded border border-border shrink-0"
-                                  style={{ backgroundColor: t.lightHex }}
-                                />
-                                <span className="font-mono text-xs hidden sm:inline">{t.lightHex}</span>
+                                <div className="h-5 w-5 sm:h-6 sm:w-6 rounded border border-border shrink-0" style={{ backgroundColor: t.lightHex }} />
+                                <div className="flex flex-col min-w-0">
+                                  <span className="font-mono text-xs hidden sm:inline">{t.lightHex}</span>
+                                  {semanticPrimRefs[t.token] && (
+                                    <span className="font-mono text-[10px] text-primary/60 hidden lg:inline truncate">{semanticPrimRefs[t.token].light}</span>
+                                  )}
+                                </div>
                               </div>
                             </TableCell>
                             <TableCell>
                               <div className="flex items-center gap-1.5 sm:gap-2">
-                                <div
-                                  className="h-5 w-5 sm:h-6 sm:w-6 rounded border border-border shrink-0"
-                                  style={{ backgroundColor: t.darkHex }}
-                                />
-                                <span className="font-mono text-xs hidden sm:inline">{t.darkHex}</span>
+                                <div className="h-5 w-5 sm:h-6 sm:w-6 rounded border border-border shrink-0" style={{ backgroundColor: t.darkHex }} />
+                                <div className="flex flex-col min-w-0">
+                                  <span className="font-mono text-xs hidden sm:inline">{t.darkHex}</span>
+                                  {semanticPrimRefs[t.token] && (
+                                    <span className="font-mono text-[10px] text-primary/60 hidden lg:inline truncate">{semanticPrimRefs[t.token].dark}</span>
+                                  )}
+                                </div>
                               </div>
                             </TableCell>
                             <TableCell className="text-xs text-muted-foreground hidden lg:table-cell">{t.description}</TableCell>
@@ -655,50 +998,6 @@ function TokensPage({ dark }: { dark: boolean }) {
                         ))}
                       </TableBody>
                     </Table>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Section>
-
-          {/* Live preview */}
-          <Section title="Live Preview" description={`Semantic tokens rendered in ${dark ? "dark" : "light"} mode.`}>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {[
-                { label: "background",  bg: "bg-background border border-border",   text: "text-foreground" },
-                { label: "primary",     bg: "bg-primary",                            text: "text-primary-foreground" },
-                { label: "secondary",   bg: "bg-secondary",                          text: "text-secondary-foreground" },
-                { label: "accent",      bg: "bg-accent",                             text: "text-accent-foreground" },
-                { label: "muted",       bg: "bg-muted",                              text: "text-muted-foreground" },
-                { label: "card",        bg: "bg-card border border-border",          text: "text-card-foreground" },
-                { label: "destructive", bg: "bg-destructive",                        text: "text-destructive-foreground" },
-                { label: "border",      bg: "bg-border",                             text: "text-foreground" },
-              ].map(({ label, bg, text }) => (
-                <div key={label} className={`${bg} rounded-lg p-4 flex items-center justify-center h-20`}>
-                  <span className={`${text} text-xs font-mono font-semibold`}>{label}</span>
-                </div>
-              ))}
-            </div>
-          </Section>
-
-          {/* Primitive palettes */}
-          <Section title="Primitive Palettes" description="Raw color scales — 11 steps from 50 to 950.">
-            <div className="space-y-8">
-              {palettes.map((p) => (
-                <div key={p.key} className="space-y-2">
-                  <p className="text-sm font-medium">{p.label}</p>
-                  <div className="grid grid-cols-11 gap-1">
-                    {p.swatches.map((s) => (
-                      <div key={s.name} className="flex flex-col gap-1 min-w-0">
-                        <div
-                          className={`h-14 w-full rounded-md flex items-end p-1.5 ${s.textClass}`}
-                          style={{ backgroundColor: s.hex }}
-                        >
-                          <span className="text-[9px] font-mono leading-none opacity-80">{s.name}</span>
-                        </div>
-                        <span className="text-[9px] font-mono text-muted-foreground truncate">{s.hex}</span>
-                      </div>
-                    ))}
                   </div>
                 </div>
               ))}
@@ -775,38 +1074,51 @@ function TokensPage({ dark }: { dark: boolean }) {
         {/* ─── Spacing ────────────────────────────── */}
         <TabsContent value="spacing" className="pt-6">
           <Section title="Spacing Scale" description="4px base unit — 32 steps from 0 to 128px.">
-            <div className="rounded-lg border border-border overflow-hidden">
-              {spacingTokens.map((s, i) => (
-                <div key={s.token} className={`group flex items-center gap-4 px-5 py-2 hover:bg-muted/50 transition-colors ${i < spacingTokens.length - 1 ? "border-b border-border" : ""}`}>
-                  <span className="font-mono text-xs text-muted-foreground w-28 shrink-0">{s.token}</span>
-                  <span className="font-mono text-xs text-muted-foreground w-12 shrink-0">{s.value}</span>
-                  <div className="flex-1 flex items-center">
-                    <div
-                      className="h-4 rounded-sm bg-primary/60 min-w-[2px]"
-                      style={{ width: `${Math.min(s.px, 256)}px` }}
-                    />
-                  </div>
-                </div>
-              ))}
+            <div className="rounded-lg border border-border overflow-hidden overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/50">
+                    <TableHead>Token</TableHead>
+                    <TableHead>CSS Variable</TableHead>
+                    <TableHead>Value</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {spacingTokens.map((s) => (
+                    <TableRow key={s.token}>
+                      <TableCell className="font-mono text-xs font-medium">{s.token}</TableCell>
+                      <TableCell className="font-mono text-xs text-primary/70">{`--${s.token.replace(".", "-")}`}</TableCell>
+                      <TableCell className="font-mono text-xs text-muted-foreground">{s.value}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           </Section>
         </TabsContent>
 
         {/* ─── Radius ─────────────────────────────── */}
         <TabsContent value="radius" className="pt-6">
-          <Section title="Border Radius" description="From none (0) to full (9999px).">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {radiusTokens.map((r) => (
-                <div key={r.token} className="flex flex-col gap-3 items-start">
-                  <div
-                    className={`${r.cls} w-full aspect-square bg-primary/15 border-2 border-primary/40 flex items-center justify-center max-w-[100px]`}
-                  />
-                  <div>
-                    <p className="font-mono text-sm font-medium">{r.token}</p>
-                    <p className="font-mono text-xs text-muted-foreground">{r.value}</p>
-                  </div>
-                </div>
-              ))}
+          <Section title="Border Radius" description="From none (0) to full (9999px). sm, md, and lg are derived from --radius (0.75rem).">
+            <div className="rounded-lg border border-border overflow-hidden overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/50">
+                    <TableHead>Token</TableHead>
+                    <TableHead>CSS Variable</TableHead>
+                    <TableHead>Value</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {radiusTokens.map((r) => (
+                    <TableRow key={r.token}>
+                      <TableCell className="font-mono text-xs font-medium">{r.token}</TableCell>
+                      <TableCell className="font-mono text-xs text-primary/70">{r.cssVar ?? "—"}</TableCell>
+                      <TableCell className="font-mono text-xs text-muted-foreground">{r.value}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           </Section>
         </TabsContent>
@@ -814,18 +1126,25 @@ function TokensPage({ dark }: { dark: boolean }) {
         {/* ─── Shadows ────────────────────────────── */}
         <TabsContent value="shadows" className="pt-6">
           <Section title="Box Shadows" description="Eight levels from none to 2xl, plus inner.">
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {shadowTokens.map((s) => (
-                <div key={s.token} className="flex flex-col gap-4">
-                  <div className={`${s.cls} rounded-xl bg-card border border-border h-24 flex items-center justify-center`}>
-                    <span className="font-mono text-sm font-semibold text-muted-foreground">{s.token}</span>
-                  </div>
-                  <div>
-                    <p className="font-mono text-sm font-medium">{s.token}</p>
-                    <p className="font-mono text-xs text-muted-foreground mt-0.5 break-all">{s.value}</p>
-                  </div>
-                </div>
-              ))}
+            <div className="rounded-lg border border-border overflow-hidden overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/50">
+                    <TableHead>Token</TableHead>
+                    <TableHead>CSS Variable</TableHead>
+                    <TableHead>Value</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {shadowTokens.map((s) => (
+                    <TableRow key={s.token}>
+                      <TableCell className="font-mono text-xs font-medium">{s.token}</TableCell>
+                      <TableCell className="font-mono text-xs text-primary/70">{s.token !== "shadow-none" ? `--${s.token}` : "—"}</TableCell>
+                      <TableCell className="font-mono text-xs text-muted-foreground break-all">{s.value}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           </Section>
         </TabsContent>
@@ -4696,10 +5015,11 @@ function IconsPage() {
    APP SHELL
 ═══════════════════════════════════════════════════════════ */
 
-type Page = "overview" | "tokens" | "components" | "icons";
+type Page = "overview" | "foundation" | "tokens" | "components" | "icons";
 
 const navItems: { id: Page; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { id: "overview",    label: "Overview",    icon: Home },
+  { id: "foundation",  label: "Foundation",  icon: Diamond },
   { id: "tokens",      label: "Tokens",      icon: Palette },
   { id: "components",  label: "Components",  icon: Layers },
   { id: "icons",       label: "Icons",       icon: Grid2X2 },
@@ -4976,6 +5296,7 @@ export default function App() {
           )}
 
           {/* ── Tokens ── */}
+          {page === "foundation" && <FoundationPage dark={dark} />}
           {page === "tokens" && <TokensPage dark={dark} />}
 
           {/* ── Components ── */}
