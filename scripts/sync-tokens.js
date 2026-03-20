@@ -107,13 +107,15 @@ line();
 line(`:root {`);
 
 const colors = tokens['primitives/colors'] || {};
-const paletteOrder = ['primary', 'secondary', 'intense', 'neutral', 'destructive'];
+const paletteOrder = ['primary', 'secondary', 'intense', 'neutral', 'destructive', 'success', 'info'];
 const paletteLabel = {
   primary:     'Primary — Forest Green',
   secondary:   'Secondary — Golden Yellow',
   intense:     'Intense — Mint Teal',
   neutral:     'Neutral — Grey',
   destructive: 'Destructive — Red',
+  success:     'Success — Green',
+  info:        'Info — Blue',
 };
 
 for (const palette of paletteOrder) {

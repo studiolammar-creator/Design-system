@@ -196,8 +196,29 @@ const semanticColorTokens: { group: string; tokens: SemanticToken[] }[] = [
   {
     group: "Destructive",
     tokens: [
-      { token: "destructive",            cssVar: "--destructive",            tailwind: "bg-destructive",            lightHex: "#EF4444", darkHex: "#991B1B", description: "Error & danger states" },
-      { token: "destructive-foreground", cssVar: "--destructive-foreground", tailwind: "text-destructive-foreground",lightHex: "#FAFAFA", darkHex: "#FAFAFA", description: "Text on destructive" },
+      { token: "destructive",            cssVar: "--destructive",            tailwind: "bg-destructive",            lightHex: "#DC2626", darkHex: "#991B1B", description: "Error & danger states" },
+      { token: "destructive-foreground", cssVar: "--destructive-foreground", tailwind: "text-destructive-foreground",lightHex: "#FFFFFF", darkHex: "#FAFAFA", description: "Text on destructive" },
+    ],
+  },
+  {
+    group: "Success",
+    tokens: [
+      { token: "success",            cssVar: "--success",            tailwind: "bg-success",            lightHex: "#1A9241", darkHex: "#55CE78", description: "Positive & confirmed states" },
+      { token: "success-foreground", cssVar: "--success-foreground", tailwind: "text-success-foreground",lightHex: "#FFFFFF", darkHex: "#062712", description: "Text on success" },
+    ],
+  },
+  {
+    group: "Warning",
+    tokens: [
+      { token: "warning",            cssVar: "--warning",            tailwind: "bg-warning",            lightHex: "#FFD653", darkHex: "#FFD653", description: "Caution & alert states" },
+      { token: "warning-foreground", cssVar: "--warning-foreground", tailwind: "text-warning-foreground",lightHex: "#013229", darkHex: "#013229", description: "Text on warning" },
+    ],
+  },
+  {
+    group: "Info",
+    tokens: [
+      { token: "info",            cssVar: "--info",            tailwind: "bg-info",            lightHex: "#0669CC", darkHex: "#3DA4F9", description: "Informational & neutral feedback" },
+      { token: "info-foreground", cssVar: "--info-foreground", tailwind: "text-info-foreground",lightHex: "#FFFFFF", darkHex: "#072247", description: "Text on info" },
     ],
   },
   {
@@ -228,6 +249,12 @@ const semanticPrimRefs: Record<string, { light: string; dark: string }> = {
   "accent-foreground":      { light: "--color-primary-900",      dark: "--color-intense-50"  },
   "destructive":            { light: "--color-destructive-600",  dark: "--color-destructive-800" },
   "destructive-foreground": { light: "--color-white",            dark: "--color-neutral-50"  },
+  "success":                { light: "--color-success-600",      dark: "--color-success-400"  },
+  "success-foreground":     { light: "--color-white",            dark: "--color-success-950"  },
+  "warning":                { light: "--color-secondary-300",    dark: "--color-secondary-300" },
+  "warning-foreground":     { light: "--color-primary-900",      dark: "--color-primary-900"  },
+  "info":                   { light: "--color-info-600",         dark: "--color-info-400"     },
+  "info-foreground":        { light: "--color-white",            dark: "--color-info-950"     },
   "border":                 { light: "--color-neutral-200",      dark: "--color-neutral-700" },
   "input":                  { light: "--color-neutral-200",      dark: "--color-neutral-700" },
   "ring":                   { light: "--color-primary-900",      dark: "--color-intense-400" },
@@ -299,6 +326,54 @@ const palettes: Palette[] = [
       { name: "800", hex: "#333333", textClass: "text-white" },
       { name: "900", hex: "#1A1A1A", textClass: "text-white" },
       { name: "950", hex: "#0D0D0D", textClass: "text-white" },
+    ],
+  },
+  {
+    label: "Destructive — Red", key: "destructive",
+    swatches: [
+      { name: "50",  hex: "#FEF2F2", textClass: "text-neutral-800" },
+      { name: "100", hex: "#FEE2E2", textClass: "text-neutral-800" },
+      { name: "200", hex: "#FECACA", textClass: "text-neutral-800" },
+      { name: "300", hex: "#FCA5A5", textClass: "text-neutral-800" },
+      { name: "400", hex: "#F87171", textClass: "text-neutral-800" },
+      { name: "500", hex: "#EF4444", textClass: "text-white" },
+      { name: "600", hex: "#DC2626", textClass: "text-white" },
+      { name: "700", hex: "#B91C1C", textClass: "text-white" },
+      { name: "800", hex: "#991B1B", textClass: "text-white" },
+      { name: "900", hex: "#7F1D1D", textClass: "text-white" },
+      { name: "950", hex: "#4A0E0E", textClass: "text-white" },
+    ],
+  },
+  {
+    label: "Success — Green", key: "success",
+    swatches: [
+      { name: "50",  hex: "#F1FCF3", textClass: "text-neutral-800" },
+      { name: "100", hex: "#E1F8E6", textClass: "text-neutral-800" },
+      { name: "200", hex: "#C0F0CE", textClass: "text-neutral-800" },
+      { name: "300", hex: "#8EE4A8", textClass: "text-neutral-800" },
+      { name: "400", hex: "#55CE78", textClass: "text-neutral-800" },
+      { name: "500", hex: "#2DB558", textClass: "text-white" },
+      { name: "600", hex: "#1A9241", textClass: "text-white" },
+      { name: "700", hex: "#157333", textClass: "text-white" },
+      { name: "800", hex: "#115828", textClass: "text-white" },
+      { name: "900", hex: "#0C3E1C", textClass: "text-white" },
+      { name: "950", hex: "#062712", textClass: "text-white" },
+    ],
+  },
+  {
+    label: "Info — Blue", key: "info",
+    swatches: [
+      { name: "50",  hex: "#EFF8FF", textClass: "text-neutral-800" },
+      { name: "100", hex: "#DBEFFE", textClass: "text-neutral-800" },
+      { name: "200", hex: "#B8DFFE", textClass: "text-neutral-800" },
+      { name: "300", hex: "#7DC2FD", textClass: "text-neutral-800" },
+      { name: "400", hex: "#3DA4F9", textClass: "text-neutral-800" },
+      { name: "500", hex: "#1585EE", textClass: "text-white" },
+      { name: "600", hex: "#0669CC", textClass: "text-white" },
+      { name: "700", hex: "#0554A6", textClass: "text-white" },
+      { name: "800", hex: "#074384", textClass: "text-white" },
+      { name: "900", hex: "#093869", textClass: "text-white" },
+      { name: "950", hex: "#072247", textClass: "text-white" },
     ],
   },
 ];
@@ -896,26 +971,66 @@ function FoundationPage({ dark }: { dark: boolean }) {
           </Section>
 
           <Section title="Color Scales" description="Primitive palettes — 11 steps from 50 to 950, each linked to its CSS token.">
-            <div className="space-y-8">
-              {palettes.map((p) => (
-                <div key={p.key} className="space-y-2">
-                  <p className="text-sm font-medium">{p.label}</p>
-                  <div className="grid grid-cols-11 gap-1">
-                    {p.swatches.map((s) => (
-                      <div key={s.name} className="flex flex-col gap-1 min-w-0">
-                        <div
-                          className={`h-14 w-full rounded-md flex items-end p-1.5 ${s.textClass}`}
-                          style={{ backgroundColor: s.hex }}
-                        >
-                          <span className="text-[9px] font-mono leading-none opacity-80">{s.name}</span>
-                        </div>
-                        <span className="text-[9px] font-mono text-primary/70 truncate">{`--color-${p.key}-${s.name}`}</span>
-                        <span className="text-[9px] font-mono text-muted-foreground truncate">{s.hex}</span>
-                      </div>
-                    ))}
-                  </div>
+            <div className="space-y-10">
+
+              {/* Brand Colors */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-semibold tracking-widest uppercase text-muted-foreground">Brand</span>
+                  <div className="flex-1 h-px bg-border" />
                 </div>
-              ))}
+                <div className="space-y-8">
+                  {palettes.filter(p => ["primary","secondary","intense","neutral"].includes(p.key)).map((p) => (
+                    <div key={p.key} className="space-y-2">
+                      <p className="text-sm font-medium">{p.label}</p>
+                      <div className="grid grid-cols-11 gap-1">
+                        {p.swatches.map((s) => (
+                          <div key={s.name} className="flex flex-col gap-1 min-w-0">
+                            <div
+                              className={`h-14 w-full rounded-md flex items-end p-1.5 ${s.textClass}`}
+                              style={{ backgroundColor: s.hex }}
+                            >
+                              <span className="text-[9px] font-mono leading-none opacity-80">{s.name}</span>
+                            </div>
+                            <span className="text-[9px] font-mono text-primary/70 truncate">{`--color-${p.key}-${s.name}`}</span>
+                            <span className="text-[9px] font-mono text-muted-foreground truncate">{s.hex}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Feedback Colors */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs font-semibold tracking-widest uppercase text-muted-foreground">Feedback</span>
+                  <div className="flex-1 h-px bg-border" />
+                </div>
+                <div className="space-y-8">
+                  {palettes.filter(p => ["destructive","success","info"].includes(p.key)).map((p) => (
+                    <div key={p.key} className="space-y-2">
+                      <p className="text-sm font-medium">{p.label}</p>
+                      <div className="grid grid-cols-11 gap-1">
+                        {p.swatches.map((s) => (
+                          <div key={s.name} className="flex flex-col gap-1 min-w-0">
+                            <div
+                              className={`h-14 w-full rounded-md flex items-end p-1.5 ${s.textClass}`}
+                              style={{ backgroundColor: s.hex }}
+                            >
+                              <span className="text-[9px] font-mono leading-none opacity-80">{s.name}</span>
+                            </div>
+                            <span className="text-[9px] font-mono text-primary/70 truncate">{`--color-${p.key}-${s.name}`}</span>
+                            <span className="text-[9px] font-mono text-muted-foreground truncate">{s.hex}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
             </div>
           </Section>
         </TabsContent>
