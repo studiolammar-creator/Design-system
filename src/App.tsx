@@ -835,6 +835,775 @@ function TokensPage({ dark }: { dark: boolean }) {
 }
 
 /* ═══════════════════════════════════════════════════════════
+   DESIGN SPECS — token data + renderer
+═══════════════════════════════════════════════════════════ */
+
+type SpecType = "color" | "size" | "font" | "shadow";
+interface SpecItem { label: string; token: string; value: string; type: SpecType; }
+interface SpecGroup { title: string; items: SpecItem[]; }
+
+const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
+  "Typography": [
+    { title: "Colors", items: [
+      { label: "Body text",            token: "--foreground",       value: "#333333", type: "color" },
+      { label: "Muted / secondary",    token: "--muted-foreground", value: "#737373", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Sans-serif font",      token: "--font-sans",        value: "Unigeo32",     type: "font" },
+      { label: "Monospace font",       token: "--font-mono",        value: "Space Mono",   type: "font" },
+      { label: "Scale range",          token: "--text-xs → --text-4xl", value: "12px – 36px", type: "size" },
+      { label: "Heading weight",       token: "font-extrabold",     value: "800",          type: "size" },
+      { label: "Body weight",          token: "font-regular",       value: "400",          type: "size" },
+      { label: "Line height normal",   token: "--leading-normal",   value: "1.5",          type: "size" },
+    ]},
+  ],
+  "Buttons": [
+    { title: "Colors", items: [
+      { label: "Default background",   token: "--primary",              value: "#013229", type: "color" },
+      { label: "Default text",         token: "--primary-foreground",   value: "#F0FBF8", type: "color" },
+      { label: "Secondary background", token: "--secondary",            value: "#FFD653", type: "color" },
+      { label: "Accent background",    token: "--accent",               value: "#61CAA0", type: "color" },
+      { label: "Destructive background", token: "--destructive",        value: "#DC2626", type: "color" },
+      { label: "Focus ring",           token: "--ring",                 value: "#013229", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size",            token: "text-sm",    value: "0.875rem / 14px", type: "size" },
+      { label: "Font weight",          token: "font-medium", value: "500",            type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius",        token: "rounded-md", value: "calc(var(--radius) - 2px) ≈ 10px", type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Height (default)",     token: "h-10",  value: "2.5rem / 40px",  type: "size" },
+      { label: "Height (sm)",          token: "h-9",   value: "2.25rem / 36px", type: "size" },
+      { label: "Height (lg)",          token: "h-11",  value: "2.75rem / 44px", type: "size" },
+      { label: "Padding x",            token: "px-4",  value: "1rem / 16px",    type: "size" },
+    ]},
+  ],
+  "Badges": [
+    { title: "Colors", items: [
+      { label: "Default background",   token: "--primary",            value: "#013229", type: "color" },
+      { label: "Default text",         token: "--primary-foreground", value: "#F0FBF8", type: "color" },
+      { label: "Secondary background", token: "--secondary",          value: "#FFD653", type: "color" },
+      { label: "Accent background",    token: "--accent",             value: "#61CAA0", type: "color" },
+      { label: "Destructive background", token: "--destructive",      value: "#DC2626", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size",   token: "text-xs",      value: "0.75rem / 12px", type: "size" },
+      { label: "Font weight", token: "font-semibold", value: "600",           type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius", token: "rounded-full", value: "9999px", type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Padding x",  token: "px-2.5", value: "0.625rem / 10px", type: "size" },
+      { label: "Padding y",  token: "py-0.5", value: "0.125rem / 2px",  type: "size" },
+    ]},
+  ],
+  "Cards": [
+    { title: "Colors", items: [
+      { label: "Background", token: "--card",          value: "#FFFFFF", type: "color" },
+      { label: "Text",       token: "--card-foreground", value: "#333333", type: "color" },
+      { label: "Border",     token: "--border",        value: "#E5E5E5", type: "color" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
+    ]},
+    { title: "Shadow", items: [
+      { label: "Elevation", token: "--shadow-sm", value: "0 1px 2px rgba(0,0,0,0.05)", type: "shadow" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Padding",     token: "p-6",         value: "1.5rem / 24px",  type: "size" },
+      { label: "Inner gap",   token: "space-y-1.5", value: "0.375rem / 6px", type: "size" },
+    ]},
+  ],
+  "Form Controls": [
+    { title: "Colors", items: [
+      { label: "Input background",  token: "--background",     value: "#FFFFFF", type: "color" },
+      { label: "Input border",      token: "--input",          value: "#E5E5E5", type: "color" },
+      { label: "Input text",        token: "--foreground",     value: "#333333", type: "color" },
+      { label: "Placeholder",       token: "--muted-foreground", value: "#737373", type: "color" },
+      { label: "Focus ring",        token: "--ring",           value: "#013229", type: "color" },
+      { label: "Checked fill",      token: "--primary",        value: "#013229", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size",   token: "text-sm",      value: "0.875rem / 14px", type: "size" },
+      { label: "Font weight", token: "font-regular", value: "400",             type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius", token: "rounded-md", value: "calc(var(--radius) - 2px) ≈ 10px", type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Input height", token: "h-10", value: "2.5rem / 40px",  type: "size" },
+      { label: "Padding x",    token: "px-3", value: "0.75rem / 12px", type: "size" },
+    ]},
+  ],
+  "Alerts": [
+    { title: "Colors", items: [
+      { label: "Background",        token: "--background", value: "#FFFFFF", type: "color" },
+      { label: "Border",            token: "--border",     value: "#E5E5E5", type: "color" },
+      { label: "Default icon/title", token: "--foreground", value: "#333333", type: "color" },
+      { label: "Destructive icon",  token: "--destructive", value: "#DC2626", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Title weight", token: "font-medium", value: "500",             type: "size" },
+      { label: "Font size",    token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Padding", token: "p-4", value: "1rem / 16px", type: "size" },
+    ]},
+  ],
+  "Table": [
+    { title: "Colors", items: [
+      { label: "Header text",  token: "--muted-foreground", value: "#737373", type: "color" },
+      { label: "Body text",    token: "--foreground",       value: "#333333", type: "color" },
+      { label: "Row border",   token: "--border",           value: "#E5E5E5", type: "color" },
+      { label: "Hover row bg", token: "--muted",            value: "#F5F5F5", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size",      token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Header weight",  token: "font-medium", value: "500",             type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Cell padding", token: "px-4 py-2", value: "1rem × 0.5rem", type: "size" },
+    ]},
+  ],
+  "Accordion": [
+    { title: "Colors", items: [
+      { label: "Text",    token: "--foreground", value: "#333333", type: "color" },
+      { label: "Divider", token: "--border",     value: "#E5E5E5", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size",   token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Font weight", token: "font-medium", value: "500",             type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Trigger padding y", token: "py-4", value: "1rem / 16px", type: "size" },
+    ]},
+  ],
+  "Alert Dialog": [
+    { title: "Colors", items: [
+      { label: "Background",        token: "--background", value: "#FFFFFF",           type: "color" },
+      { label: "Overlay",           token: "black/50",     value: "rgba(0,0,0,0.5)",   type: "color" },
+      { label: "Action button bg",  token: "--primary",    value: "#013229",           type: "color" },
+      { label: "Cancel border",     token: "--border",     value: "#E5E5E5",           type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Title size",        token: "text-lg",      value: "1.125rem / 18px",  type: "size" },
+      { label: "Title weight",      token: "font-semibold", value: "600",             type: "size" },
+      { label: "Description size",  token: "text-sm",      value: "0.875rem / 14px", type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
+    ]},
+    { title: "Shadow", items: [
+      { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(0,0,0,0.1)", type: "shadow" },
+    ]},
+  ],
+  "Sheet": [
+    { title: "Colors", items: [
+      { label: "Background", token: "--background", value: "#FFFFFF",          type: "color" },
+      { label: "Border",     token: "--border",     value: "#E5E5E5",          type: "color" },
+      { label: "Overlay",    token: "black/50",     value: "rgba(0,0,0,0.5)", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Title size",   token: "text-lg",      value: "1.125rem / 18px", type: "size" },
+      { label: "Title weight", token: "font-semibold", value: "600",            type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Padding", token: "p-6", value: "1.5rem / 24px", type: "size" },
+    ]},
+  ],
+  "Progress & Slider": [
+    { title: "Colors", items: [
+      { label: "Track background",  token: "--muted",       value: "#F5F5F5", type: "color" },
+      { label: "Progress fill",     token: "--primary",     value: "#013229", type: "color" },
+      { label: "Thumb background",  token: "--background",  value: "#FFFFFF", type: "color" },
+      { label: "Thumb border",      token: "--primary",     value: "#013229", type: "color" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Track / thumb", token: "rounded-full", value: "9999px", type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Track height", token: "h-2",    value: "0.5rem / 8px",   type: "size" },
+      { label: "Thumb size",   token: "h-5 w-5", value: "1.25rem / 20px", type: "size" },
+    ]},
+  ],
+  "Radio Group & Textarea": [
+    { title: "Colors", items: [
+      { label: "Radio border",      token: "--input",      value: "#E5E5E5", type: "color" },
+      { label: "Radio selected",    token: "--primary",    value: "#013229", type: "color" },
+      { label: "Textarea border",   token: "--input",      value: "#E5E5E5", type: "color" },
+      { label: "Textarea background", token: "--background", value: "#FFFFFF", type: "color" },
+      { label: "Focus ring",        token: "--ring",       value: "#013229", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Radio",    token: "rounded-full", value: "9999px",  type: "size" },
+      { label: "Textarea", token: "rounded-md",   value: "≈ 10px",  type: "size" },
+    ]},
+  ],
+  "Toggle & Toggle Group": [
+    { title: "Colors", items: [
+      { label: "Default bg",    token: "transparent",       value: "transparent", type: "color" },
+      { label: "Hover bg",      token: "--muted",           value: "#F5F5F5",    type: "color" },
+      { label: "Active bg",     token: "--accent",          value: "#61CAA0",    type: "color" },
+      { label: "Active text",   token: "--accent-foreground", value: "#013229",  type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius", token: "rounded-md", value: "≈ 10px", type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Height",    token: "h-10", value: "2.5rem / 40px",  type: "size" },
+      { label: "Padding x", token: "px-3", value: "0.75rem / 12px", type: "size" },
+    ]},
+  ],
+  "Skeleton": [
+    { title: "Colors", items: [
+      { label: "Background", token: "--muted", value: "#F5F5F5", type: "color" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
+    ]},
+    { title: "Animation", items: [
+      { label: "Effect", token: "animate-pulse", value: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite", type: "font" },
+    ]},
+  ],
+  "Scroll Area": [
+    { title: "Colors", items: [
+      { label: "Scrollbar thumb", token: "--border", value: "#E5E5E5", type: "color" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Scrollbar width", token: "w-2.5", value: "0.625rem / 10px", type: "size" },
+    ]},
+  ],
+  "Popover & Hover Card": [
+    { title: "Colors", items: [
+      { label: "Background", token: "--popover",            value: "#FFFFFF", type: "color" },
+      { label: "Text",       token: "--popover-foreground", value: "#333333", type: "color" },
+      { label: "Border",     token: "--border",             value: "#E5E5E5", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
+    ]},
+    { title: "Shadow", items: [
+      { label: "Elevation", token: "--shadow-md", value: "0 4px 6px rgba(0,0,0,0.1)", type: "shadow" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Padding", token: "p-4", value: "1rem / 16px", type: "size" },
+    ]},
+  ],
+  "Menubar & Navigation Menu": [
+    { title: "Colors", items: [
+      { label: "Background",    token: "--background", value: "#FFFFFF", type: "color" },
+      { label: "Border",        token: "--border",     value: "#E5E5E5", type: "color" },
+      { label: "Active item bg", token: "--accent",    value: "#61CAA0", type: "color" },
+      { label: "Text",          token: "--foreground", value: "#333333", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size",   token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Font weight", token: "font-medium", value: "500",             type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Item radius", token: "rounded-sm", value: "≈ 6px", type: "size" },
+    ]},
+  ],
+  "Collapsible & Context Menu": [
+    { title: "Colors", items: [
+      { label: "Background",  token: "--popover",           value: "#FFFFFF", type: "color" },
+      { label: "Border",      token: "--border",            value: "#E5E5E5", type: "color" },
+      { label: "Hover bg",    token: "--accent",            value: "#61CAA0", type: "color" },
+      { label: "Hover text",  token: "--accent-foreground", value: "#013229", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Menu radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
+    ]},
+    { title: "Shadow", items: [
+      { label: "Elevation", token: "--shadow-md", value: "0 4px 6px rgba(0,0,0,0.1)", type: "shadow" },
+    ]},
+  ],
+  "Breadcrumb & Pagination": [
+    { title: "Colors", items: [
+      { label: "Active text",      token: "--foreground",       value: "#333333", type: "color" },
+      { label: "Muted text",       token: "--muted-foreground", value: "#737373", type: "color" },
+      { label: "Active page bg",   token: "--primary",          value: "#013229", type: "color" },
+      { label: "Active page text", token: "--primary-foreground", value: "#F0FBF8", type: "color" },
+      { label: "Page border",      token: "--border",           value: "#E5E5E5", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Page button", token: "rounded-md", value: "≈ 10px", type: "size" },
+    ]},
+  ],
+  "Aspect Ratio & Carousel": [
+    { title: "Colors", items: [
+      { label: "Container bg",  token: "--muted",            value: "#F5F5F5", type: "color" },
+      { label: "Active dot",    token: "--primary",          value: "#013229", type: "color" },
+      { label: "Inactive dot",  token: "--muted-foreground", value: "#737373", type: "color" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Card radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
+    ]},
+  ],
+  "Calendar": [
+    { title: "Colors", items: [
+      { label: "Selected day bg",   token: "--primary",          value: "#013229", type: "color" },
+      { label: "Selected day text", token: "--primary-foreground", value: "#F0FBF8", type: "color" },
+      { label: "Today / hover bg",  token: "--accent",           value: "#61CAA0", type: "color" },
+      { label: "Today text",        token: "--accent-foreground", value: "#013229", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Day button", token: "rounded-md", value: "≈ 10px", type: "size" },
+    ]},
+  ],
+  "Command": [
+    { title: "Colors", items: [
+      { label: "Background",     token: "--popover",          value: "#FFFFFF", type: "color" },
+      { label: "Border",         token: "--border",           value: "#E5E5E5", type: "color" },
+      { label: "Active item bg", token: "--accent",           value: "#61CAA0", type: "color" },
+      { label: "Group heading",  token: "--muted-foreground", value: "#737373", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Container", token: "--radius", value: "0.75rem / 12px", type: "size" },
+    ]},
+    { title: "Shadow", items: [
+      { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(0,0,0,0.1)", type: "shadow" },
+    ]},
+  ],
+  "Drawer": [
+    { title: "Colors", items: [
+      { label: "Background", token: "--background",     value: "#FFFFFF",           type: "color" },
+      { label: "Handle",     token: "--muted-foreground", value: "rgba(115,115,115,0.3)", type: "color" },
+      { label: "Overlay",    token: "black/40",         value: "rgba(0,0,0,0.4)",  type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Title size",   token: "text-lg",       value: "1.125rem / 18px", type: "size" },
+      { label: "Title weight", token: "font-semibold", value: "600",             type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Top radius", token: "rounded-t-[10px]", value: "10px (top only)", type: "size" },
+    ]},
+  ],
+  "Input OTP": [
+    { title: "Colors", items: [
+      { label: "Cell background",  token: "--background", value: "#FFFFFF", type: "color" },
+      { label: "Cell border",      token: "--input",      value: "#E5E5E5", type: "color" },
+      { label: "Active cell border", token: "--ring",     value: "#013229", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size",   token: "text-base",   value: "1rem / 16px", type: "size" },
+      { label: "Font weight", token: "font-medium", value: "500",         type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Cell radius", token: "rounded-md", value: "≈ 10px", type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Cell size", token: "h-10 w-10", value: "2.5rem / 40px square", type: "size" },
+    ]},
+  ],
+  "Sonner (Toast)": [
+    { title: "Colors", items: [
+      { label: "Background",         token: "--background", value: "#FFFFFF", type: "color" },
+      { label: "Border",             token: "--border",     value: "#E5E5E5", type: "color" },
+      { label: "Success indicator",  token: "--success",    value: "#3BB688", type: "color" },
+      { label: "Error indicator",    token: "--destructive", value: "#DC2626", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size",   token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Font weight", token: "font-medium", value: "500",             type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
+    ]},
+    { title: "Shadow", items: [
+      { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(0,0,0,0.1)", type: "shadow" },
+    ]},
+  ],
+  "Resizable": [
+    { title: "Colors", items: [
+      { label: "Handle color",  token: "--border",           value: "#E5E5E5", type: "color" },
+      { label: "Handle hover",  token: "--muted-foreground", value: "#737373", type: "color" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Handle width",    token: "w-px", value: "1px",          type: "size" },
+      { label: "Hit area width",  token: "w-4",  value: "1rem / 16px",  type: "size" },
+    ]},
+  ],
+  "Chart": [
+    { title: "Colors", items: [
+      { label: "Primary series",   token: "--primary",          value: "#013229", type: "color" },
+      { label: "Secondary series", token: "--secondary",        value: "#FFD653", type: "color" },
+      { label: "Accent series",    token: "--accent",           value: "#61CAA0", type: "color" },
+      { label: "Grid lines",       token: "--border",           value: "#E5E5E5", type: "color" },
+      { label: "Axis labels",      token: "--muted-foreground", value: "#737373", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Axis label size", token: "text-xs", value: "0.75rem / 12px", type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Bar radius", token: "rounded-sm", value: "2px", type: "size" },
+    ]},
+  ],
+  "Sidebar": [
+    { title: "Colors", items: [
+      { label: "Background",   token: "--sidebar",           value: "#013229", type: "color" },
+      { label: "Text",         token: "--sidebar-foreground", value: "#F0FBF8", type: "color" },
+      { label: "Active item",  token: "--sidebar-primary",   value: "#61CAA0", type: "color" },
+      { label: "Border",       token: "--sidebar-border",    value: "#065A45", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Item font size",   token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Item font weight", token: "font-medium", value: "500",             type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Item radius", token: "rounded-md", value: "≈ 10px", type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Sidebar width",     token: "w-64", value: "16rem / 256px", type: "size" },
+      { label: "Collapsed width",   token: "w-12", value: "3rem / 48px",   type: "size" },
+    ]},
+  ],
+  "Spinner": [
+    { title: "Colors", items: [
+      { label: "Track color",  token: "--primary",  value: "#013229",    type: "color" },
+      { label: "Gap segment",  token: "transparent", value: "transparent", type: "color" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Size sm",      token: "h-4 w-4",   value: "1rem / 16px",  type: "size" },
+      { label: "Size md",      token: "h-6 w-6",   value: "1.5rem / 24px", type: "size" },
+      { label: "Size lg",      token: "h-8 w-8",   value: "2rem / 32px",  type: "size" },
+      { label: "Border width", token: "border-2",  value: "2px",          type: "size" },
+    ]},
+    { title: "Animation", items: [
+      { label: "Effect", token: "animate-spin", value: "spin 1s linear infinite", type: "font" },
+    ]},
+  ],
+  "Kbd": [
+    { title: "Colors", items: [
+      { label: "Background", token: "--muted",   value: "#F5F5F5", type: "color" },
+      { label: "Border",     token: "--border",  value: "#E5E5E5", type: "color" },
+      { label: "Text",       token: "--foreground", value: "#333333", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font family", token: "--font-mono", value: "Space Mono",      type: "font" },
+      { label: "Font size",   token: "text-xs",     value: "0.75rem / 12px", type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius", token: "rounded", value: "≈ 6px", type: "size" },
+    ]},
+    { title: "Shadow", items: [
+      { label: "Bottom elevation", token: "--shadow-sm", value: "0 1px 2px rgba(0,0,0,0.05)", type: "shadow" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Padding x", token: "px-1.5", value: "0.375rem / 6px", type: "size" },
+      { label: "Padding y", token: "py-0.5", value: "0.125rem / 2px", type: "size" },
+    ]},
+  ],
+  "Native Select": [
+    { title: "Colors", items: [
+      { label: "Background", token: "--background", value: "#FFFFFF", type: "color" },
+      { label: "Border",     token: "--input",      value: "#E5E5E5", type: "color" },
+      { label: "Text",       token: "--foreground", value: "#333333", type: "color" },
+      { label: "Focus ring", token: "--ring",       value: "#013229", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius", token: "rounded-md", value: "≈ 10px", type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Height",    token: "h-10", value: "2.5rem / 40px",  type: "size" },
+      { label: "Padding x", token: "px-3", value: "0.75rem / 12px", type: "size" },
+    ]},
+  ],
+  "Input Group": [
+    { title: "Colors", items: [
+      { label: "Addon background",  token: "--muted",            value: "#F5F5F5", type: "color" },
+      { label: "Border",            token: "--input",            value: "#E5E5E5", type: "color" },
+      { label: "Input background",  token: "--background",       value: "#FFFFFF", type: "color" },
+      { label: "Icon / addon text", token: "--muted-foreground", value: "#737373", type: "color" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Outer radius", token: "rounded-md", value: "≈ 10px", type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Height",       token: "h-10", value: "2.5rem / 40px",  type: "size" },
+      { label: "Addon padding", token: "px-3", value: "0.75rem / 12px", type: "size" },
+    ]},
+  ],
+  "Button Group": [
+    { title: "Colors", items: [
+      { label: "Border",          token: "--input",              value: "#E5E5E5", type: "color" },
+      { label: "Background",      token: "--background",         value: "#FFFFFF", type: "color" },
+      { label: "Active segment",  token: "--primary",            value: "#013229", type: "color" },
+      { label: "Active text",     token: "--primary-foreground", value: "#F0FBF8", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size",   token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Font weight", token: "font-medium", value: "500",             type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Edge items (first/last)", token: "rounded-md", value: "≈ 10px (edges only)", type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Height",    token: "h-9",  value: "2.25rem / 36px", type: "size" },
+      { label: "Padding x", token: "px-4", value: "1rem / 16px",    type: "size" },
+    ]},
+  ],
+  "Empty": [
+    { title: "Colors", items: [
+      { label: "Icon background",   token: "--muted",            value: "#F5F5F5", type: "color" },
+      { label: "Icon color",        token: "--muted-foreground", value: "#737373", type: "color" },
+      { label: "Title text",        token: "--foreground",       value: "#333333", type: "color" },
+      { label: "Description text",  token: "--muted-foreground", value: "#737373", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Title size",        token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Title weight",      token: "font-medium", value: "500",             type: "size" },
+      { label: "Description size",  token: "text-xs",     value: "0.75rem / 12px",  type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Icon container", token: "rounded-full", value: "9999px", type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Icon size", token: "h-12 w-12", value: "3rem / 48px", type: "size" },
+    ]},
+  ],
+  "Field": [
+    { title: "Colors", items: [
+      { label: "Label text",  token: "--foreground",       value: "#333333", type: "color" },
+      { label: "Hint text",   token: "--muted-foreground", value: "#737373", type: "color" },
+      { label: "Error text",  token: "--destructive",      value: "#DC2626", type: "color" },
+      { label: "Input border", token: "--input",           value: "#E5E5E5", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Label size",      token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Label weight",    token: "font-medium", value: "500",             type: "size" },
+      { label: "Hint/error size", token: "text-xs",     value: "0.75rem / 12px",  type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Stack gap", token: "space-y-2", value: "0.5rem / 8px", type: "size" },
+    ]},
+  ],
+  "Item": [
+    { title: "Colors", items: [
+      { label: "Background",  token: "--card",   value: "#FFFFFF", type: "color" },
+      { label: "Border",      token: "--border", value: "#E5E5E5", type: "color" },
+      { label: "Hover bg",    token: "--muted",  value: "#F5F5F5", type: "color" },
+      { label: "Avatar bg",   token: "--primary", value: "#013229", type: "color" },
+      { label: "Avatar text", token: "--primary-foreground", value: "#F0FBF8", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Primary text size",   token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Primary text weight", token: "font-medium", value: "500",             type: "size" },
+      { label: "Secondary text size", token: "text-xs",     value: "0.75rem / 12px",  type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Padding",      token: "px-3 py-2", value: "0.75rem × 0.5rem", type: "size" },
+      { label: "Internal gap", token: "gap-3",     value: "0.75rem / 12px",    type: "size" },
+    ]},
+  ],
+  "Avatar": [
+    { title: "Colors", items: [
+      { label: "Default background", token: "--primary",          value: "#013229", type: "color" },
+      { label: "Default text",       token: "--primary-foreground", value: "#F0FBF8", type: "color" },
+      { label: "Fallback background", token: "--muted",           value: "#F5F5F5", type: "color" },
+      { label: "Fallback text",      token: "--muted-foreground", value: "#737373", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Initials size",   token: "text-xs",   value: "0.75rem / 12px", type: "size" },
+      { label: "Initials weight", token: "font-bold", value: "700",            type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Shape", token: "rounded-full", value: "9999px (circle)", type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Default size", token: "h-10 w-10", value: "2.5rem / 40px", type: "size" },
+      { label: "Small size",   token: "h-8 w-8",   value: "2rem / 32px",   type: "size" },
+    ]},
+  ],
+  "Dialog": [
+    { title: "Colors", items: [
+      { label: "Background", token: "--background", value: "#FFFFFF",           type: "color" },
+      { label: "Border",     token: "--border",     value: "#E5E5E5",           type: "color" },
+      { label: "Overlay",    token: "black/50",     value: "rgba(0,0,0,0.5)",  type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Title size",        token: "text-lg",       value: "1.125rem / 18px", type: "size" },
+      { label: "Title weight",      token: "font-semibold", value: "600",             type: "size" },
+      { label: "Description size",  token: "text-sm",       value: "0.875rem / 14px", type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
+    ]},
+    { title: "Shadow", items: [
+      { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(0,0,0,0.1)", type: "shadow" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Padding",    token: "p-6",       value: "1.5rem / 24px",  type: "size" },
+      { label: "Max width",  token: "max-w-lg",  value: "32rem / 512px",  type: "size" },
+    ]},
+  ],
+  "Dropdown Menu": [
+    { title: "Colors", items: [
+      { label: "Background",      token: "--popover",           value: "#FFFFFF", type: "color" },
+      { label: "Border",          token: "--border",            value: "#E5E5E5", type: "color" },
+      { label: "Hover item bg",   token: "--accent",            value: "#61CAA0", type: "color" },
+      { label: "Hover item text", token: "--accent-foreground", value: "#013229", type: "color" },
+      { label: "Destructive item", token: "--destructive",      value: "#DC2626", type: "color" },
+      { label: "Group label",     token: "--muted-foreground",  value: "#737373", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Item font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Container", token: "--radius",   value: "0.75rem / 12px", type: "size" },
+      { label: "Item",      token: "rounded-sm", value: "≈ 6px",          type: "size" },
+    ]},
+    { title: "Shadow", items: [
+      { label: "Elevation", token: "--shadow-md", value: "0 4px 6px rgba(0,0,0,0.1)", type: "shadow" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Item padding", token: "px-2 py-1.5", value: "0.5rem × 0.375rem", type: "size" },
+    ]},
+  ],
+  "Tabs": [
+    { title: "Colors", items: [
+      { label: "Tab list bg",    token: "--muted",            value: "#F5F5F5", type: "color" },
+      { label: "Active tab bg",  token: "--background",       value: "#FFFFFF", type: "color" },
+      { label: "Active tab text", token: "--foreground",      value: "#333333", type: "color" },
+      { label: "Inactive text",  token: "--muted-foreground", value: "#737373", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size",   token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Font weight", token: "font-medium", value: "500",             type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "List radius", token: "rounded-md", value: "≈ 10px", type: "size" },
+      { label: "Tab radius",  token: "rounded-sm", value: "≈ 6px",  type: "size" },
+    ]},
+    { title: "Shadow", items: [
+      { label: "Active tab", token: "--shadow-sm", value: "0 1px 2px rgba(0,0,0,0.05)", type: "shadow" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Tab padding", token: "px-3 py-1.5", value: "0.75rem × 0.375rem", type: "size" },
+    ]},
+  ],
+  "Tooltip": [
+    { title: "Colors", items: [
+      { label: "Background", token: "--primary",            value: "#013229", type: "color" },
+      { label: "Text",       token: "--primary-foreground", value: "#F0FBF8", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size",   token: "text-xs",     value: "0.75rem / 12px", type: "size" },
+      { label: "Font weight", token: "font-medium", value: "500",            type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius", token: "rounded-md", value: "≈ 10px", type: "size" },
+    ]},
+    { title: "Shadow", items: [
+      { label: "Elevation", token: "--shadow-md", value: "0 4px 6px rgba(0,0,0,0.1)", type: "shadow" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Padding", token: "px-3 py-1.5", value: "0.75rem × 0.375rem", type: "size" },
+    ]},
+  ],
+};
+
+function DesignSpecs({ title }: { title: string | null }) {
+  const [open, setOpen] = useState(true);
+  const groups = title ? COMPONENT_SPECS[title] : undefined;
+  if (!groups || groups.length === 0) return null;
+
+  const shadowPreview = (value: string) => (
+    <div
+      className="h-5 w-8 rounded shrink-0 bg-background border border-border/40"
+      style={{ boxShadow: value }}
+    />
+  );
+
+  return (
+    <div className="border-t border-border mt-4">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between gap-2 py-5 text-left"
+      >
+        <div className="flex items-center gap-2">
+          <SlidersHorizontal className="h-4 w-4 text-muted-foreground shrink-0" />
+          <h3 className="text-sm font-semibold tracking-tight">Design tokens</h3>
+        </div>
+        <ChevronDown
+          className={`h-4 w-4 text-muted-foreground transition-transform duration-200 shrink-0 ${open ? "rotate-180" : ""}`}
+        />
+      </button>
+      {open && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 pb-8">
+          {groups.map((group) => (
+            <div key={group.title} className="space-y-3">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70">
+                {group.title}
+              </p>
+              <div className="space-y-2.5">
+                {group.items.map((item) => (
+                  <div key={item.label} className="flex items-center gap-2.5 min-w-0">
+                    {item.type === "color" && (
+                      <div
+                        className="h-5 w-5 rounded-[5px] shrink-0 border border-black/10 shadow-sm"
+                        style={{ backgroundColor: item.value }}
+                      />
+                    )}
+                    {item.type === "shadow" && shadowPreview(item.value)}
+                    {(item.type === "size" || item.type === "font") && (
+                      <span className="font-mono text-[10px] bg-muted text-muted-foreground px-1.5 py-0.5 rounded shrink-0 leading-none">
+                        {item.value.split(" ")[0]}
+                      </span>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-medium text-foreground truncate leading-tight">{item.label}</p>
+                      <p className="text-[10px] font-mono text-muted-foreground/60 truncate mt-0.5">
+                        {item.type === "color" ? item.value : item.token}
+                      </p>
+                    </div>
+                    {item.type === "color" && (
+                      <span className="font-mono text-[10px] text-muted-foreground shrink-0 hidden sm:block">
+                        {item.token}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    COMPONENTS PAGE
 ═══════════════════════════════════════════════════════════ */
 
@@ -857,48 +1626,50 @@ function ComponentsPage() {
   const [view, setView] = useState<"grid" | "detail">("grid");
   const [selectedComponent, setSelectedComponent] = useState<string | null>(null);
 
-  const componentMeta: { title: string; description: string; category: string; preview: React.ReactNode }[] = [
-    { title: "Typography",               category: "Foundation", description: "Text scales and font styles.",                  preview: <div className="space-y-1 pointer-events-none select-none"><p className="text-sm font-bold tracking-tight">Heading</p><p className="text-xs text-muted-foreground">Body text sample</p><p className="text-[10px] font-mono text-muted-foreground/60">Code</p></div> },
-    { title: "Buttons",                  category: "Actions",    description: "Seven variants × four sizes.",                  preview: <div className="flex flex-wrap gap-1.5 pointer-events-none select-none"><Button size="sm">Primary</Button><Button size="sm" variant="outline">Outline</Button><Button size="sm" variant="ghost">Ghost</Button></div> },
-    { title: "Badges",                   category: "Display",    description: "Status indicators and labels.",                 preview: <div className="flex flex-wrap gap-1.5 pointer-events-none select-none"><Badge>Default</Badge><Badge variant="secondary">Secondary</Badge><Badge variant="outline">Outline</Badge></div> },
-    { title: "Cards",                    category: "Layout",     description: "Content containers with header and footer.",    preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card"><p className="font-semibold text-xs">Card title</p><p className="text-muted-foreground text-[10px] mt-0.5">Short description here.</p></div> },
-    { title: "Form Controls",            category: "Forms",      description: "Inputs, selects, checkboxes, and switches.",    preview: <div className="space-y-1.5 pointer-events-none select-none w-full"><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">Email address</span></div><div className="flex items-center gap-1.5"><div className="h-3.5 w-3.5 rounded-sm border border-input bg-background" /><span className="text-[10px] text-muted-foreground">Accept terms</span></div></div> },
-    { title: "Alerts",                   category: "Feedback",   description: "Four semantic variants.",                       preview: <div className="pointer-events-none select-none border border-border rounded-md p-2.5 w-full flex gap-2 items-start"><div className="h-3 w-3 rounded-full bg-primary mt-0.5 shrink-0" /><div><p className="text-[10px] font-semibold">Alert title</p><p className="text-[9px] text-muted-foreground mt-0.5">Alert description text.</p></div></div> },
-    { title: "Table",                    category: "Data",       description: "Data display with status badges.",              preview: <div className="pointer-events-none select-none w-full text-[9px]"><div className="flex gap-3 border-b border-border pb-1 mb-1 font-semibold text-muted-foreground"><span className="flex-1">Invoice</span><span>Status</span><span>Amount</span></div><div className="flex gap-3"><span className="flex-1 text-foreground">INV-001</span><Badge className="text-[8px] h-3.5 px-1">Paid</Badge><span>$250</span></div></div> },
-    { title: "Accordion",                category: "Navigation", description: "Collapsible sections.",                         preview: <div className="pointer-events-none select-none w-full space-y-1"><div className="border-b border-border pb-1.5 flex items-center justify-between"><span className="text-[10px] font-medium">Is it accessible?</span><span className="text-[10px] text-muted-foreground">+</span></div><div className="border-b border-border pb-1.5 flex items-center justify-between"><span className="text-[10px] font-medium">Is it styled?</span><span className="text-[10px] text-muted-foreground">+</span></div></div> },
-    { title: "Alert Dialog",             category: "Overlay",    description: "Blocking confirmation dialogs.",                preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card shadow-sm"><p className="text-[10px] font-semibold">Are you sure?</p><p className="text-[9px] text-muted-foreground mt-0.5">This action cannot be undone.</p><div className="flex gap-1.5 mt-2"><div className="h-5 px-2 rounded bg-destructive flex items-center"><span className="text-[9px] text-white">Delete</span></div><div className="h-5 px-2 rounded border border-border flex items-center"><span className="text-[9px]">Cancel</span></div></div></div> },
-    { title: "Sheet",                    category: "Overlay",    description: "Slide-in panels from any edge.",                preview: <div className="pointer-events-none select-none flex gap-2 w-full"><Button size="sm" variant="outline" className="text-[10px] h-6 px-2">Open →</Button><div className="flex-1 border-l border-border pl-2"><p className="text-[10px] font-medium">Sheet title</p><p className="text-[9px] text-muted-foreground">Content here.</p></div></div> },
-    { title: "Progress & Slider",        category: "Forms",      description: "Progress bars and range inputs.",               preview: <div className="space-y-2 pointer-events-none select-none w-full"><div className="h-2 rounded-full bg-muted overflow-hidden"><div className="h-full bg-primary rounded-full" style={{width:"60%"}} /></div><div className="h-2 rounded-full bg-muted relative"><div className="absolute left-[35%] top-1/2 -translate-y-1/2 h-4 w-4 rounded-full border-2 border-primary bg-background shadow" /></div></div> },
-    { title: "Radio Group & Textarea",   category: "Forms",      description: "Radio buttons and multi-line inputs.",          preview: <div className="space-y-1.5 pointer-events-none select-none"><div className="flex items-center gap-1.5"><div className="h-3 w-3 rounded-full border-2 border-primary bg-background flex items-center justify-center"><div className="h-1.5 w-1.5 rounded-full bg-primary" /></div><span className="text-[10px]">Option 1</span></div><div className="h-10 rounded-md border border-input bg-background w-full" /></div> },
-    { title: "Toggle & Toggle Group",    category: "Actions",    description: "Toggle and grouped toggle buttons.",            preview: <div className="flex gap-1 pointer-events-none select-none"><div className="h-7 w-7 rounded border border-border flex items-center justify-center bg-muted"><span className="text-[10px] font-bold">B</span></div><div className="h-7 w-7 rounded border border-border flex items-center justify-center"><span className="text-[10px] italic">I</span></div><div className="h-7 w-7 rounded border border-border flex items-center justify-center"><span className="text-[10px] underline">U</span></div></div> },
-    { title: "Skeleton",                 category: "Feedback",   description: "Loading placeholder states.",                   preview: <div className="flex items-center gap-2 pointer-events-none select-none w-full"><div className="h-8 w-8 rounded-full bg-muted animate-pulse shrink-0" /><div className="flex-1 space-y-1.5"><div className="h-2.5 rounded bg-muted animate-pulse" /><div className="h-2.5 rounded bg-muted animate-pulse w-3/4" /></div></div> },
-    { title: "Scroll Area",              category: "Layout",     description: "Custom-styled scrollable containers.",          preview: <div className="pointer-events-none select-none border border-border rounded-md p-2 h-14 w-full overflow-hidden relative"><div className="space-y-0.5"><p className="text-[9px] text-muted-foreground">Item 1</p><p className="text-[9px] text-muted-foreground">Item 2</p><p className="text-[9px] text-muted-foreground">Item 3</p></div><div className="absolute right-1 top-1 w-1 h-8 rounded-full bg-muted" /></div> },
-    { title: "Popover & Hover Card",     category: "Overlay",    description: "Floating content on click or hover.",          preview: <div className="pointer-events-none select-none relative flex gap-2"><Button size="sm" variant="outline" className="text-[10px] h-6 px-2">Open</Button><div className="border border-border rounded-md p-2 shadow-md bg-popover text-[9px] text-muted-foreground">Popover content</div></div> },
-    { title: "Menubar & Navigation Menu",category: "Navigation", description: "Desktop menus and site navigation.",            preview: <div className="pointer-events-none select-none flex gap-1 border border-border rounded-md p-1 bg-background w-full"><span className="text-[10px] px-2 py-0.5 rounded hover:bg-muted">File</span><span className="text-[10px] px-2 py-0.5 rounded bg-muted">Edit</span><span className="text-[10px] px-2 py-0.5 rounded">View</span></div> },
-    { title: "Collapsible & Context Menu",category:"Navigation", description: "Expand/collapse and right-click menus.",        preview: <div className="pointer-events-none select-none w-full space-y-1"><div className="flex items-center justify-between border border-border rounded px-2 py-1"><span className="text-[10px] font-medium">Toggle content</span><span className="text-[10px] text-muted-foreground">↓</span></div><div className="border border-dashed border-border rounded px-2 py-1"><span className="text-[9px] text-muted-foreground">Collapsed content</span></div></div> },
-    { title: "Breadcrumb & Pagination",  category: "Navigation", description: "Trails and page navigation.",                   preview: <div className="space-y-2 pointer-events-none select-none"><div className="flex items-center gap-1 text-[9px] text-muted-foreground"><span className="text-foreground">Home</span><span>/</span><span className="text-foreground">Components</span><span>/</span><span className="text-primary">Button</span></div><div className="flex items-center gap-1"><div className="h-5 w-5 rounded border border-border flex items-center justify-center text-[9px]">‹</div><div className="h-5 w-5 rounded bg-primary text-primary-foreground flex items-center justify-center text-[9px]">1</div><div className="h-5 w-5 rounded border border-border flex items-center justify-center text-[9px]">2</div><div className="h-5 w-5 rounded border border-border flex items-center justify-center text-[9px]">›</div></div></div> },
-    { title: "Aspect Ratio & Carousel",  category: "Layout",     description: "Fixed-ratio containers and slideshows.",        preview: <div className="pointer-events-none select-none flex gap-1 items-center w-full"><div className="h-12 flex-1 rounded-md bg-muted flex items-center justify-center text-[9px] text-muted-foreground">1</div><div className="h-12 flex-1 rounded-md border-2 border-primary bg-muted/50 flex items-center justify-center text-[9px] font-bold">2</div><div className="h-12 flex-1 rounded-md bg-muted flex items-center justify-center text-[9px] text-muted-foreground">3</div></div> },
-    { title: "Calendar",                 category: "Forms",      description: "Date picker with range selection.",             preview: <div className="pointer-events-none select-none w-full text-[9px]"><div className="flex justify-between mb-1 font-medium"><span>March 2026</span><div className="flex gap-1"><span>‹</span><span>›</span></div></div><div className="grid grid-cols-7 gap-0.5 text-center text-muted-foreground"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span><span className="rounded bg-primary text-primary-foreground">1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div> },
-    { title: "Command",                  category: "Navigation", description: "Keyboard-driven command palette.",              preview: <div className="pointer-events-none select-none border border-border rounded-lg w-full overflow-hidden bg-popover"><div className="flex items-center border-b border-border px-2 py-1 gap-1"><Search className="h-2.5 w-2.5 text-muted-foreground" /><span className="text-[9px] text-muted-foreground">Search commands…</span></div><div className="p-1 space-y-0.5"><div className="rounded px-2 py-0.5 bg-accent text-[9px]">Calendar</div><div className="rounded px-2 py-0.5 text-[9px] text-muted-foreground">Settings</div></div></div> },
-    { title: "Drawer",                   category: "Overlay",    description: "Mobile-optimised bottom sheet.",                preview: <div className="pointer-events-none select-none w-full border border-border rounded-t-xl p-3 bg-card"><div className="mx-auto h-1 w-8 rounded bg-muted mb-2" /><p className="text-[10px] font-semibold">Drawer title</p><p className="text-[9px] text-muted-foreground mt-0.5">Swipe down to close.</p></div> },
-    { title: "Input OTP",                category: "Forms",      description: "One-time password input.",                      preview: <div className="flex gap-1 pointer-events-none select-none"><div className="h-7 w-7 rounded border-2 border-primary bg-background flex items-center justify-center text-xs font-bold">1</div><div className="h-7 w-7 rounded border border-input bg-background flex items-center justify-center text-xs">2</div><div className="h-7 w-7 rounded border border-input bg-background flex items-center justify-center text-xs">3</div><span className="flex items-center text-muted-foreground">—</span><div className="h-7 w-7 rounded border border-input bg-background" /><div className="h-7 w-7 rounded border border-input bg-background" /><div className="h-7 w-7 rounded border border-input bg-background" /></div> },
-    { title: "Sonner (Toast)",           category: "Feedback",   description: "Notification toasts.",                          preview: <div className="pointer-events-none select-none space-y-1 w-full"><div className="border border-border rounded-lg px-3 py-2 bg-card flex items-center gap-2 shadow-sm"><div className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" /><span className="text-[10px] font-medium">Saved successfully!</span></div><div className="border border-border rounded-lg px-3 py-2 bg-card flex items-center gap-2 shadow-sm"><div className="h-2 w-2 rounded-full bg-destructive shrink-0" /><span className="text-[10px] font-medium">Something went wrong</span></div></div> },
-    { title: "Resizable",                category: "Layout",     description: "Drag-to-resize panel layouts.",                 preview: <div className="pointer-events-none select-none flex h-12 w-full rounded border border-border overflow-hidden"><div className="flex-1 flex items-center justify-center bg-muted/30 text-[9px] text-muted-foreground">Panel A</div><div className="w-px bg-border relative flex items-center justify-center"><div className="w-1 h-4 rounded bg-border" /></div><div className="flex-1 flex items-center justify-center bg-muted/30 text-[9px] text-muted-foreground">Panel B</div></div> },
-    { title: "Chart",                    category: "Data",       description: "Data visualisation with brand tokens.",         preview: <div className="pointer-events-none select-none flex items-end gap-1 h-12 w-full px-1"><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"40%"}} /><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"60%"}} /><div className="flex-1 bg-primary rounded-sm" style={{height:"100%"}} /><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"75%"}} /><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"50%"}} /></div> },
-    { title: "Sidebar",                  category: "Layout",     description: "Collapsible navigation sidebar.",               preview: <div className="pointer-events-none select-none flex h-14 w-full rounded border border-border overflow-hidden"><div className="w-16 bg-sidebar p-2 space-y-1.5"><div className="h-2 w-8 rounded bg-sidebar-foreground/20" /><div className="h-2 w-6 rounded bg-sidebar-primary" /><div className="h-2 w-7 rounded bg-sidebar-foreground/20" /></div><div className="flex-1 bg-background p-2"><div className="h-2 w-20 rounded bg-muted mb-1.5" /><div className="h-2 w-16 rounded bg-muted" /></div></div> },
-    { title: "Spinner",                  category: "Feedback",   description: "Animated loading indicator.",                   preview: <div className="flex items-center gap-3 pointer-events-none select-none"><div className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin" /><div className="h-6 w-6 rounded-full border-2 border-primary border-t-transparent animate-spin" /><div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" /></div> },
-    { title: "Kbd",                      category: "Display",    description: "Keyboard key display.",                         preview: <div className="flex items-center gap-1 pointer-events-none select-none"><span className="inline-flex items-center rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-mono shadow-sm">⌘</span><span className="text-[10px] text-muted-foreground">+</span><span className="inline-flex items-center rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-mono shadow-sm">K</span></div> },
-    { title: "Native Select",            category: "Forms",      description: "Browser-native select element.",                preview: <div className="pointer-events-none select-none w-full h-7 rounded-md border border-input bg-background px-2 flex items-center justify-between"><span className="text-[10px] text-muted-foreground">Pick an option</span><span className="text-[10px] text-muted-foreground">▾</span></div> },
-    { title: "Input Group",              category: "Forms",      description: "Input with prefix / suffix addons.",            preview: <div className="pointer-events-none select-none flex h-7 w-full rounded-md border border-input overflow-hidden"><div className="px-2 flex items-center bg-muted border-r border-input"><Search className="h-3 w-3 text-muted-foreground" /></div><div className="flex-1 px-2 flex items-center bg-background"><span className="text-[10px] text-muted-foreground">Search…</span></div></div> },
-    { title: "Button Group",             category: "Actions",    description: "Segmented strip of attached buttons.",          preview: <div className="pointer-events-none select-none flex"><div className="h-7 px-2.5 border border-r-0 border-input rounded-l-md bg-background flex items-center text-[10px]">Left</div><div className="h-7 px-2.5 border border-input bg-muted flex items-center text-[10px] font-medium">Center</div><div className="h-7 px-2.5 border border-l-0 border-input rounded-r-md bg-background flex items-center text-[10px]">Right</div></div> },
-    { title: "Empty",                    category: "Display",    description: "Zero-state placeholder.",                       preview: <div className="pointer-events-none select-none flex flex-col items-center justify-center gap-1.5 py-2"><div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center"><FileText className="h-4 w-4 text-muted-foreground" /></div><p className="text-[10px] font-medium">No files found</p><p className="text-[9px] text-muted-foreground">Upload to get started</p></div> },
-    { title: "Field",                    category: "Forms",      description: "Form field with label, hint, and error.",       preview: <div className="pointer-events-none select-none space-y-1 w-full"><p className="text-[10px] font-medium">Email</p><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">you@example.com</span></div><p className="text-[9px] text-muted-foreground">We'll never share your email.</p></div> },
-    { title: "Item",                     category: "Display",    description: "Flexible list row primitive.",                  preview: <div className="pointer-events-none select-none divide-y divide-border rounded-md border border-border w-full overflow-hidden"><div className="flex items-center gap-2 px-2 py-1.5"><div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-[8px] text-primary-foreground font-bold shrink-0">EL</div><div className="flex-1 min-w-0"><p className="text-[10px] font-medium truncate">Erhan Lammar</p><p className="text-[9px] text-muted-foreground">Designer</p></div><Badge className="text-[8px] h-3.5 px-1">Admin</Badge></div></div> },
-    { title: "Avatar",                   category: "Display",    description: "User profile image with initials fallback.",    preview: <div className="flex items-center gap-2 pointer-events-none select-none"><div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-primary-foreground shrink-0">EL</div><div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground shrink-0">JD</div><div className="h-6 w-6 rounded-full bg-secondary flex items-center justify-center text-[9px] font-bold text-secondary-foreground shrink-0">SL</div></div> },
-    { title: "Dialog",                   category: "Overlay",    description: "Modal dialogs for focused interactions.",       preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card shadow-sm space-y-2"><p className="text-[10px] font-semibold">Edit profile</p><div className="h-5 rounded border border-input bg-background px-2 flex items-center"><span className="text-[9px] text-muted-foreground">Display name</span></div><div className="flex gap-1.5 mt-1.5"><div className="h-5 flex-1 rounded bg-primary flex items-center justify-center"><span className="text-[9px] text-primary-foreground font-medium">Save</span></div><div className="h-5 flex-1 rounded border border-border flex items-center justify-center"><span className="text-[9px]">Cancel</span></div></div></div> },
-    { title: "Dropdown Menu",            category: "Overlay",    description: "Context menus and action dropdowns.",           preview: <div className="pointer-events-none select-none w-full"><div className="border border-border rounded-md p-1 bg-popover shadow-sm space-y-0.5 w-28"><div className="rounded px-2 py-0.5 bg-accent text-[9px]">Profile</div><div className="rounded px-2 py-0.5 text-[9px] text-muted-foreground">Settings</div><div className="h-px bg-border my-0.5" /><div className="rounded px-2 py-0.5 text-[9px] text-destructive">Log out</div></div></div> },
-    { title: "Tabs",                     category: "Navigation", description: "Tab panels for switching between views.",       preview: <div className="pointer-events-none select-none w-full space-y-2"><div className="flex gap-0 border-b border-border"><span className="text-[9px] font-semibold border-b-2 border-primary pb-1 px-2 -mb-px">Account</span><span className="text-[9px] text-muted-foreground pb-1 px-2">Password</span><span className="text-[9px] text-muted-foreground pb-1 px-2">Settings</span></div><div className="space-y-1 pt-1"><div className="h-1.5 w-20 rounded bg-muted" /><div className="h-1.5 w-14 rounded bg-muted" /></div></div> },
-    { title: "Tooltip",                  category: "Overlay",    description: "Contextual hints on hover or focus.",           preview: <div className="pointer-events-none select-none flex flex-col items-center gap-2"><div className="rounded border border-border bg-popover px-2 py-1 text-[9px] shadow-md font-medium">Add to library</div><div className="h-0 w-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-border -mt-0.5" /><div className="h-6 w-6 rounded-md border border-border flex items-center justify-center"><Plus className="h-3 w-3 text-muted-foreground" /></div></div> },
+  const FIGMA_FILE = "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/Design-System-with-Claude";
+
+  const componentMeta: { title: string; description: string; category: string; preview: React.ReactNode; figmaUrl?: string }[] = [
+    { title: "Typography",               category: "Foundation", description: "Text scales and font styles.",                  figmaUrl: FIGMA_FILE, preview: <div className="space-y-1 pointer-events-none select-none"><p className="text-sm font-bold tracking-tight">Heading</p><p className="text-xs text-muted-foreground">Body text sample</p><p className="text-[10px] font-mono text-muted-foreground/60">Code</p></div> },
+    { title: "Buttons",                  category: "Actions",    description: "Seven variants × four sizes.",                  figmaUrl: FIGMA_FILE, preview: <div className="flex flex-wrap gap-1.5 pointer-events-none select-none"><Button size="sm">Primary</Button><Button size="sm" variant="outline">Outline</Button><Button size="sm" variant="ghost">Ghost</Button></div> },
+    { title: "Badges",                   category: "Display",    description: "Status indicators and labels.",                 figmaUrl: FIGMA_FILE, preview: <div className="flex flex-wrap gap-1.5 pointer-events-none select-none"><Badge>Default</Badge><Badge variant="secondary">Secondary</Badge><Badge variant="outline">Outline</Badge></div> },
+    { title: "Cards",                    category: "Layout",     description: "Content containers with header and footer.",    figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card"><p className="font-semibold text-xs">Card title</p><p className="text-muted-foreground text-[10px] mt-0.5">Short description here.</p></div> },
+    { title: "Form Controls",            category: "Forms",      description: "Inputs, selects, checkboxes, and switches.",    figmaUrl: FIGMA_FILE, preview: <div className="space-y-1.5 pointer-events-none select-none w-full"><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">Email address</span></div><div className="flex items-center gap-1.5"><div className="h-3.5 w-3.5 rounded-sm border border-input bg-background" /><span className="text-[10px] text-muted-foreground">Accept terms</span></div></div> },
+    { title: "Alerts",                   category: "Feedback",   description: "Four semantic variants.",                       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-md p-2.5 w-full flex gap-2 items-start"><div className="h-3 w-3 rounded-full bg-primary mt-0.5 shrink-0" /><div><p className="text-[10px] font-semibold">Alert title</p><p className="text-[9px] text-muted-foreground mt-0.5">Alert description text.</p></div></div> },
+    { title: "Table",                    category: "Data",       description: "Data display with status badges.",              figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full text-[9px]"><div className="flex gap-3 border-b border-border pb-1 mb-1 font-semibold text-muted-foreground"><span className="flex-1">Invoice</span><span>Status</span><span>Amount</span></div><div className="flex gap-3"><span className="flex-1 text-foreground">INV-001</span><Badge className="text-[8px] h-3.5 px-1">Paid</Badge><span>$250</span></div></div> },
+    { title: "Accordion",                category: "Navigation", description: "Collapsible sections.",                         figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full space-y-1"><div className="border-b border-border pb-1.5 flex items-center justify-between"><span className="text-[10px] font-medium">Is it accessible?</span><span className="text-[10px] text-muted-foreground">+</span></div><div className="border-b border-border pb-1.5 flex items-center justify-between"><span className="text-[10px] font-medium">Is it styled?</span><span className="text-[10px] text-muted-foreground">+</span></div></div> },
+    { title: "Alert Dialog",             category: "Overlay",    description: "Blocking confirmation dialogs.",                figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card shadow-sm"><p className="text-[10px] font-semibold">Are you sure?</p><p className="text-[9px] text-muted-foreground mt-0.5">This action cannot be undone.</p><div className="flex gap-1.5 mt-2"><div className="h-5 px-2 rounded bg-destructive flex items-center"><span className="text-[9px] text-white">Delete</span></div><div className="h-5 px-2 rounded border border-border flex items-center"><span className="text-[9px]">Cancel</span></div></div></div> },
+    { title: "Sheet",                    category: "Overlay",    description: "Slide-in panels from any edge.",                figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex gap-2 w-full"><Button size="sm" variant="outline" className="text-[10px] h-6 px-2">Open →</Button><div className="flex-1 border-l border-border pl-2"><p className="text-[10px] font-medium">Sheet title</p><p className="text-[9px] text-muted-foreground">Content here.</p></div></div> },
+    { title: "Progress & Slider",        category: "Forms",      description: "Progress bars and range inputs.",               figmaUrl: FIGMA_FILE, preview: <div className="space-y-2 pointer-events-none select-none w-full"><div className="h-2 rounded-full bg-muted overflow-hidden"><div className="h-full bg-primary rounded-full" style={{width:"60%"}} /></div><div className="h-2 rounded-full bg-muted relative"><div className="absolute left-[35%] top-1/2 -translate-y-1/2 h-4 w-4 rounded-full border-2 border-primary bg-background shadow" /></div></div> },
+    { title: "Radio Group & Textarea",   category: "Forms",      description: "Radio buttons and multi-line inputs.",          figmaUrl: FIGMA_FILE, preview: <div className="space-y-1.5 pointer-events-none select-none"><div className="flex items-center gap-1.5"><div className="h-3 w-3 rounded-full border-2 border-primary bg-background flex items-center justify-center"><div className="h-1.5 w-1.5 rounded-full bg-primary" /></div><span className="text-[10px]">Option 1</span></div><div className="h-10 rounded-md border border-input bg-background w-full" /></div> },
+    { title: "Toggle & Toggle Group",    category: "Actions",    description: "Toggle and grouped toggle buttons.",            figmaUrl: FIGMA_FILE, preview: <div className="flex gap-1 pointer-events-none select-none"><div className="h-7 w-7 rounded border border-border flex items-center justify-center bg-muted"><span className="text-[10px] font-bold">B</span></div><div className="h-7 w-7 rounded border border-border flex items-center justify-center"><span className="text-[10px] italic">I</span></div><div className="h-7 w-7 rounded border border-border flex items-center justify-center"><span className="text-[10px] underline">U</span></div></div> },
+    { title: "Skeleton",                 category: "Feedback",   description: "Loading placeholder states.",                   figmaUrl: FIGMA_FILE, preview: <div className="flex items-center gap-2 pointer-events-none select-none w-full"><div className="h-8 w-8 rounded-full bg-muted animate-pulse shrink-0" /><div className="flex-1 space-y-1.5"><div className="h-2.5 rounded bg-muted animate-pulse" /><div className="h-2.5 rounded bg-muted animate-pulse w-3/4" /></div></div> },
+    { title: "Scroll Area",              category: "Layout",     description: "Custom-styled scrollable containers.",          figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-md p-2 h-14 w-full overflow-hidden relative"><div className="space-y-0.5"><p className="text-[9px] text-muted-foreground">Item 1</p><p className="text-[9px] text-muted-foreground">Item 2</p><p className="text-[9px] text-muted-foreground">Item 3</p></div><div className="absolute right-1 top-1 w-1 h-8 rounded-full bg-muted" /></div> },
+    { title: "Popover & Hover Card",     category: "Overlay",    description: "Floating content on click or hover.",          figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none relative flex gap-2"><Button size="sm" variant="outline" className="text-[10px] h-6 px-2">Open</Button><div className="border border-border rounded-md p-2 shadow-md bg-popover text-[9px] text-muted-foreground">Popover content</div></div> },
+    { title: "Menubar & Navigation Menu",category: "Navigation", description: "Desktop menus and site navigation.",            figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex gap-1 border border-border rounded-md p-1 bg-background w-full"><span className="text-[10px] px-2 py-0.5 rounded hover:bg-muted">File</span><span className="text-[10px] px-2 py-0.5 rounded bg-muted">Edit</span><span className="text-[10px] px-2 py-0.5 rounded">View</span></div> },
+    { title: "Collapsible & Context Menu",category:"Navigation", description: "Expand/collapse and right-click menus.",        figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full space-y-1"><div className="flex items-center justify-between border border-border rounded px-2 py-1"><span className="text-[10px] font-medium">Toggle content</span><span className="text-[10px] text-muted-foreground">↓</span></div><div className="border border-dashed border-border rounded px-2 py-1"><span className="text-[9px] text-muted-foreground">Collapsed content</span></div></div> },
+    { title: "Breadcrumb & Pagination",  category: "Navigation", description: "Trails and page navigation.",                   figmaUrl: FIGMA_FILE, preview: <div className="space-y-2 pointer-events-none select-none"><div className="flex items-center gap-1 text-[9px] text-muted-foreground"><span className="text-foreground">Home</span><span>/</span><span className="text-foreground">Components</span><span>/</span><span className="text-primary">Button</span></div><div className="flex items-center gap-1"><div className="h-5 w-5 rounded border border-border flex items-center justify-center text-[9px]">‹</div><div className="h-5 w-5 rounded bg-primary text-primary-foreground flex items-center justify-center text-[9px]">1</div><div className="h-5 w-5 rounded border border-border flex items-center justify-center text-[9px]">2</div><div className="h-5 w-5 rounded border border-border flex items-center justify-center text-[9px]">›</div></div></div> },
+    { title: "Aspect Ratio & Carousel",  category: "Layout",     description: "Fixed-ratio containers and slideshows.",        figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex gap-1 items-center w-full"><div className="h-12 flex-1 rounded-md bg-muted flex items-center justify-center text-[9px] text-muted-foreground">1</div><div className="h-12 flex-1 rounded-md border-2 border-primary bg-muted/50 flex items-center justify-center text-[9px] font-bold">2</div><div className="h-12 flex-1 rounded-md bg-muted flex items-center justify-center text-[9px] text-muted-foreground">3</div></div> },
+    { title: "Calendar",                 category: "Forms",      description: "Date picker with range selection.",             figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full text-[9px]"><div className="flex justify-between mb-1 font-medium"><span>March 2026</span><div className="flex gap-1"><span>‹</span><span>›</span></div></div><div className="grid grid-cols-7 gap-0.5 text-center text-muted-foreground"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span><span className="rounded bg-primary text-primary-foreground">1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div></div> },
+    { title: "Command",                  category: "Navigation", description: "Keyboard-driven command palette.",              figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-lg w-full overflow-hidden bg-popover"><div className="flex items-center border-b border-border px-2 py-1 gap-1"><Search className="h-2.5 w-2.5 text-muted-foreground" /><span className="text-[9px] text-muted-foreground">Search commands…</span></div><div className="p-1 space-y-0.5"><div className="rounded px-2 py-0.5 bg-accent text-[9px]">Calendar</div><div className="rounded px-2 py-0.5 text-[9px] text-muted-foreground">Settings</div></div></div> },
+    { title: "Drawer",                   category: "Overlay",    description: "Mobile-optimised bottom sheet.",                figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full border border-border rounded-t-xl p-3 bg-card"><div className="mx-auto h-1 w-8 rounded bg-muted mb-2" /><p className="text-[10px] font-semibold">Drawer title</p><p className="text-[9px] text-muted-foreground mt-0.5">Swipe down to close.</p></div> },
+    { title: "Input OTP",                category: "Forms",      description: "One-time password input.",                      figmaUrl: FIGMA_FILE, preview: <div className="flex gap-1 pointer-events-none select-none"><div className="h-7 w-7 rounded border-2 border-primary bg-background flex items-center justify-center text-xs font-bold">1</div><div className="h-7 w-7 rounded border border-input bg-background flex items-center justify-center text-xs">2</div><div className="h-7 w-7 rounded border border-input bg-background flex items-center justify-center text-xs">3</div><span className="flex items-center text-muted-foreground">—</span><div className="h-7 w-7 rounded border border-input bg-background" /><div className="h-7 w-7 rounded border border-input bg-background" /><div className="h-7 w-7 rounded border border-input bg-background" /></div> },
+    { title: "Sonner (Toast)",           category: "Feedback",   description: "Notification toasts.",                          figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none space-y-1 w-full"><div className="border border-border rounded-lg px-3 py-2 bg-card flex items-center gap-2 shadow-sm"><div className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" /><span className="text-[10px] font-medium">Saved successfully!</span></div><div className="border border-border rounded-lg px-3 py-2 bg-card flex items-center gap-2 shadow-sm"><div className="h-2 w-2 rounded-full bg-destructive shrink-0" /><span className="text-[10px] font-medium">Something went wrong</span></div></div> },
+    { title: "Resizable",                category: "Layout",     description: "Drag-to-resize panel layouts.",                 figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex h-12 w-full rounded border border-border overflow-hidden"><div className="flex-1 flex items-center justify-center bg-muted/30 text-[9px] text-muted-foreground">Panel A</div><div className="w-px bg-border relative flex items-center justify-center"><div className="w-1 h-4 rounded bg-border" /></div><div className="flex-1 flex items-center justify-center bg-muted/30 text-[9px] text-muted-foreground">Panel B</div></div> },
+    { title: "Chart",                    category: "Data",       description: "Data visualisation with brand tokens.",         figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex items-end gap-1 h-12 w-full px-1"><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"40%"}} /><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"60%"}} /><div className="flex-1 bg-primary rounded-sm" style={{height:"100%"}} /><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"75%"}} /><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"50%"}} /></div> },
+    { title: "Sidebar",                  category: "Layout",     description: "Collapsible navigation sidebar.",               figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex h-14 w-full rounded border border-border overflow-hidden"><div className="w-16 bg-sidebar p-2 space-y-1.5"><div className="h-2 w-8 rounded bg-sidebar-foreground/20" /><div className="h-2 w-6 rounded bg-sidebar-primary" /><div className="h-2 w-7 rounded bg-sidebar-foreground/20" /></div><div className="flex-1 bg-background p-2"><div className="h-2 w-20 rounded bg-muted mb-1.5" /><div className="h-2 w-16 rounded bg-muted" /></div></div> },
+    { title: "Spinner",                  category: "Feedback",   description: "Animated loading indicator.",                   figmaUrl: FIGMA_FILE, preview: <div className="flex items-center gap-3 pointer-events-none select-none"><div className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin" /><div className="h-6 w-6 rounded-full border-2 border-primary border-t-transparent animate-spin" /><div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" /></div> },
+    { title: "Kbd",                      category: "Display",    description: "Keyboard key display.",                         figmaUrl: FIGMA_FILE, preview: <div className="flex items-center gap-1 pointer-events-none select-none"><span className="inline-flex items-center rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-mono shadow-sm">⌘</span><span className="text-[10px] text-muted-foreground">+</span><span className="inline-flex items-center rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-mono shadow-sm">K</span></div> },
+    { title: "Native Select",            category: "Forms",      description: "Browser-native select element.",                figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full h-7 rounded-md border border-input bg-background px-2 flex items-center justify-between"><span className="text-[10px] text-muted-foreground">Pick an option</span><span className="text-[10px] text-muted-foreground">▾</span></div> },
+    { title: "Input Group",              category: "Forms",      description: "Input with prefix / suffix addons.",            figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex h-7 w-full rounded-md border border-input overflow-hidden"><div className="px-2 flex items-center bg-muted border-r border-input"><Search className="h-3 w-3 text-muted-foreground" /></div><div className="flex-1 px-2 flex items-center bg-background"><span className="text-[10px] text-muted-foreground">Search…</span></div></div> },
+    { title: "Button Group",             category: "Actions",    description: "Segmented strip of attached buttons.",          figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex"><div className="h-7 px-2.5 border border-r-0 border-input rounded-l-md bg-background flex items-center text-[10px]">Left</div><div className="h-7 px-2.5 border border-input bg-muted flex items-center text-[10px] font-medium">Center</div><div className="h-7 px-2.5 border border-l-0 border-input rounded-r-md bg-background flex items-center text-[10px]">Right</div></div> },
+    { title: "Empty",                    category: "Display",    description: "Zero-state placeholder.",                       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex flex-col items-center justify-center gap-1.5 py-2"><div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center"><FileText className="h-4 w-4 text-muted-foreground" /></div><p className="text-[10px] font-medium">No files found</p><p className="text-[9px] text-muted-foreground">Upload to get started</p></div> },
+    { title: "Field",                    category: "Forms",      description: "Form field with label, hint, and error.",       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none space-y-1 w-full"><p className="text-[10px] font-medium">Email</p><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">you@example.com</span></div><p className="text-[9px] text-muted-foreground">We'll never share your email.</p></div> },
+    { title: "Item",                     category: "Display",    description: "Flexible list row primitive.",                  figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none divide-y divide-border rounded-md border border-border w-full overflow-hidden"><div className="flex items-center gap-2 px-2 py-1.5"><div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-[8px] text-primary-foreground font-bold shrink-0">EL</div><div className="flex-1 min-w-0"><p className="text-[10px] font-medium truncate">Erhan Lammar</p><p className="text-[9px] text-muted-foreground">Designer</p></div><Badge className="text-[8px] h-3.5 px-1">Admin</Badge></div></div> },
+    { title: "Avatar",                   category: "Display",    description: "User profile image with initials fallback.",    figmaUrl: FIGMA_FILE, preview: <div className="flex items-center gap-2 pointer-events-none select-none"><div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-primary-foreground shrink-0">EL</div><div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground shrink-0">JD</div><div className="h-6 w-6 rounded-full bg-secondary flex items-center justify-center text-[9px] font-bold text-secondary-foreground shrink-0">SL</div></div> },
+    { title: "Dialog",                   category: "Overlay",    description: "Modal dialogs for focused interactions.",       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card shadow-sm space-y-2"><p className="text-[10px] font-semibold">Edit profile</p><div className="h-5 rounded border border-input bg-background px-2 flex items-center"><span className="text-[9px] text-muted-foreground">Display name</span></div><div className="flex gap-1.5 mt-1.5"><div className="h-5 flex-1 rounded bg-primary flex items-center justify-center"><span className="text-[9px] text-primary-foreground font-medium">Save</span></div><div className="h-5 flex-1 rounded border border-border flex items-center justify-center"><span className="text-[9px]">Cancel</span></div></div></div> },
+    { title: "Dropdown Menu",            category: "Overlay",    description: "Context menus and action dropdowns.",           figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full"><div className="border border-border rounded-md p-1 bg-popover shadow-sm space-y-0.5 w-28"><div className="rounded px-2 py-0.5 bg-accent text-[9px]">Profile</div><div className="rounded px-2 py-0.5 text-[9px] text-muted-foreground">Settings</div><div className="h-px bg-border my-0.5" /><div className="rounded px-2 py-0.5 text-[9px] text-destructive">Log out</div></div></div> },
+    { title: "Tabs",                     category: "Navigation", description: "Tab panels for switching between views.",       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full space-y-2"><div className="flex gap-0 border-b border-border"><span className="text-[9px] font-semibold border-b-2 border-primary pb-1 px-2 -mb-px">Account</span><span className="text-[9px] text-muted-foreground pb-1 px-2">Password</span><span className="text-[9px] text-muted-foreground pb-1 px-2">Settings</span></div><div className="space-y-1 pt-1"><div className="h-1.5 w-20 rounded bg-muted" /><div className="h-1.5 w-14 rounded bg-muted" /></div></div> },
+    { title: "Tooltip",                  category: "Overlay",    description: "Contextual hints on hover or focus.",           figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex flex-col items-center gap-2"><div className="rounded border border-border bg-popover px-2 py-1 text-[9px] shadow-md font-medium">Add to library</div><div className="h-0 w-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-border -mt-0.5" /><div className="h-6 w-6 rounded-md border border-border flex items-center justify-center"><Plus className="h-3 w-3 text-muted-foreground" /></div></div> },
   ];
 
   return (
@@ -985,10 +1756,10 @@ function ComponentsPage() {
             return (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filtered.map((c) => (
-                  <button
+                  <div
                     key={c.title}
                     onClick={() => { setSelectedComponent(c.title); setView("detail"); }}
-                    className="group text-left border border-border rounded-xl overflow-hidden bg-card hover:border-primary/50 hover:shadow-md transition-all duration-200"
+                    className="group text-left border border-border rounded-xl overflow-hidden bg-card hover:border-primary/50 hover:shadow-md transition-all duration-200 cursor-pointer"
                   >
                     {/* Preview area */}
                     <div className="h-32 bg-muted/30 border-b border-border flex items-center justify-center px-6">
@@ -996,13 +1767,33 @@ function ComponentsPage() {
                     </div>
                     {/* Label area */}
                     <div className="px-4 py-3 flex items-center justify-between">
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-sm font-semibold group-hover:text-primary transition-colors">{c.title}</p>
                         <p className="text-xs text-muted-foreground mt-0.5">{c.description}</p>
                       </div>
-                      <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0 ml-2" />
+                      <div className="flex items-center gap-1 shrink-0 ml-2">
+                        {c.figmaUrl && (
+                          <a
+                            href={c.figmaUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            title="View in Figma"
+                            className="p-1 rounded text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-all"
+                          >
+                            <svg width="12" height="16" viewBox="0 0 38 57" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                              <path d="M19 28.5C19 23.8056 22.8056 20 27.5 20C32.1944 20 36 23.8056 36 28.5C36 33.1944 32.1944 37 27.5 37C22.8056 37 19 33.1944 19 28.5Z"/>
+                              <path d="M2 46C2 41.3056 5.80558 37.5 10.5 37.5H19V46C19 50.6944 15.1944 54.5 10.5 54.5C5.80558 54.5 2 50.6944 2 46Z"/>
+                              <path d="M19 2V20H27.5C32.1944 20 36 16.1944 36 11.5C36 6.80558 32.1944 3 27.5 3H19Z" opacity="0.9"/>
+                              <path d="M2 11.5C2 16.1944 5.80558 20 10.5 20H19V3H10.5C5.80558 3 2 6.80558 2 11.5Z" opacity="0.7"/>
+                              <path d="M2 28.5C2 33.1944 5.80558 37 10.5 37H19V20H10.5C5.80558 20 2 23.8056 2 28.5Z" opacity="0.8"/>
+                            </svg>
+                          </a>
+                        )}
+                        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+                      </div>
                     </div>
-                  </button>
+                  </div>
                 ))}
               </div>
             );
@@ -1011,27 +1802,49 @@ function ComponentsPage() {
       )}
 
       {/* ── Detail view breadcrumb + back ── */}
-      {view === "detail" && (
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      {view === "detail" && (() => {
+        const meta = componentMeta.find((c) => c.title === selectedComponent);
+        return (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <button
+                  onClick={() => { setView("grid"); setSelectedComponent(null); }}
+                  className="hover:text-foreground transition-colors"
+                >
+                  Components
+                </button>
+                <span>/</span>
+                <span className="text-foreground font-medium">{selectedComponent}</span>
+              </div>
+              {meta?.figmaUrl && (
+                <a
+                  href={meta.figmaUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground border border-border rounded-md px-2.5 py-1.5 transition-colors hover:border-foreground/30"
+                >
+                  <svg width="10" height="13" viewBox="0 0 38 57" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path d="M19 28.5C19 23.8056 22.8056 20 27.5 20C32.1944 20 36 23.8056 36 28.5C36 33.1944 32.1944 37 27.5 37C22.8056 37 19 33.1944 19 28.5Z"/>
+                    <path d="M2 46C2 41.3056 5.80558 37.5 10.5 37.5H19V46C19 50.6944 15.1944 54.5 10.5 54.5C5.80558 54.5 2 50.6944 2 46Z"/>
+                    <path d="M19 2V20H27.5C32.1944 20 36 16.1944 36 11.5C36 6.80558 32.1944 3 27.5 3H19Z" opacity="0.9"/>
+                    <path d="M2 11.5C2 16.1944 5.80558 20 10.5 20H19V3H10.5C5.80558 3 2 6.80558 2 11.5Z" opacity="0.7"/>
+                    <path d="M2 28.5C2 33.1944 5.80558 37 10.5 37H19V20H10.5C5.80558 20 2 23.8056 2 28.5Z" opacity="0.8"/>
+                  </svg>
+                  View in Figma
+                </a>
+              )}
+            </div>
             <button
               onClick={() => { setView("grid"); setSelectedComponent(null); }}
-              className="hover:text-foreground transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Components
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              Back to components
             </button>
-            <span>/</span>
-            <span className="text-foreground font-medium">{selectedComponent}</span>
           </div>
-          <button
-            onClick={() => { setView("grid"); setSelectedComponent(null); }}
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-            Back to components
-          </button>
-        </div>
-      )}
+        );
+      })()}
 
       {/* ── All sections (hidden in grid view, filtered to selected in detail view) ── */}
       <div className={view === "grid" ? "hidden" : "space-y-16"}>
@@ -3469,6 +4282,10 @@ export function TooltipDemo() {
       </Section>
 
       </div>{/* end sections wrapper */}
+
+      {/* ── Design specs panel (detail view only) ── */}
+      {view === "detail" && <DesignSpecs title={selectedComponent} />}
+
     </div>
   );
 }
