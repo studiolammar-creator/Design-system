@@ -386,7 +386,7 @@ const typographyTokens = {
   fontSize: [
     { token: "text-xs",   value: "12px",  cls: "text-xs" },
     { token: "text-sm",   value: "14px",  cls: "text-sm" },
-    { token: "text-base", value: "16px",  cls: "text-base" },
+    { token: "text-base", value: "14px",  cls: "text-base" },
     { token: "text-lg",   value: "18px",  cls: "text-lg" },
     { token: "text-xl",   value: "20px",  cls: "text-xl" },
     { token: "text-2xl",  value: "24px",  cls: "text-2xl" },
@@ -546,7 +546,7 @@ const typeStyles = [
     cls: "text-base font-normal leading-normal",
     sample: "The quick brown fox jumps over the lazy dog.",
     tokens: [
-      { tw: "text-base",      cssVar: "--text-base",            val: "1rem / 16px" },
+      { tw: "text-base",      cssVar: "--text-base",            val: "0.875rem / 14px" },
       { tw: "font-normal",    cssVar: "--font-weight-regular",  val: "400"         },
       { tw: "leading-normal", cssVar: "--leading-normal",       val: "1.5"         },
       { tw: "tracking-normal",cssVar: "--tracking-normal",      val: "0em"         },
@@ -1430,7 +1430,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Height (default)",     token: "h-10",  value: "2.5rem / 40px",  type: "size" },
       { label: "Height (sm)",          token: "h-9",   value: "2.25rem / 36px", type: "size" },
       { label: "Height (lg)",          token: "h-11",  value: "2.75rem / 44px", type: "size" },
-      { label: "Padding x",            token: "px-4",  value: "1rem / 16px",    type: "size" },
+      { label: "Padding x",            token: "px-4",  value: "0.875rem / 14px",    type: "size" },
     ]},
   ],
   "Badges": [
@@ -1506,7 +1506,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
     ]},
     { title: "Spacing", items: [
-      { label: "Padding", token: "p-4", value: "1rem / 16px", type: "size" },
+      { label: "Padding", token: "p-4", value: "0.875rem / 14px", type: "size" },
     ]},
   ],
   "Table": [
@@ -1534,7 +1534,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Font weight", token: "font-medium", value: "500",             type: "size" },
     ]},
     { title: "Spacing", items: [
-      { label: "Trigger padding y", token: "py-4", value: "1rem / 16px", type: "size" },
+      { label: "Trigger padding y", token: "py-4", value: "0.875rem / 14px", type: "size" },
     ]},
   ],
   "Alert Dialog": [
@@ -1654,7 +1654,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Elevation", token: "--shadow-md", value: "0 4px 6px rgba(0,0,0,0.1)", type: "shadow" },
     ]},
     { title: "Spacing", items: [
-      { label: "Padding", token: "p-4", value: "1rem / 16px", type: "size" },
+      { label: "Padding", token: "p-4", value: "0.875rem / 14px", type: "size" },
     ]},
   ],
   "Menubar & Navigation Menu": [
@@ -1766,7 +1766,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Active cell border", token: "--ring",     value: "#013229", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size",   token: "text-base",   value: "1rem / 16px", type: "size" },
+      { label: "Font size",   token: "text-base",   value: "0.875rem / 14px", type: "size" },
       { label: "Font weight", token: "font-medium", value: "500",         type: "size" },
     ]},
     { title: "Radius", items: [
@@ -1801,7 +1801,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
     ]},
     { title: "Spacing", items: [
       { label: "Handle width",    token: "w-px", value: "1px",          type: "size" },
-      { label: "Hit area width",  token: "w-4",  value: "1rem / 16px",  type: "size" },
+      { label: "Hit area width",  token: "w-4",  value: "0.875rem / 14px",  type: "size" },
     ]},
   ],
   "Chart": [
@@ -1844,7 +1844,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Gap segment",  token: "transparent", value: "transparent", type: "color" },
     ]},
     { title: "Spacing", items: [
-      { label: "Size sm",      token: "h-4 w-4",   value: "1rem / 16px",  type: "size" },
+      { label: "Size sm",      token: "h-4 w-4",   value: "0.875rem / 14px",  type: "size" },
       { label: "Size md",      token: "h-6 w-6",   value: "1.5rem / 24px", type: "size" },
       { label: "Size lg",      token: "h-8 w-8",   value: "2rem / 32px",  type: "size" },
       { label: "Border width", token: "border-2",  value: "2px",          type: "size" },
@@ -1923,7 +1923,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
     ]},
     { title: "Spacing", items: [
       { label: "Height",    token: "h-9",  value: "2.25rem / 36px", type: "size" },
-      { label: "Padding x", token: "px-4", value: "1rem / 16px",    type: "size" },
+      { label: "Padding x", token: "px-4", value: "0.875rem / 14px",    type: "size" },
     ]},
   ],
   "Empty": [
