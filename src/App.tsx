@@ -385,8 +385,8 @@ const typographyTokens = {
   ],
   fontSize: [
     { token: "text-xs",   value: "12px",  cls: "text-xs" },
-    { token: "text-sm",   value: "14px",  cls: "text-sm" },
     { token: "text-base", value: "14px",  cls: "text-base" },
+    { token: "text-md",   value: "16px",  cls: "text-base" },
     { token: "text-lg",   value: "18px",  cls: "text-lg" },
     { token: "text-xl",   value: "20px",  cls: "text-xl" },
     { token: "text-2xl",  value: "24px",  cls: "text-2xl" },
@@ -558,7 +558,7 @@ const typeStyles = [
     cls: "text-sm font-normal leading-normal",
     sample: "The quick brown fox jumps over the lazy dog.",
     tokens: [
-      { tw: "text-sm",        cssVar: "--text-sm",              val: "0.875rem / 14px" },
+      { tw: "text-base",      cssVar: "--text-base",            val: "0.875rem / 14px" },
       { tw: "font-normal",    cssVar: "--font-weight-regular",  val: "400"             },
       { tw: "leading-normal", cssVar: "--leading-normal",       val: "1.5"             },
       { tw: "tracking-normal",cssVar: "--tracking-normal",      val: "0em"             },
@@ -594,7 +594,7 @@ const typeStyles = [
     cls: "text-sm font-normal leading-relaxed font-mono",
     sample: "const token = 'var(--primary)';",
     tokens: [
-      { tw: "text-sm",         cssVar: "--text-sm",              val: "0.875rem / 14px" },
+      { tw: "text-base",       cssVar: "--text-base",            val: "0.875rem / 14px" },
       { tw: "font-normal",     cssVar: "--font-weight-regular",  val: "400"             },
       { tw: "leading-relaxed", cssVar: "--leading-relaxed",      val: "1.625"           },
       { tw: "tracking-normal", cssVar: "--tracking-normal",      val: "0em"             },
