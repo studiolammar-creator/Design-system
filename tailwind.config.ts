@@ -154,6 +154,9 @@ const config: Config = {
         sans: ["Unigeo32", "ui-sans-serif", "system-ui", "sans-serif"],
         mono: ["Space Mono", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
+      fontSize: {
+        md: "16px",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },

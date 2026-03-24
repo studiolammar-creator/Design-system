@@ -386,7 +386,7 @@ const typographyTokens = {
   fontSize: [
     { token: "text-xs",   value: "12px",  cls: "text-xs" },
     { token: "text-base", value: "14px",  cls: "text-base" },
-    { token: "text-md",   value: "16px",  cls: "text-base" },
+    { token: "text-md",   value: "16px",  cls: "text-md" },
     { token: "text-lg",   value: "18px",  cls: "text-lg" },
     { token: "text-xl",   value: "20px",  cls: "text-xl" },
     { token: "text-2xl",  value: "24px",  cls: "text-2xl" },
@@ -1066,6 +1066,69 @@ function FoundationPage({ dark }: { dark: boolean }) {
               ))}
             </div>
           </Section>
+
+          <Section title="Font Family" description="Two typefaces: display/body and monospace.">
+            <div className="rounded-lg border border-border overflow-hidden">
+              {typographyTokens.fontFamily.map((f, i) => (
+                <div key={f.token} className={`flex items-center gap-6 p-5 ${i < typographyTokens.fontFamily.length - 1 ? "border-b border-border" : ""}`}>
+                  <span className="font-mono text-sm text-muted-foreground w-24 shrink-0">{f.token}</span>
+                  <span className="text-2xl font-semibold flex-1 min-w-0 truncate" style={{ fontFamily: f.value.split(",")[0] }}>{f.sample}</span>
+                  <span className="font-mono text-xs text-muted-foreground hidden md:block truncate max-w-xs">{f.value}</span>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section title="Font Size" description="Type scale from xs (12px) to 5xl (48px). Base is 14px, md is 16px.">
+            <div className="rounded-lg border border-border overflow-hidden">
+              {typographyTokens.fontSize.map((f, i) => (
+                <div key={f.token} className={`group flex items-baseline gap-4 px-5 py-3 hover:bg-muted/50 transition-colors ${i < typographyTokens.fontSize.length - 1 ? "border-b border-border" : ""}`}>
+                  <span className="font-mono text-xs text-muted-foreground w-20 shrink-0">{f.token}</span>
+                  <span className="font-mono text-xs text-muted-foreground w-12 shrink-0">{f.value}</span>
+                  <span className={`${f.cls} font-medium leading-none`}>Pau Design System</span>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section title="Font Weight" description="Five weight steps from regular (400) to extrabold (800).">
+            <div className="rounded-lg border border-border overflow-hidden">
+              {typographyTokens.fontWeight.map((f, i) => (
+                <div key={f.token} className={`group flex items-center gap-6 px-5 py-4 hover:bg-muted/50 transition-colors ${i < typographyTokens.fontWeight.length - 1 ? "border-b border-border" : ""}`}>
+                  <span className="font-mono text-xs text-muted-foreground w-32 shrink-0">{f.token}</span>
+                  <span className="font-mono text-xs text-muted-foreground w-8 shrink-0">{f.value}</span>
+                  <span className={`text-2xl ${f.cls}`}>Pau Design System</span>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <div className="grid gap-8 md:grid-cols-2">
+            <Section title="Line Height" description="Leading scale from none (1) to loose (2).">
+              <div className="rounded-lg border border-border overflow-hidden">
+                {typographyTokens.lineHeight.map((f, i) => (
+                  <div key={f.token} className={`group flex items-start gap-4 px-4 py-3 hover:bg-muted/50 transition-colors ${i < typographyTokens.lineHeight.length - 1 ? "border-b border-border" : ""}`}>
+                    <span className="font-mono text-xs text-muted-foreground w-32 shrink-0 pt-0.5">{f.token}</span>
+                    <span className="font-mono text-xs text-muted-foreground w-8 shrink-0 pt-0.5">{f.value}</span>
+                    <p className={`text-sm ${f.cls} text-muted-foreground`}>The quick brown fox jumps over the lazy dog.</p>
+                  </div>
+                ))}
+              </div>
+            </Section>
+
+            <Section title="Letter Spacing" description="Tracking scale from tighter to widest.">
+              <div className="rounded-lg border border-border overflow-hidden">
+                {typographyTokens.letterSpacing.map((f, i) => (
+                  <div key={f.token} className={`group flex items-center gap-4 px-4 py-3 hover:bg-muted/50 transition-colors ${i < typographyTokens.letterSpacing.length - 1 ? "border-b border-border" : ""}`}>
+                    <span className="font-mono text-xs text-muted-foreground w-36 shrink-0">{f.token}</span>
+                    <span className="font-mono text-xs text-muted-foreground w-16 shrink-0">{f.value}</span>
+                    <span className={`text-sm font-medium uppercase ${f.cls}`}>Pau</span>
+                  </div>
+                ))}
+              </div>
+            </Section>
+          </div>
+
         </TabsContent>
 
         {/* ─── Spacing ────────────────────────────── */}
@@ -1254,7 +1317,7 @@ function TokensPage({ dark: _dark }: { dark: boolean }) {
             </div>
           </Section>
 
-          <Section title="Font Size" description="Type scale from xs (12px) to 5xl (48px).">
+          <Section title="Font Size" description="Type scale from xs (12px) to 5xl (48px). Base is 14px, md is 16px.">
             <div className="rounded-lg border border-border overflow-hidden">
               {typographyTokens.fontSize.map((f, i) => (
                 <div key={f.token} className={`group flex items-baseline gap-4 px-5 py-3 hover:bg-muted/50 transition-colors ${i < typographyTokens.fontSize.length - 1 ? "border-b border-border" : ""}`}>
