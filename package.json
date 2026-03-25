@@ -1,7 +1,7 @@
 {
-  "name": "pau-design-system",
+  "name": "sl-design-system",
   "version": "1.0.0",
-  "description": "Pau Design System — ShadCN-based component library with custom brand tokens",
+  "description": "SL Design System — ShadCN-based component library by studiolammar",
   "private": true,
   "type": "module",
   "scripts": {
