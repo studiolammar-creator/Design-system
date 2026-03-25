@@ -876,7 +876,7 @@ const FigmaIcon = ({ width = 10, height = 13 }: { width?: number; height?: numbe
 const FIGMA_TABS: Record<string, string> = {
   colors: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/Design-System-with-Claude?node-id=57-162&t=PLaHVI3nGtrAzo9Z-1",
   typography: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/Design-System-with-Claude?node-id=41-4&t=SVftSQFngq9MDHq9-1",
-  spacing: FIGMA_FILE,
+  spacing: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/Design-System-with-Claude?node-id=71-2&t=SVftSQFngq9MDHq9-1",
   radius: FIGMA_FILE,
   shadows: FIGMA_FILE,
 };
