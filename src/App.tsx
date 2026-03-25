@@ -861,20 +861,53 @@ const contrastPairs = [
    FOUNDATION PAGE — visual elements linked to tokens
 ═══════════════════════════════════════════════════════════ */
 
+const FIGMA_FILE = "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/Design-System-with-Claude";
+
+const FigmaIcon = ({ width = 10, height = 13 }: { width?: number; height?: number }) => (
+  <svg width={width} height={height} viewBox="0 0 38 57" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M19 28.5C19 23.8056 22.8056 20 27.5 20C32.1944 20 36 23.8056 36 28.5C36 33.1944 32.1944 37 27.5 37C22.8056 37 19 33.1944 19 28.5Z"/>
+    <path d="M2 46C2 41.3056 5.80558 37.5 10.5 37.5H19V46C19 50.6944 15.1944 54.5 10.5 54.5C5.80558 54.5 2 50.6944 2 46Z"/>
+    <path d="M19 2V20H27.5C32.1944 20 36 16.1944 36 11.5C36 6.80558 32.1944 3 27.5 3H19Z" opacity="0.9"/>
+    <path d="M2 11.5C2 16.1944 5.80558 20 10.5 20H19V3H10.5C5.80558 3 2 6.80558 2 11.5Z" opacity="0.7"/>
+    <path d="M2 28.5C2 33.1944 5.80558 37 10.5 37H19V20H10.5C5.80558 20 2 23.8056 2 28.5Z" opacity="0.8"/>
+  </svg>
+);
+
+const FIGMA_TABS: Record<string, string> = {
+  colors: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/Design-System-with-Claude?node-id=57-162&t=PLaHVI3nGtrAzo9Z-1",
+  typography: FIGMA_FILE,
+  spacing: FIGMA_FILE,
+  radius: FIGMA_FILE,
+  shadows: FIGMA_FILE,
+};
+
 function FoundationPage({ dark }: { dark: boolean }) {
+  const [activeTab, setActiveTab] = useState("colors");
+
   return (
     <div className="space-y-16">
 
       {/* ── Intro ── */}
-      <div className="space-y-3">
-        <h1 className="text-4xl font-extrabold tracking-tight">Foundation</h1>
-        <p className="text-muted-foreground text-lg max-w-2xl">
-          The core visual language — colors, type, spacing, radius, and shadow.
-          Each element is linked to its design token.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-3">
+          <h1 className="text-4xl font-extrabold tracking-tight">Foundation</h1>
+          <p className="text-muted-foreground text-lg max-w-2xl">
+            The core visual language — colors, type, spacing, radius, and shadow.
+            Each element is linked to its design token.
+          </p>
+        </div>
+        <a
+          href={FIGMA_TABS[activeTab]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground border border-border rounded-md px-2.5 py-1.5 transition-colors hover:border-foreground/30 shrink-0 mt-1"
+        >
+          <FigmaIcon />
+          View in Figma
+        </a>
       </div>
 
-      <Tabs defaultValue="colors">
+      <Tabs defaultValue="colors" onValueChange={setActiveTab}>
         <TabsList className="flex-wrap h-auto gap-1">
           <TabsTrigger value="colors">Colors</TabsTrigger>
           <TabsTrigger value="typography">Typography</TabsTrigger>
@@ -2254,8 +2287,6 @@ function ComponentsPage() {
   const [view, setView] = useState<"grid" | "detail">("grid");
   const [selectedComponent, setSelectedComponent] = useState<string | null>(null);
 
-  const FIGMA_FILE = "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/Design-System-with-Claude";
-
   const componentMeta: { title: string; description: string; category: string; preview: React.ReactNode; figmaUrl?: string }[] = [
     { title: "Typography",               category: "Foundation", description: "Text scales and font styles.",                  figmaUrl: FIGMA_FILE, preview: <div className="space-y-1 pointer-events-none select-none"><p className="text-sm font-bold tracking-tight">Heading</p><p className="text-xs text-muted-foreground">Body text sample</p><p className="text-[10px] font-mono text-muted-foreground/60">Code</p></div> },
     { title: "Buttons",                  category: "Actions",    description: "Seven variants × four sizes.",                  figmaUrl: FIGMA_FILE, preview: <div className="flex flex-wrap gap-1.5 pointer-events-none select-none"><Button size="sm">Primary</Button><Button size="sm" variant="outline">Outline</Button><Button size="sm" variant="ghost">Ghost</Button></div> },
@@ -2409,13 +2440,7 @@ function ComponentsPage() {
                             title="View in Figma"
                             className="p-1 rounded text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-all"
                           >
-                            <svg width="12" height="16" viewBox="0 0 38 57" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                              <path d="M19 28.5C19 23.8056 22.8056 20 27.5 20C32.1944 20 36 23.8056 36 28.5C36 33.1944 32.1944 37 27.5 37C22.8056 37 19 33.1944 19 28.5Z"/>
-                              <path d="M2 46C2 41.3056 5.80558 37.5 10.5 37.5H19V46C19 50.6944 15.1944 54.5 10.5 54.5C5.80558 54.5 2 50.6944 2 46Z"/>
-                              <path d="M19 2V20H27.5C32.1944 20 36 16.1944 36 11.5C36 6.80558 32.1944 3 27.5 3H19Z" opacity="0.9"/>
-                              <path d="M2 11.5C2 16.1944 5.80558 20 10.5 20H19V3H10.5C5.80558 3 2 6.80558 2 11.5Z" opacity="0.7"/>
-                              <path d="M2 28.5C2 33.1944 5.80558 37 10.5 37H19V20H10.5C5.80558 20 2 23.8056 2 28.5Z" opacity="0.8"/>
-                            </svg>
+                            <FigmaIcon width={12} height={16} />
                           </a>
                         )}
                         <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
@@ -2452,13 +2477,7 @@ function ComponentsPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground border border-border rounded-md px-2.5 py-1.5 transition-colors hover:border-foreground/30"
                 >
-                  <svg width="10" height="13" viewBox="0 0 38 57" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path d="M19 28.5C19 23.8056 22.8056 20 27.5 20C32.1944 20 36 23.8056 36 28.5C36 33.1944 32.1944 37 27.5 37C22.8056 37 19 33.1944 19 28.5Z"/>
-                    <path d="M2 46C2 41.3056 5.80558 37.5 10.5 37.5H19V46C19 50.6944 15.1944 54.5 10.5 54.5C5.80558 54.5 2 50.6944 2 46Z"/>
-                    <path d="M19 2V20H27.5C32.1944 20 36 16.1944 36 11.5C36 6.80558 32.1944 3 27.5 3H19Z" opacity="0.9"/>
-                    <path d="M2 11.5C2 16.1944 5.80558 20 10.5 20H19V3H10.5C5.80558 3 2 6.80558 2 11.5Z" opacity="0.7"/>
-                    <path d="M2 28.5C2 33.1944 5.80558 37 10.5 37H19V20H10.5C5.80558 20 2 23.8056 2 28.5Z" opacity="0.8"/>
-                  </svg>
+                  <FigmaIcon />
                   View in Figma
                 </a>
               )}
