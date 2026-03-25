@@ -2997,7 +2997,7 @@ export function FormDemo() {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email-c">Email address</Label>
-              <Input id="email-c" type="email" placeholder="hello@studio.design" />
+              <Input id="email-c" type="email" placeholder="studiolammar@gmail.com" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="pass-c">Password</Label>
@@ -3579,7 +3579,7 @@ export function PopoverHoverCardDemo() {
             <Label className="text-sm text-muted-foreground">Hover card</Label>
             <HoverCard>
               <HoverCardTrigger asChild>
-                <Button variant="link">@studio_design</Button>
+                <Button variant="link">@studiolammar_design</Button>
               </HoverCardTrigger>
               <HoverCardContent className="w-72">
                 <div className="flex items-start gap-3">
