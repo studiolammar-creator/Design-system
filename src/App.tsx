@@ -1167,7 +1167,7 @@ function FoundationPage({ dark }: { dark: boolean }) {
                   <div key={f.token} className={`group flex items-center gap-4 px-4 py-3 hover:bg-muted/50 transition-colors ${i < typographyTokens.letterSpacing.length - 1 ? "border-b border-border" : ""}`}>
                     <span className="font-mono text-xs text-muted-foreground w-36 shrink-0">{f.token}</span>
                     <span className="font-mono text-xs text-muted-foreground w-16 shrink-0">{f.value}</span>
-                    <span className={`text-sm font-medium uppercase ${f.cls}`}>Studio</span>
+                    <span className={`text-sm font-medium uppercase ${f.cls}`}>studiolammar</span>
                   </div>
                 ))}
               </div>
@@ -1405,7 +1405,7 @@ function TokensPage({ dark: _dark }: { dark: boolean }) {
                   <div key={f.token} className={`group flex items-center gap-4 px-4 py-3 hover:bg-muted/50 transition-colors ${i < typographyTokens.letterSpacing.length - 1 ? "border-b border-border" : ""}`}>
                     <span className="font-mono text-xs text-muted-foreground w-36 shrink-0">{f.token}</span>
                     <span className="font-mono text-xs text-muted-foreground w-16 shrink-0">{f.value}</span>
-                    <span className={`text-sm font-medium uppercase ${f.cls}`}>Studio</span>
+                    <span className={`text-sm font-medium uppercase ${f.cls}`}>studiolammar</span>
                   </div>
                 ))}
               </div>
@@ -2342,7 +2342,7 @@ function ComponentsPage() {
             <div className="space-y-2">
               <h1 className="text-4xl font-extrabold tracking-tight">Components</h1>
               <p className="text-muted-foreground text-lg max-w-2xl">
-                All Studio components, pre-themed with Studio's brand tokens. Click any component to explore it.
+                All studiolammar components, pre-themed with studiolammar's brand tokens. Click any component to explore it.
               </p>
             </div>
             {/* Search */}
@@ -3280,7 +3280,7 @@ export function SheetDemo() {
               </SheetTrigger>
               <SheetContent side={side}>
                 <SheetHeader>
-                  <SheetTitle>Studio Panel</SheetTitle>
+                  <SheetTitle>studiolammar Panel</SheetTitle>
                   <SheetDescription>
                     This panel slides in from the {side}. Use it for settings, filters, or detail views.
                   </SheetDescription>
@@ -3668,7 +3668,7 @@ export function MenubarDemo() {
                   <NavigationMenuContent>
                     <ul className="grid gap-3 p-4 w-[400px] md:grid-cols-2">
                       {[
-                        { title: "Introduction", href: "#", description: "Learn about the Studio design system." },
+                        { title: "Introduction", href: "#", description: "Learn about the studiolammar design system." },
                         { title: "Installation", href: "#", description: "Set up your project in minutes." },
                         { title: "Tokens", href: "#", description: "Explore color, type, and spacing." },
                         { title: "Components", href: "#", description: "Browse all available components." },
@@ -3800,7 +3800,7 @@ export function BreadcrumbPaginationDemo() {
             </Breadcrumb>
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem><BreadcrumbLink href="#">Studio</BreadcrumbLink></BreadcrumbItem>
+                <BreadcrumbItem><BreadcrumbLink href="#">studiolammar</BreadcrumbLink></BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem><BreadcrumbLink href="#">Tokens</BreadcrumbLink></BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -4223,7 +4223,7 @@ export function SidebarDemo() {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton className="font-semibold">
-                      <Zap className="h-4 w-4" /><span>Studio</span>
+                      <Zap className="h-4 w-4" /><span>studiolammar</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
@@ -4575,7 +4575,7 @@ export function ItemDemo() {
               <Avatar className="h-8 w-8"><AvatarFallback>SL</AvatarFallback></Avatar>
             </ItemStart>
             <ItemContent>
-              <ItemTitle>Studio Lammar</ItemTitle>
+              <ItemTitle>studiolammar</ItemTitle>
               <ItemDescription>Design system maintainer</ItemDescription>
             </ItemContent>
             <ItemEnd>
@@ -5473,10 +5473,10 @@ export default function App() {
                 </div>
                 <h1 className="text-5xl font-extrabold tracking-tight leading-[1.08] max-w-3xl mb-5">
                   The design foundation<br />
-                  <span className="text-primary">for Studio.</span>
+                  <span className="text-primary">for studiolammar.</span>
                 </h1>
                 <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed mb-8">
-                  A production-ready component library — tailored with Studio's brand tokens,
+                  A production-ready component library — tailored with studiolammar's brand tokens,
                   accessible by default, and built to scale across every product we ship.
                 </p>
                 <div className="flex gap-3 flex-wrap">
@@ -5580,7 +5580,7 @@ export default function App() {
                   {[
                     {
                       icon: Layers,
-                      title: "Studio-based",
+                      title: "studiolammar-based",
                       desc: "Copy-paste components you own — full access to source code, zero vendor lock-in.",
                     },
                     {
@@ -5610,7 +5610,7 @@ export default function App() {
               <div className="rounded-xl border border-border bg-muted/30 px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                 <div className="space-y-1">
                   <h2 className="text-base font-bold">Ready to build?</h2>
-                  <p className="text-sm text-muted-foreground">54 components · 218 icons · light &amp; dark mode — all pre-themed with Studio's brand tokens.</p>
+                  <p className="text-sm text-muted-foreground">54 components · 218 icons · light &amp; dark mode — all pre-themed with studiolammar's brand tokens.</p>
                 </div>
                 <div className="flex gap-3 shrink-0">
                   <Button onClick={() => setPage("components")}>
@@ -5644,9 +5644,9 @@ export default function App() {
                     <div className="h-5 w-5 rounded bg-primary flex items-center justify-center">
                       <Zap className="h-3 w-3 text-primary-foreground" />
                     </div>
-                    <span className="font-medium text-foreground">Studio</span>
+                    <span className="font-medium text-foreground">studiolammar</span>
                   </div>
-                  <p>Built with Studio · Tailwind CSS · React · Vite · Unigeo</p>
+                  <p>Built with studiolammar · Tailwind CSS · React · Vite · Unigeo</p>
                 </div>
               </footer>
             </div>
