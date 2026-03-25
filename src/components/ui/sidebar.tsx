@@ -9,6 +9,7 @@ const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_COOKIE_NAME = "sidebar:state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
+const MOBILE_BREAKPOINT = 768
 
 type SidebarContext = {
   state: "expanded" | "collapsed"
@@ -36,6 +37,18 @@ const SidebarProvider = React.forwardRef<
   const [_open, _setOpen] = React.useState(defaultOpen)
   const open = openProp ?? _open
 
+  const [isMobile, setIsMobile] = React.useState(
+    typeof window !== "undefined" ? window.innerWidth < MOBILE_BREAKPOINT : false
+  )
+
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+
   const setOpen = React.useCallback((value: boolean | ((value: boolean) => boolean)) => {
     const openState = typeof value === "function" ? value(open) : value
     if (setOpenProp) setOpenProp(openState)
@@ -43,12 +56,15 @@ const SidebarProvider = React.forwardRef<
     document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
   }, [setOpenProp, open])
 
-  const toggleSidebar = React.useCallback(() => setOpen((o) => !o), [setOpen])
+  const toggleSidebar = React.useCallback(() => {
+    if (isMobile) setOpenMobile((o) => !o)
+    else setOpen((o) => !o)
+  }, [isMobile, setOpen, setOpenMobile])
 
   const state = open ? "expanded" : "collapsed"
 
   return (
-    <SidebarContext.Provider value={{ state, open, setOpen, openMobile, setOpenMobile, isMobile: false, toggleSidebar }}>
+    <SidebarContext.Provider value={{ state, open, setOpen, openMobile, setOpenMobile, isMobile, toggleSidebar }}>
       <TooltipProvider delayDuration={0}>
         <div
           style={{ "--sidebar-width": SIDEBAR_WIDTH, "--sidebar-width-icon": SIDEBAR_WIDTH_ICON, ...style } as React.CSSProperties}
