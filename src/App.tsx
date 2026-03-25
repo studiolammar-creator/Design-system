@@ -1130,7 +1130,7 @@ function FoundationPage({ dark }: { dark: boolean }) {
                 <div key={f.token} className={`group flex items-baseline gap-4 px-5 py-3 hover:bg-muted/50 transition-colors ${i < typographyTokens.fontSize.length - 1 ? "border-b border-border" : ""}`}>
                   <span className="font-mono text-xs text-muted-foreground w-20 shrink-0">{f.token}</span>
                   <span className="font-mono text-xs text-muted-foreground w-12 shrink-0">{f.value}</span>
-                  <span className={`${f.cls} font-medium leading-none`}>Studio DS</span>
+                  <span className={`${f.cls} font-medium leading-none`}>SL Design System</span>
                 </div>
               ))}
             </div>
@@ -1142,7 +1142,7 @@ function FoundationPage({ dark }: { dark: boolean }) {
                 <div key={f.token} className={`group flex items-center gap-6 px-5 py-4 hover:bg-muted/50 transition-colors ${i < typographyTokens.fontWeight.length - 1 ? "border-b border-border" : ""}`}>
                   <span className="font-mono text-xs text-muted-foreground w-32 shrink-0">{f.token}</span>
                   <span className="font-mono text-xs text-muted-foreground w-8 shrink-0">{f.value}</span>
-                  <span className={`text-2xl ${f.cls}`}>Studio DS</span>
+                  <span className={`text-2xl ${f.cls}`}>SL Design System</span>
                 </div>
               ))}
             </div>
@@ -1368,7 +1368,7 @@ function TokensPage({ dark: _dark }: { dark: boolean }) {
                 <div key={f.token} className={`group flex items-baseline gap-4 px-5 py-3 hover:bg-muted/50 transition-colors ${i < typographyTokens.fontSize.length - 1 ? "border-b border-border" : ""}`}>
                   <span className="font-mono text-xs text-muted-foreground w-20 shrink-0">{f.token}</span>
                   <span className="font-mono text-xs text-muted-foreground w-12 shrink-0">{f.value}</span>
-                  <span className={`${f.cls} font-medium leading-none`}>Studio DS</span>
+                  <span className={`${f.cls} font-medium leading-none`}>SL Design System</span>
                 </div>
               ))}
             </div>
@@ -1380,7 +1380,7 @@ function TokensPage({ dark: _dark }: { dark: boolean }) {
                 <div key={f.token} className={`group flex items-center gap-6 px-5 py-4 hover:bg-muted/50 transition-colors ${i < typographyTokens.fontWeight.length - 1 ? "border-b border-border" : ""}`}>
                   <span className="font-mono text-xs text-muted-foreground w-32 shrink-0">{f.token}</span>
                   <span className="font-mono text-xs text-muted-foreground w-8 shrink-0">{f.value}</span>
-                  <span className={`text-2xl ${f.cls}`}>Studio DS</span>
+                  <span className={`text-2xl ${f.cls}`}>SL Design System</span>
                 </div>
               ))}
             </div>
@@ -3180,7 +3180,7 @@ export function AccordionDemo() {
 }`}>
         <Accordion type="single" collapsible className="w-full max-w-lg">
           {[
-            { value: "item-1", trigger: "What is Studio DS?", content: "Studio DS is a fully-themed component library built on Radix UI primitives, tailored with brand tokens for Forest Green, Golden Yellow, and Mint Teal." },
+            { value: "item-1", trigger: "What is SL Design System?", content: "SL Design System is a fully-themed component library built on Radix UI primitives, tailored with brand tokens for Forest Green, Golden Yellow, and Mint Teal." },
             { value: "item-2", trigger: "Which typefaces are included?", content: "Unigeo32 is the primary display and body typeface across all weights (Thin to Extrabold). Space Mono handles monospace code snippets." },
             { value: "item-3", trigger: "Is dark mode supported?", content: "Yes — every component and token adapts seamlessly between light and dark modes. Toggle it with the sun/moon button in the header." },
           ].map(({ value, trigger, content }) => (
@@ -3587,8 +3587,8 @@ export function PopoverHoverCardDemo() {
                     <AvatarFallback className="bg-primary text-primary-foreground">PD</AvatarFallback>
                   </Avatar>
                   <div className="space-y-1">
-                    <h4 className="text-sm font-semibold">Studio DS</h4>
-                    <p className="text-xs text-muted-foreground">Open-source component library built on Studio DS with Forest Green brand tokens.</p>
+                    <h4 className="text-sm font-semibold">SL Design System</h4>
+                    <p className="text-xs text-muted-foreground">Open-source component library built on SL Design System with Forest Green brand tokens.</p>
                     <p className="text-xs text-muted-foreground">16 components · MIT license</p>
                   </div>
                 </div>
@@ -4072,7 +4072,7 @@ export function ToastDemo() {
           <Button variant="secondary" onClick={() => toast.success("Changes saved", { description: "Your tokens have been published." })}>Success</Button>
           <Button variant="destructive" onClick={() => toast.error("Build failed", { description: "Check your config and try again." })}>Error</Button>
           <Button variant="outline" onClick={() => toast.warning("Approaching limit", { description: "You've used 80% of your storage." })}>Warning</Button>
-          <Button variant="ghost" onClick={() => toast.info("New version available", { description: "Studio DS v1.1.0 is out." })}>Info</Button>
+          <Button variant="ghost" onClick={() => toast.info("New version available", { description: "SL Design System v1.1.0 is out." })}>Info</Button>
           <Button variant="outline" onClick={() => toast.promise(new Promise((r) => setTimeout(r, 2000)), { loading: "Publishing tokens…", success: "Tokens published!", error: "Publish failed." })}>Promise</Button>
         </div>
         <Toaster />
@@ -4589,7 +4589,7 @@ export function ItemDemo() {
               </span>
             </ItemStart>
             <ItemContent>
-              <ItemTitle>Studio DS</ItemTitle>
+              <ItemTitle>SL Design System</ItemTitle>
               <ItemDescription>Last updated today</ItemDescription>
             </ItemContent>
             <ItemEnd>
@@ -5209,7 +5209,7 @@ function IconsPage() {
         </div>
         <h1 className="text-3xl font-bold tracking-tight mb-3">Icons</h1>
         <p className="text-muted-foreground max-w-xl leading-relaxed">
-          Studio DS ships with <a href="https://lucide.dev" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">Lucide</a> — a clean, consistent icon family with {ICON_REGISTRY.length}+ icons ready to import. Click any icon to copy its import statement.
+          SL Design System ships with <a href="https://lucide.dev" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">Lucide</a> — a clean, consistent icon family with {ICON_REGISTRY.length}+ icons ready to import. Click any icon to copy its import statement.
         </p>
       </div>
 
@@ -5469,11 +5469,11 @@ export default function App() {
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block" />
                   <span>v1.0.0</span>
                   <span className="text-border">·</span>
-                  <span>Studio DS</span>
+                  <span>SL Design System</span>
                 </div>
                 <h1 className="text-5xl font-extrabold tracking-tight leading-[1.08] max-w-3xl mb-5">
-                  The design foundation<br />
-                  <span className="text-primary">for studiolammar.</span>
+                  Crafted by studiolammar.<br />
+                  <span className="text-primary">Built to scale.</span>
                 </h1>
                 <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed mb-8">
                   A production-ready component library — tailored with studiolammar's brand tokens,
