@@ -803,7 +803,7 @@ function downloadTokenStudioJSON() {
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement("a");
   a.href     = url;
-  a.download = "pau-tokens.json";
+  a.download = "studio-tokens.json";
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -1130,7 +1130,7 @@ function FoundationPage({ dark }: { dark: boolean }) {
                 <div key={f.token} className={`group flex items-baseline gap-4 px-5 py-3 hover:bg-muted/50 transition-colors ${i < typographyTokens.fontSize.length - 1 ? "border-b border-border" : ""}`}>
                   <span className="font-mono text-xs text-muted-foreground w-20 shrink-0">{f.token}</span>
                   <span className="font-mono text-xs text-muted-foreground w-12 shrink-0">{f.value}</span>
-                  <span className={`${f.cls} font-medium leading-none`}>Pau Design System</span>
+                  <span className={`${f.cls} font-medium leading-none`}>Studio DS</span>
                 </div>
               ))}
             </div>
@@ -1142,7 +1142,7 @@ function FoundationPage({ dark }: { dark: boolean }) {
                 <div key={f.token} className={`group flex items-center gap-6 px-5 py-4 hover:bg-muted/50 transition-colors ${i < typographyTokens.fontWeight.length - 1 ? "border-b border-border" : ""}`}>
                   <span className="font-mono text-xs text-muted-foreground w-32 shrink-0">{f.token}</span>
                   <span className="font-mono text-xs text-muted-foreground w-8 shrink-0">{f.value}</span>
-                  <span className={`text-2xl ${f.cls}`}>Pau Design System</span>
+                  <span className={`text-2xl ${f.cls}`}>Studio DS</span>
                 </div>
               ))}
             </div>
@@ -1167,7 +1167,7 @@ function FoundationPage({ dark }: { dark: boolean }) {
                   <div key={f.token} className={`group flex items-center gap-4 px-4 py-3 hover:bg-muted/50 transition-colors ${i < typographyTokens.letterSpacing.length - 1 ? "border-b border-border" : ""}`}>
                     <span className="font-mono text-xs text-muted-foreground w-36 shrink-0">{f.token}</span>
                     <span className="font-mono text-xs text-muted-foreground w-16 shrink-0">{f.value}</span>
-                    <span className={`text-sm font-medium uppercase ${f.cls}`}>Pau</span>
+                    <span className={`text-sm font-medium uppercase ${f.cls}`}>Studio</span>
                   </div>
                 ))}
               </div>
@@ -1266,7 +1266,7 @@ function TokensPage({ dark: _dark }: { dark: boolean }) {
         <h1 className="text-4xl font-extrabold tracking-tight">Design Tokens</h1>
         <p className="text-muted-foreground text-lg max-w-2xl">
           Raw token definitions as CSS custom properties, mapped to Tailwind utilities.
-          Download <code>pau-tokens.json</code> and import it into Tokens Studio for Figma.
+          Download <code>studio-tokens.json</code> and import it into Tokens Studio for Figma.
         </p>
       </div>
 
@@ -1368,7 +1368,7 @@ function TokensPage({ dark: _dark }: { dark: boolean }) {
                 <div key={f.token} className={`group flex items-baseline gap-4 px-5 py-3 hover:bg-muted/50 transition-colors ${i < typographyTokens.fontSize.length - 1 ? "border-b border-border" : ""}`}>
                   <span className="font-mono text-xs text-muted-foreground w-20 shrink-0">{f.token}</span>
                   <span className="font-mono text-xs text-muted-foreground w-12 shrink-0">{f.value}</span>
-                  <span className={`${f.cls} font-medium leading-none`}>Pau Design System</span>
+                  <span className={`${f.cls} font-medium leading-none`}>Studio DS</span>
                 </div>
               ))}
             </div>
@@ -1380,7 +1380,7 @@ function TokensPage({ dark: _dark }: { dark: boolean }) {
                 <div key={f.token} className={`group flex items-center gap-6 px-5 py-4 hover:bg-muted/50 transition-colors ${i < typographyTokens.fontWeight.length - 1 ? "border-b border-border" : ""}`}>
                   <span className="font-mono text-xs text-muted-foreground w-32 shrink-0">{f.token}</span>
                   <span className="font-mono text-xs text-muted-foreground w-8 shrink-0">{f.value}</span>
-                  <span className={`text-2xl ${f.cls}`}>Pau Design System</span>
+                  <span className={`text-2xl ${f.cls}`}>Studio DS</span>
                 </div>
               ))}
             </div>
@@ -1405,7 +1405,7 @@ function TokensPage({ dark: _dark }: { dark: boolean }) {
                   <div key={f.token} className={`group flex items-center gap-4 px-4 py-3 hover:bg-muted/50 transition-colors ${i < typographyTokens.letterSpacing.length - 1 ? "border-b border-border" : ""}`}>
                     <span className="font-mono text-xs text-muted-foreground w-36 shrink-0">{f.token}</span>
                     <span className="font-mono text-xs text-muted-foreground w-16 shrink-0">{f.value}</span>
-                    <span className={`text-sm font-medium uppercase ${f.cls}`}>Pau</span>
+                    <span className={`text-sm font-medium uppercase ${f.cls}`}>Studio</span>
                   </div>
                 ))}
               </div>
@@ -2342,7 +2342,7 @@ function ComponentsPage() {
             <div className="space-y-2">
               <h1 className="text-4xl font-extrabold tracking-tight">Components</h1>
               <p className="text-muted-foreground text-lg max-w-2xl">
-                All Pau components, pre-themed with Pau's brand tokens. Click any component to explore it.
+                All Studio components, pre-themed with Studio's brand tokens. Click any component to explore it.
               </p>
             </div>
             {/* Search */}
@@ -2997,7 +2997,7 @@ export function FormDemo() {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email-c">Email address</Label>
-              <Input id="email-c" type="email" placeholder="hello@pau.design" />
+              <Input id="email-c" type="email" placeholder="hello@studio.design" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="pass-c">Password</Label>
@@ -3180,7 +3180,7 @@ export function AccordionDemo() {
 }`}>
         <Accordion type="single" collapsible className="w-full max-w-lg">
           {[
-            { value: "item-1", trigger: "What is Pau Design System?", content: "Pau is a fully-themed component library built on Radix UI primitives, tailored with brand tokens for Forest Green, Golden Yellow, and Mint Teal." },
+            { value: "item-1", trigger: "What is Studio DS?", content: "Studio DS is a fully-themed component library built on Radix UI primitives, tailored with brand tokens for Forest Green, Golden Yellow, and Mint Teal." },
             { value: "item-2", trigger: "Which typefaces are included?", content: "Unigeo32 is the primary display and body typeface across all weights (Thin to Extrabold). Space Mono handles monospace code snippets." },
             { value: "item-3", trigger: "Is dark mode supported?", content: "Yes — every component and token adapts seamlessly between light and dark modes. Toggle it with the sun/moon button in the header." },
           ].map(({ value, trigger, content }) => (
@@ -3280,7 +3280,7 @@ export function SheetDemo() {
               </SheetTrigger>
               <SheetContent side={side}>
                 <SheetHeader>
-                  <SheetTitle>Pau Panel</SheetTitle>
+                  <SheetTitle>Studio Panel</SheetTitle>
                   <SheetDescription>
                     This panel slides in from the {side}. Use it for settings, filters, or detail views.
                   </SheetDescription>
@@ -3579,7 +3579,7 @@ export function PopoverHoverCardDemo() {
             <Label className="text-sm text-muted-foreground">Hover card</Label>
             <HoverCard>
               <HoverCardTrigger asChild>
-                <Button variant="link">@pau_design</Button>
+                <Button variant="link">@studio_design</Button>
               </HoverCardTrigger>
               <HoverCardContent className="w-72">
                 <div className="flex items-start gap-3">
@@ -3587,8 +3587,8 @@ export function PopoverHoverCardDemo() {
                     <AvatarFallback className="bg-primary text-primary-foreground">PD</AvatarFallback>
                   </Avatar>
                   <div className="space-y-1">
-                    <h4 className="text-sm font-semibold">Pau Design System</h4>
-                    <p className="text-xs text-muted-foreground">Open-source component library built on Pau with Forest Green brand tokens.</p>
+                    <h4 className="text-sm font-semibold">Studio DS</h4>
+                    <p className="text-xs text-muted-foreground">Open-source component library built on Studio DS with Forest Green brand tokens.</p>
                     <p className="text-xs text-muted-foreground">16 components · MIT license</p>
                   </div>
                 </div>
@@ -3668,7 +3668,7 @@ export function MenubarDemo() {
                   <NavigationMenuContent>
                     <ul className="grid gap-3 p-4 w-[400px] md:grid-cols-2">
                       {[
-                        { title: "Introduction", href: "#", description: "Learn about the Pau design system." },
+                        { title: "Introduction", href: "#", description: "Learn about the Studio design system." },
                         { title: "Installation", href: "#", description: "Set up your project in minutes." },
                         { title: "Tokens", href: "#", description: "Explore color, type, and spacing." },
                         { title: "Components", href: "#", description: "Browse all available components." },
@@ -3800,7 +3800,7 @@ export function BreadcrumbPaginationDemo() {
             </Breadcrumb>
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem><BreadcrumbLink href="#">Pau</BreadcrumbLink></BreadcrumbItem>
+                <BreadcrumbItem><BreadcrumbLink href="#">Studio</BreadcrumbLink></BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem><BreadcrumbLink href="#">Tokens</BreadcrumbLink></BreadcrumbItem>
                 <BreadcrumbSeparator />
@@ -4072,7 +4072,7 @@ export function ToastDemo() {
           <Button variant="secondary" onClick={() => toast.success("Changes saved", { description: "Your tokens have been published." })}>Success</Button>
           <Button variant="destructive" onClick={() => toast.error("Build failed", { description: "Check your config and try again." })}>Error</Button>
           <Button variant="outline" onClick={() => toast.warning("Approaching limit", { description: "You've used 80% of your storage." })}>Warning</Button>
-          <Button variant="ghost" onClick={() => toast.info("New version available", { description: "Pau Design System v1.1.0 is out." })}>Info</Button>
+          <Button variant="ghost" onClick={() => toast.info("New version available", { description: "Studio DS v1.1.0 is out." })}>Info</Button>
           <Button variant="outline" onClick={() => toast.promise(new Promise((r) => setTimeout(r, 2000)), { loading: "Publishing tokens…", success: "Tokens published!", error: "Publish failed." })}>Promise</Button>
         </div>
         <Toaster />
@@ -4223,7 +4223,7 @@ export function SidebarDemo() {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton className="font-semibold">
-                      <Zap className="h-4 w-4" /><span>Pau</span>
+                      <Zap className="h-4 w-4" /><span>Studio</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
@@ -4589,7 +4589,7 @@ export function ItemDemo() {
               </span>
             </ItemStart>
             <ItemContent>
-              <ItemTitle>Pau Design System</ItemTitle>
+              <ItemTitle>Studio DS</ItemTitle>
               <ItemDescription>Last updated today</ItemDescription>
             </ItemContent>
             <ItemEnd>
@@ -5209,7 +5209,7 @@ function IconsPage() {
         </div>
         <h1 className="text-3xl font-bold tracking-tight mb-3">Icons</h1>
         <p className="text-muted-foreground max-w-xl leading-relaxed">
-          Pau ships with <a href="https://lucide.dev" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">Lucide</a> — a clean, consistent icon family with {ICON_REGISTRY.length}+ icons ready to import. Click any icon to copy its import statement.
+          Studio DS ships with <a href="https://lucide.dev" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">Lucide</a> — a clean, consistent icon family with {ICON_REGISTRY.length}+ icons ready to import. Click any icon to copy its import statement.
         </p>
       </div>
 
@@ -5381,7 +5381,7 @@ export default function App() {
                     </svg>
                   </div>
                   <div className="flex flex-col leading-tight group-data-[collapsible=icon]:hidden">
-                    <span className="font-bold text-sm text-sidebar-foreground">Pau</span>
+                    <span className="font-bold text-sm text-sidebar-foreground">Studio</span>
                     <span className="text-[10px] text-sidebar-foreground/50">v1.0.0</span>
                   </div>
                 </div>
@@ -5466,14 +5466,14 @@ export default function App() {
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block" />
                   <span>v1.0.0</span>
                   <span className="text-border">·</span>
-                  <span>Pau Design System</span>
+                  <span>Studio DS</span>
                 </div>
                 <h1 className="text-5xl font-extrabold tracking-tight leading-[1.08] max-w-3xl mb-5">
                   The design foundation<br />
-                  <span className="text-primary">for Pau.</span>
+                  <span className="text-primary">for Studio.</span>
                 </h1>
                 <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed mb-8">
-                  A production-ready component library — tailored with Pau's brand tokens,
+                  A production-ready component library — tailored with Studio's brand tokens,
                   accessible by default, and built to scale across every product we ship.
                 </p>
                 <div className="flex gap-3 flex-wrap">
@@ -5577,7 +5577,7 @@ export default function App() {
                   {[
                     {
                       icon: Layers,
-                      title: "Pau-based",
+                      title: "Studio-based",
                       desc: "Copy-paste components you own — full access to source code, zero vendor lock-in.",
                     },
                     {
@@ -5607,7 +5607,7 @@ export default function App() {
               <div className="rounded-xl border border-border bg-muted/30 px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                 <div className="space-y-1">
                   <h2 className="text-base font-bold">Ready to build?</h2>
-                  <p className="text-sm text-muted-foreground">54 components · 218 icons · light &amp; dark mode — all pre-themed with Pau's brand tokens.</p>
+                  <p className="text-sm text-muted-foreground">54 components · 218 icons · light &amp; dark mode — all pre-themed with Studio's brand tokens.</p>
                 </div>
                 <div className="flex gap-3 shrink-0">
                   <Button onClick={() => setPage("components")}>
@@ -5641,9 +5641,9 @@ export default function App() {
                     <div className="h-5 w-5 rounded bg-primary flex items-center justify-center">
                       <Zap className="h-3 w-3 text-primary-foreground" />
                     </div>
-                    <span className="font-medium text-foreground">Pau</span>
+                    <span className="font-medium text-foreground">Studio</span>
                   </div>
-                  <p>Built with Pau · Tailwind CSS · React · Vite · Unigeo</p>
+                  <p>Built with Studio · Tailwind CSS · React · Vite · Unigeo</p>
                 </div>
               </footer>
             </div>
