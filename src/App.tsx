@@ -2316,6 +2316,7 @@ function ComponentsPage() {
     { title: "Resizable",                category: "Layout",     description: "Drag-to-resize panel layouts.",                 figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex h-12 w-full rounded border border-border overflow-hidden"><div className="flex-1 flex items-center justify-center bg-muted/30 text-[9px] text-muted-foreground">Panel A</div><div className="w-px bg-border relative flex items-center justify-center"><div className="w-1 h-4 rounded bg-border" /></div><div className="flex-1 flex items-center justify-center bg-muted/30 text-[9px] text-muted-foreground">Panel B</div></div> },
     { title: "Chart",                    category: "Data",       description: "Data visualisation with brand tokens.",         figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex items-end gap-1 h-12 w-full px-1"><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"40%"}} /><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"60%"}} /><div className="flex-1 bg-primary rounded-sm" style={{height:"100%"}} /><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"75%"}} /><div className="flex-1 bg-primary/80 rounded-sm" style={{height:"50%"}} /></div> },
     { title: "Sidebar",                  category: "Layout",     description: "Collapsible navigation sidebar.",               figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex h-14 w-full rounded border border-border overflow-hidden"><div className="w-16 bg-sidebar p-2 space-y-1.5"><div className="h-2 w-8 rounded bg-sidebar-foreground/20" /><div className="h-2 w-6 rounded bg-sidebar-primary" /><div className="h-2 w-7 rounded bg-sidebar-foreground/20" /></div><div className="flex-1 bg-background p-2"><div className="h-2 w-20 rounded bg-muted mb-1.5" /><div className="h-2 w-16 rounded bg-muted" /></div></div> },
+    { title: "Page Sections",            category: "Layout",     description: "Hero, page, and section header patterns.",      figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full space-y-1.5 px-1"><div className="space-y-1"><div className="h-2.5 w-16 rounded bg-foreground/80" /><div className="h-1.5 w-28 rounded bg-muted-foreground/30" /></div><div className="flex gap-1 mt-1"><div className="h-4 w-10 rounded-sm bg-primary" /><div className="h-4 w-10 rounded-sm border border-border" /></div></div> },
     { title: "Spinner",                  category: "Feedback",   description: "Animated loading indicator.",                   figmaUrl: FIGMA_FILE, preview: <div className="flex items-center gap-3 pointer-events-none select-none"><div className="h-4 w-4 rounded-full border-2 border-primary border-t-transparent animate-spin" /><div className="h-6 w-6 rounded-full border-2 border-primary border-t-transparent animate-spin" /><div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" /></div> },
     { title: "Kbd",                      category: "Display",    description: "Keyboard key display.",                         figmaUrl: FIGMA_FILE, preview: <div className="flex items-center gap-1 pointer-events-none select-none"><span className="inline-flex items-center rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-mono shadow-sm">⌘</span><span className="text-[10px] text-muted-foreground">+</span><span className="inline-flex items-center rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-mono shadow-sm">K</span></div> },
     { title: "Native Select",            category: "Forms",      description: "Browser-native select element.",                figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full h-7 rounded-md border border-input bg-background px-2 flex items-center justify-between"><span className="text-[10px] text-muted-foreground">Pick an option</span><span className="text-[10px] text-muted-foreground">▾</span></div> },
@@ -4926,6 +4927,212 @@ export function TooltipDemo() {
             </TooltipContent>
           </Tooltip>
         </div>
+      </Section>
+
+      {/* Page Sections */}
+      <Section hidden={selectedComponent !== "Page Sections"} title="Page Sections" description="Reusable header patterns for pages and content areas." code={`// Hero Header
+function HeroHeader() {
+  return (
+    <div className="border-b border-border pb-14">
+      <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground mb-4">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block" />
+        <span>v1.0.0</span>
+        <span className="text-border">·</span>
+        <span>Product name</span>
+      </div>
+      <h1 className="text-5xl font-extrabold tracking-tight leading-[1.08] max-w-3xl mb-5">
+        Your headline<br />
+        <span className="text-primary">for your brand.</span>
+      </h1>
+      <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed mb-8">
+        Short description of this product or section.
+      </p>
+      <div className="flex gap-3 flex-wrap">
+        <Button size="lg">Primary action <ArrowRight className="ml-2 h-4 w-4" /></Button>
+        <Button size="lg" variant="outline">Secondary</Button>
+      </div>
+    </div>
+  )
+}
+
+// Page Header
+function PageHeader() {
+  return (
+    <div className="flex items-start justify-between gap-4">
+      <div className="space-y-3">
+        <h1 className="text-4xl font-extrabold tracking-tight">Page title</h1>
+        <p className="text-muted-foreground text-lg max-w-2xl">
+          Short description of what this page is about.
+        </p>
+      </div>
+      <Button variant="outline" size="sm">Action</Button>
+    </div>
+  )
+}
+
+// Page Header + Search
+function PageHeaderSearch() {
+  return (
+    <div className="space-y-5">
+      <div className="space-y-2">
+        <h1 className="text-4xl font-extrabold tracking-tight">Page title</h1>
+        <p className="text-muted-foreground text-lg max-w-2xl">
+          Short description of what this page is about.
+        </p>
+      </div>
+      <div className="relative max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+        <input type="text" placeholder="Search…"
+          className="w-full h-9 rounded-md border border-input bg-background pl-9 pr-3 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+        />
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {["All", "Category A", "Category B", "Category C"].map((cat, i) => (
+          <span key={cat} className={\`px-3 py-1 rounded-full text-xs font-medium border \${i === 0 ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground"}\`}>
+            {cat}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// Section Header
+function SectionHeader() {
+  return (
+    <div className="space-y-1 border-b border-border pb-4">
+      <h2 className="text-2xl font-semibold tracking-tight">Section title</h2>
+      <p className="text-muted-foreground text-sm">Short description of this section.</p>
+    </div>
+  )
+}`}>
+        <Tabs defaultValue="hero">
+          <TabsList>
+            <TabsTrigger value="hero">Hero</TabsTrigger>
+            <TabsTrigger value="page">Page</TabsTrigger>
+            <TabsTrigger value="search">Page + Search</TabsTrigger>
+            <TabsTrigger value="section">Section</TabsTrigger>
+          </TabsList>
+
+          {/* Hero */}
+          <TabsContent value="hero" className="pt-6 space-y-4">
+            <div className="border border-border rounded-xl p-10 bg-card">
+              <div className="border-b border-border pb-10">
+                <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground mb-4">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block" />
+                  <span>v1.0.0</span>
+                  <span className="text-border">·</span>
+                  <span>Pau Design System</span>
+                </div>
+                <h1 className="text-5xl font-extrabold tracking-tight leading-[1.08] max-w-3xl mb-5">
+                  The design foundation<br />
+                  <span className="text-primary">for your brand.</span>
+                </h1>
+                <p className="text-muted-foreground text-lg max-w-2xl leading-relaxed mb-8">
+                  Short description of what this product or section is about. Keep it focused and action-oriented.
+                </p>
+                <div className="flex gap-3 flex-wrap">
+                  <Button size="lg">Primary action <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                  <Button size="lg" variant="outline">Secondary</Button>
+                  <Button size="lg" variant="ghost">Ghost</Button>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-1.5 text-xs font-mono text-muted-foreground border border-border rounded-lg p-4">
+              <p>eyebrow · <span className="text-foreground">text-xs font-mono</span></p>
+              <p>h1 · <span className="text-foreground">text-5xl font-extrabold tracking-tight</span></p>
+              <p>description · <span className="text-foreground">text-lg text-muted-foreground max-w-2xl</span></p>
+              <p>separator · <span className="text-foreground">border-b border-border pb-14</span></p>
+            </div>
+          </TabsContent>
+
+          {/* Page */}
+          <TabsContent value="page" className="pt-6 space-y-4">
+            <div className="border border-border rounded-xl p-10 bg-card">
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-3">
+                  <h1 className="text-4xl font-extrabold tracking-tight">Page title</h1>
+                  <p className="text-muted-foreground text-lg max-w-2xl">
+                    Short description of what this page contains. One or two lines maximum.
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground border border-border rounded-md px-2.5 py-1.5 shrink-0 mt-1">
+                  <FigmaIcon />
+                  View in Figma
+                </span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-1.5 text-xs font-mono text-muted-foreground border border-border rounded-lg p-4">
+              <p>h1 · <span className="text-foreground">text-4xl font-extrabold tracking-tight</span></p>
+              <p>description · <span className="text-foreground">text-lg text-muted-foreground max-w-2xl</span></p>
+              <p>layout · <span className="text-foreground">flex items-start justify-between gap-4</span></p>
+              <p>action · <span className="text-foreground">optional — Figma link or Button</span></p>
+            </div>
+          </TabsContent>
+
+          {/* Page + Search */}
+          <TabsContent value="search" className="pt-6 space-y-4">
+            <div className="border border-border rounded-xl p-10 bg-card">
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <h1 className="text-4xl font-extrabold tracking-tight">Page title</h1>
+                  <p className="text-muted-foreground text-lg max-w-2xl">
+                    Short description of what this page contains. One or two lines maximum.
+                  </p>
+                </div>
+                <div className="relative max-w-sm">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <input type="text" placeholder="Search…" readOnly
+                    className="w-full h-9 rounded-md border border-input bg-background pl-9 pr-3 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  />
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {["All", "Category A", "Category B", "Category C"].map((cat, i) => (
+                    <span key={cat} className={`px-3 py-1 rounded-full text-xs font-medium border ${i === 0 ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground"}`}>
+                      {cat}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-1.5 text-xs font-mono text-muted-foreground border border-border rounded-lg p-4">
+              <p>h1 · <span className="text-foreground">text-4xl font-extrabold tracking-tight</span></p>
+              <p>description · <span className="text-foreground">text-lg text-muted-foreground max-w-2xl</span></p>
+              <p>search input · <span className="text-foreground">h-9 border border-input pl-9</span></p>
+              <p>filter pills · <span className="text-foreground">rounded-full text-xs border</span></p>
+            </div>
+          </TabsContent>
+
+          {/* Section Header */}
+          <TabsContent value="section" className="pt-6 space-y-4">
+            <div className="border border-border rounded-xl p-10 bg-card space-y-10">
+              <div>
+                <p className="text-xs font-medium tracking-wide uppercase text-muted-foreground mb-3">H2 — Section</p>
+                <div className="space-y-1 border-b border-border pb-4">
+                  <h2 className="text-2xl font-semibold tracking-tight">Section title</h2>
+                  <p className="text-muted-foreground text-sm">Short description of this section and what it covers.</p>
+                </div>
+              </div>
+              <div>
+                <p className="text-xs font-medium tracking-wide uppercase text-muted-foreground mb-3">H3 — Sub-section</p>
+                <div className="space-y-0.5 border-b border-border pb-4">
+                  <h3 className="text-xl font-semibold tracking-tight">Sub-section title</h3>
+                  <p className="text-muted-foreground text-sm">Optional one-liner description.</p>
+                </div>
+              </div>
+              <div>
+                <p className="text-xs font-medium tracking-wide uppercase text-muted-foreground mb-3">Group label</p>
+                <p className="text-xs font-medium tracking-wide uppercase text-muted-foreground">Group label</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-1.5 text-xs font-mono text-muted-foreground border border-border rounded-lg p-4">
+              <p>h2 · <span className="text-foreground">text-2xl font-semibold tracking-tight</span></p>
+              <p>h3 · <span className="text-foreground">text-xl font-semibold tracking-tight</span></p>
+              <p>group label · <span className="text-foreground">text-xs font-medium tracking-wide uppercase</span></p>
+              <p>separator · <span className="text-foreground">border-b border-border pb-4</span></p>
+            </div>
+          </TabsContent>
+        </Tabs>
       </Section>
 
       </div>{/* end sections wrapper */}
