@@ -457,14 +457,14 @@ const radiusTokens = [
 ];
 
 const shadowTokens = [
-  { token: "shadow-none",  value: "none",                             cls: "shadow-none" },
-  { token: "shadow-sm",    value: "0 1px 2px rgba(0,0,0,0.05)",      cls: "shadow-sm" },
-  { token: "shadow",       value: "0 1px 3px rgba(0,0,0,0.10)",      cls: "shadow" },
-  { token: "shadow-md",    value: "0 4px 6px rgba(0,0,0,0.10)",      cls: "shadow-md" },
-  { token: "shadow-lg",    value: "0 10px 15px rgba(0,0,0,0.10)",    cls: "shadow-lg" },
-  { token: "shadow-xl",    value: "0 20px 25px rgba(0,0,0,0.10)",    cls: "shadow-xl" },
-  { token: "shadow-2xl",   value: "0 25px 50px rgba(0,0,0,0.25)",    cls: "shadow-2xl" },
-  { token: "shadow-inner", value: "inset 0 2px 4px rgba(0,0,0,0.06)", cls: "shadow-inner" },
+  { token: "shadow-none",  value: "none",                                      cls: "shadow-none" },
+  { token: "shadow-sm",    value: "0 1px 2px rgba(1,50,41,0.05)",              cls: "shadow-sm" },
+  { token: "shadow",       value: "0 1px 3px rgba(1,50,41,0.10)",              cls: "shadow" },
+  { token: "shadow-md",    value: "0 4px 6px rgba(1,50,41,0.10)",              cls: "shadow-md" },
+  { token: "shadow-lg",    value: "0 10px 15px rgba(1,50,41,0.10)",            cls: "shadow-lg" },
+  { token: "shadow-xl",    value: "0 20px 25px rgba(1,50,41,0.10)",            cls: "shadow-xl" },
+  { token: "shadow-2xl",   value: "0 25px 50px rgba(1,50,41,0.25)",            cls: "shadow-2xl" },
+  { token: "shadow-inner", value: "inset 0 2px 4px rgba(1,50,41,0.06)",        cls: "shadow-inner" },
 ];
 
 /* Named type styles — combine multiple tokens into one style */
@@ -752,13 +752,13 @@ function generateTokenStudioJSON() {
 
   /* ── Core / Shadow ── */
   const shadowMap: Record<string, BoxShadowValue> = {
-    "shadow-sm":    { x: "0", y: "1",  blur: "2",  spread: "0", color: "rgba(0,0,0,0.05)", type: "dropShadow" },
-    "shadow":       { x: "0", y: "1",  blur: "3",  spread: "0", color: "rgba(0,0,0,0.10)", type: "dropShadow" },
-    "shadow-md":    { x: "0", y: "4",  blur: "6",  spread: "0", color: "rgba(0,0,0,0.10)", type: "dropShadow" },
-    "shadow-lg":    { x: "0", y: "10", blur: "15", spread: "0", color: "rgba(0,0,0,0.10)", type: "dropShadow" },
-    "shadow-xl":    { x: "0", y: "20", blur: "25", spread: "0", color: "rgba(0,0,0,0.10)", type: "dropShadow" },
-    "shadow-2xl":   { x: "0", y: "25", blur: "50", spread: "0", color: "rgba(0,0,0,0.25)", type: "dropShadow" },
-    "shadow-inner": { x: "0", y: "2",  blur: "4",  spread: "0", color: "rgba(0,0,0,0.06)", type: "innerShadow" },
+    "shadow-sm":    { x: "0", y: "1",  blur: "2",  spread: "0", color: "rgba(1,50,41,0.05)", type: "dropShadow" },
+    "shadow":       { x: "0", y: "1",  blur: "3",  spread: "0", color: "rgba(1,50,41,0.10)", type: "dropShadow" },
+    "shadow-md":    { x: "0", y: "4",  blur: "6",  spread: "0", color: "rgba(1,50,41,0.10)", type: "dropShadow" },
+    "shadow-lg":    { x: "0", y: "10", blur: "15", spread: "0", color: "rgba(1,50,41,0.10)", type: "dropShadow" },
+    "shadow-xl":    { x: "0", y: "20", blur: "25", spread: "0", color: "rgba(1,50,41,0.10)", type: "dropShadow" },
+    "shadow-2xl":   { x: "0", y: "25", blur: "50", spread: "0", color: "rgba(1,50,41,0.25)", type: "dropShadow" },
+    "shadow-inner": { x: "0", y: "2",  blur: "4",  spread: "0", color: "rgba(1,50,41,0.06)", type: "innerShadow" },
   };
   const coreShadow: Record<string, { value: string | BoxShadowValue; type: string }> = {};
   shadowTokens.forEach((s) => {
@@ -1571,7 +1571,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
     ]},
     { title: "Shadow", items: [
-      { label: "Elevation", token: "--shadow-sm", value: "0 1px 2px rgba(0,0,0,0.05)", type: "shadow" },
+      { label: "Elevation", token: "--shadow-sm", value: "0 1px 2px rgba(1,50,41,0.05)", type: "shadow" },
     ]},
     { title: "Spacing", items: [
       { label: "Padding",     token: "p-6",         value: "1.5rem / 24px",  type: "size" },
@@ -1661,7 +1661,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
     ]},
     { title: "Shadow", items: [
-      { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(0,0,0,0.1)", type: "shadow" },
+      { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(1,50,41,0.1)", type: "shadow" },
     ]},
   ],
   "Sheet": [
@@ -1759,7 +1759,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
     ]},
     { title: "Shadow", items: [
-      { label: "Elevation", token: "--shadow-md", value: "0 4px 6px rgba(0,0,0,0.1)", type: "shadow" },
+      { label: "Elevation", token: "--shadow-md", value: "0 4px 6px rgba(1,50,41,0.1)", type: "shadow" },
     ]},
     { title: "Spacing", items: [
       { label: "Padding", token: "p-4", value: "0.875rem / 14px", type: "size" },
@@ -1794,7 +1794,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Menu radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
     ]},
     { title: "Shadow", items: [
-      { label: "Elevation", token: "--shadow-md", value: "0 4px 6px rgba(0,0,0,0.1)", type: "shadow" },
+      { label: "Elevation", token: "--shadow-md", value: "0 4px 6px rgba(1,50,41,0.1)", type: "shadow" },
     ]},
   ],
   "Breadcrumb & Pagination": [
@@ -1850,7 +1850,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Container", token: "--radius", value: "0.75rem / 12px", type: "size" },
     ]},
     { title: "Shadow", items: [
-      { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(0,0,0,0.1)", type: "shadow" },
+      { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(1,50,41,0.1)", type: "shadow" },
     ]},
   ],
   "Drawer": [
@@ -1899,7 +1899,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
     ]},
     { title: "Shadow", items: [
-      { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(0,0,0,0.1)", type: "shadow" },
+      { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(1,50,41,0.1)", type: "shadow" },
     ]},
   ],
   "Resizable": [
@@ -1975,7 +1975,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Border radius", token: "rounded", value: "≈ 6px", type: "size" },
     ]},
     { title: "Shadow", items: [
-      { label: "Bottom elevation", token: "--shadow-sm", value: "0 1px 2px rgba(0,0,0,0.05)", type: "shadow" },
+      { label: "Bottom elevation", token: "--shadow-sm", value: "0 1px 2px rgba(1,50,41,0.05)", type: "shadow" },
     ]},
     { title: "Spacing", items: [
       { label: "Padding x", token: "px-1.5", value: "0.375rem / 6px", type: "size" },
@@ -2121,7 +2121,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
     ]},
     { title: "Shadow", items: [
-      { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(0,0,0,0.1)", type: "shadow" },
+      { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(1,50,41,0.1)", type: "shadow" },
     ]},
     { title: "Spacing", items: [
       { label: "Padding",    token: "p-6",       value: "1.5rem / 24px",  type: "size" },
@@ -2145,7 +2145,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Item",      token: "rounded-sm", value: "≈ 6px",          type: "size" },
     ]},
     { title: "Shadow", items: [
-      { label: "Elevation", token: "--shadow-md", value: "0 4px 6px rgba(0,0,0,0.1)", type: "shadow" },
+      { label: "Elevation", token: "--shadow-md", value: "0 4px 6px rgba(1,50,41,0.1)", type: "shadow" },
     ]},
     { title: "Spacing", items: [
       { label: "Item padding", token: "px-2 py-1.5", value: "0.5rem × 0.375rem", type: "size" },
@@ -2167,7 +2167,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Tab radius",  token: "rounded-sm", value: "≈ 6px",  type: "size" },
     ]},
     { title: "Shadow", items: [
-      { label: "Active tab", token: "--shadow-sm", value: "0 1px 2px rgba(0,0,0,0.05)", type: "shadow" },
+      { label: "Active tab", token: "--shadow-sm", value: "0 1px 2px rgba(1,50,41,0.05)", type: "shadow" },
     ]},
     { title: "Spacing", items: [
       { label: "Tab padding", token: "px-3 py-1.5", value: "0.75rem × 0.375rem", type: "size" },
@@ -2186,7 +2186,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Border radius", token: "rounded-md", value: "≈ 10px", type: "size" },
     ]},
     { title: "Shadow", items: [
-      { label: "Elevation", token: "--shadow-md", value: "0 4px 6px rgba(0,0,0,0.1)", type: "shadow" },
+      { label: "Elevation", token: "--shadow-md", value: "0 4px 6px rgba(1,50,41,0.1)", type: "shadow" },
     ]},
     { title: "Spacing", items: [
       { label: "Padding", token: "px-3 py-1.5", value: "0.75rem × 0.375rem", type: "size" },
