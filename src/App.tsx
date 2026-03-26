@@ -5022,7 +5022,7 @@ function SectionHeader() {
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block" />
                   <span>v1.0.0</span>
                   <span className="text-border">·</span>
-                  <span>Pau Design System</span>
+                  <span>SL Design System</span>
                 </div>
                 <h1 className="text-5xl font-extrabold tracking-tight leading-[1.08] max-w-3xl mb-5">
                   The design foundation<br />
@@ -5562,7 +5562,24 @@ const navItems: { id: Page; label: string; icon: React.ComponentType<{ className
 
 export default function App() {
   const [dark, setDark] = useState(false);
-  const [page, setPage] = useState<Page>("overview");
+  const [page, setPage] = useState<Page>(() => {
+    const hash = window.location.hash.replace("#", "") as Page;
+    return ["overview","foundation","tokens","components","icons"].includes(hash) ? hash : "overview";
+  });
+
+  const navigate = (p: Page) => {
+    setPage(p);
+    window.location.hash = p;
+  };
+
+  React.useEffect(() => {
+    const onHashChange = () => {
+      const hash = window.location.hash.replace("#", "") as Page;
+      if (["overview","foundation","tokens","components","icons"].includes(hash)) setPage(hash);
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
 
   const toggleDark = () => {
     setDark(!dark);
@@ -5607,7 +5624,7 @@ export default function App() {
                         <SidebarMenuButton
                           tooltip={label}
                           isActive={page === id}
-                          onClick={() => setPage(id)}
+                          onClick={() => navigate(id)}
                         >
                           <Icon className="h-4 w-4" />
                           <span>{label}</span>
@@ -5687,13 +5704,13 @@ export default function App() {
                   accessible by default, and built to scale across every product we ship.
                 </p>
                 <div className="flex gap-3 flex-wrap">
-                  <Button size="lg" onClick={() => setPage("components")}>
+                  <Button size="lg" onClick={() => navigate("components")}>
                     Browse components <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
-                  <Button size="lg" variant="outline" onClick={() => setPage("tokens")}>
+                  <Button size="lg" variant="outline" onClick={() => navigate("tokens")}>
                     View tokens
                   </Button>
-                  <Button size="lg" variant="ghost" onClick={() => setPage("icons")}>
+                  <Button size="lg" variant="ghost" onClick={() => navigate("icons")}>
                     Icons
                   </Button>
                 </div>
@@ -5722,7 +5739,7 @@ export default function App() {
                     <h2 className="text-xl font-bold tracking-tight">Component showcase</h2>
                     <p className="text-sm text-muted-foreground mt-1">A live look at key building blocks</p>
                   </div>
-                  <Button variant="ghost" size="sm" onClick={() => setPage("components")} className="gap-1.5 text-xs">
+                  <Button variant="ghost" size="sm" onClick={() => navigate("components")} className="gap-1.5 text-xs">
                     View all <ArrowRight className="h-3 w-3" />
                   </Button>
                 </div>
@@ -5820,10 +5837,10 @@ export default function App() {
                   <p className="text-sm text-muted-foreground">54 components · 218 icons · light &amp; dark mode — all pre-themed with studiolammar's brand tokens.</p>
                 </div>
                 <div className="flex gap-3 shrink-0">
-                  <Button onClick={() => setPage("components")}>
+                  <Button onClick={() => navigate("components")}>
                     Components <ArrowRight className="ml-1 h-4 w-4" />
                   </Button>
-                  <Button variant="outline" onClick={() => setPage("tokens")}>
+                  <Button variant="outline" onClick={() => navigate("tokens")}>
                     Tokens
                   </Button>
                 </div>
