@@ -1670,45 +1670,80 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Inner gap",   token: "space-y-1.5", value: "0.375rem / 6px", type: "size" },
     ]},
   ],
-  "Form Controls": () => [
-    { title: "Colors", items: [
-      { label: "Input background",  token: "--background",     value: "#FFFFFF", type: "color" },
-      { label: "Input border",      token: "--input",          value: "#E5E5E5", type: "color" },
-      { label: "Input text",        token: "--foreground",     value: "#333333", type: "color" },
-      { label: "Placeholder",       token: "--muted-foreground", value: "#737373", type: "color" },
-      { label: "Focus ring",        token: "--ring",           value: "#013229", type: "color" },
-      { label: "Checked fill",      token: "--primary",        value: "#013229", type: "color" },
-    ]},
-    { title: "Typography", items: [
-      { label: "Font size",   token: "text-sm",      value: "0.875rem / 14px", type: "size" },
-      { label: "Font weight", token: "font-regular", value: "400",             type: "size" },
-    ]},
-    { title: "Radius", items: [
-      { label: "Border radius", token: "rounded-md", value: "calc(var(--radius) - 2px) ≈ 10px", type: "size" },
-    ]},
-    { title: "Spacing", items: [
-      { label: "Input height", token: "h-10", value: "2.5rem / 40px",  type: "size" },
-      { label: "Padding x",    token: "px-3", value: "0.75rem / 12px", type: "size" },
-    ]},
-  ],
-  "Alerts": () => [
-    { title: "Colors", items: [
-      { label: "Background",        token: "--background", value: "#FFFFFF", type: "color" },
-      { label: "Border",            token: "--border",     value: "#E5E5E5", type: "color" },
-      { label: "Default icon/title", token: "--foreground", value: "#333333", type: "color" },
-      { label: "Destructive icon",  token: "--destructive", value: "#DC2626", type: "color" },
-    ]},
-    { title: "Typography", items: [
-      { label: "Title weight", token: "font-medium", value: "500",             type: "size" },
-      { label: "Font size",    token: "text-sm",     value: "0.875rem / 14px", type: "size" },
-    ]},
-    { title: "Radius", items: [
-      { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
-    ]},
-    { title: "Spacing", items: [
-      { label: "Padding", token: "p-4", value: "0.875rem / 14px", type: "size" },
-    ]},
-  ],
+  "Form Controls": (ctx = {}) => {
+    const state = ctx.variant ?? "default";
+    const borderByState: Record<string, SpecItem> = {
+      default:  { label: "Input border",  token: "--input",         value: "#E5E5E5",  type: "color" },
+      focus:    { label: "Input border",  token: "--ring",          value: "#013229",  type: "color" },
+      error:    { label: "Input border",  token: "--destructive",   value: "#DC2626",  type: "color" },
+      disabled: { label: "Input border",  token: "--input/50",      value: "rgba(229,229,229,0.50)", type: "color" },
+    };
+    const textByState: Record<string, SpecItem> = {
+      default:  { label: "Input text",    token: "--foreground",    value: "#333333",  type: "color" },
+      focus:    { label: "Input text",    token: "--foreground",    value: "#333333",  type: "color" },
+      error:    { label: "Input text",    token: "--destructive",   value: "#DC2626",  type: "color" },
+      disabled: { label: "Input text",    token: "--foreground/40", value: "rgba(51,51,51,0.40)", type: "color" },
+    };
+    return [
+      { title: "Colors", items: [
+        { label: "Background",   token: "--background",        value: "#FFFFFF",  type: "color" },
+        borderByState[state] ?? borderByState.default,
+        textByState[state]   ?? textByState.default,
+        { label: "Placeholder",  token: "--muted-foreground",  value: "#737373",  type: "color" },
+        { label: "Focus ring",   token: "--ring",              value: "#013229",  type: "color" },
+        { label: "Checked fill", token: "--primary",           value: "#013229",  type: "color" },
+      ]},
+      { title: "Typography", items: [
+        { label: "Font size",   token: "text-sm",      value: "0.875rem / 14px", type: "size" },
+        { label: "Font weight", token: "font-regular", value: "400",             type: "size" },
+      ]},
+      { title: "Radius", items: [
+        { label: "Border radius", token: "rounded-md", value: "calc(var(--radius) - 2px) ≈ 10px", type: "size" },
+      ]},
+      { title: "Spacing", items: [
+        { label: "Input height", token: "h-10", value: "2.5rem / 40px",  type: "size" },
+        { label: "Padding x",    token: "px-3", value: "0.75rem / 12px", type: "size" },
+      ]},
+    ];
+  },
+  "Alerts": (ctx = {}) => {
+    const variant = ctx.variant ?? "default";
+    const colorsByVariant: Record<string, SpecItem[]> = {
+      default: [
+        { label: "Background",    token: "--background",    value: "#FFFFFF",  type: "color" },
+        { label: "Border",        token: "--border",        value: "#E5E5E5",  type: "color" },
+        { label: "Icon / title",  token: "--foreground",    value: "#333333",  type: "color" },
+      ],
+      success: [
+        { label: "Background",    token: "--background",    value: "#FFFFFF",  type: "color" },
+        { label: "Border",        token: "border-intense-400/40", value: "rgba(97,202,160,0.40)", type: "color" },
+        { label: "Icon / title",  token: "--intense-400",   value: "#61CAA0",  type: "color" },
+      ],
+      warning: [
+        { label: "Background",    token: "--background",    value: "#FFFFFF",  type: "color" },
+        { label: "Border",        token: "border-amber-400/50", value: "rgba(251,191,36,0.50)", type: "color" },
+        { label: "Icon / title",  token: "text-amber-600",  value: "#D97706",  type: "color" },
+      ],
+      destructive: [
+        { label: "Background",    token: "--background",    value: "#FFFFFF",  type: "color" },
+        { label: "Border",        token: "--destructive/30", value: "rgba(220,38,38,0.30)", type: "color" },
+        { label: "Icon / title",  token: "--destructive",   value: "#DC2626",  type: "color" },
+      ],
+    };
+    return [
+      { title: "Colors", items: colorsByVariant[variant] ?? colorsByVariant.default },
+      { title: "Typography", items: [
+        { label: "Title weight", token: "font-medium", value: "500",             type: "size" },
+        { label: "Font size",    token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      ]},
+      { title: "Radius", items: [
+        { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
+      ]},
+      { title: "Spacing", items: [
+        { label: "Padding", token: "p-4", value: "0.875rem / 14px", type: "size" },
+      ]},
+    ];
+  },
   "Table": () => [
     { title: "Colors", items: [
       { label: "Header text",  token: "--muted-foreground", value: "#737373", type: "color" },
@@ -2288,6 +2323,8 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
 
 function DesignSpecs({ title, context }: { title: string | null; context?: SpecContext }) {
   const [open, setOpen] = useState(true);
+  const contextKey = JSON.stringify(context);
+  React.useEffect(() => { setOpen(true); }, [contextKey]);
   const specFn = title ? COMPONENT_SPECS[title] : undefined;
   const groups = specFn ? specFn(context) : undefined;
   if (!groups || groups.length === 0) return null;
@@ -2301,27 +2338,34 @@ function DesignSpecs({ title, context }: { title: string | null; context?: SpecC
 
   return (
     <div className="border-t border-border mt-4">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center justify-between gap-2 py-5 text-left"
-      >
+      <div className="flex items-center justify-between gap-2 pt-5 pb-3">
         <div className="flex items-center gap-2 flex-wrap">
           <SlidersHorizontal className="h-4 w-4 text-muted-foreground shrink-0" />
           <h3 className="text-sm font-semibold tracking-tight">Design tokens</h3>
-          {context?.variant && (
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground capitalize">{context.variant}</span>
-          )}
-          {context?.size && context.size !== "default" && (
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground uppercase">{context.size}</span>
-          )}
-          {context?.style && (
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground capitalize">{context.style}</span>
-          )}
         </div>
-        <ChevronDown
-          className={`h-4 w-4 text-muted-foreground transition-transform duration-200 shrink-0 ${open ? "rotate-180" : ""}`}
-        />
-      </button>
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          aria-label="Toggle design tokens"
+        >
+          {(context?.variant || (context?.size && context.size !== "default") || context?.style) && (
+            <span className="flex items-center gap-1 mr-1">
+              {context?.variant && (
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-sm bg-primary/8 text-primary/70 capitalize border border-primary/15">{context.variant}</span>
+              )}
+              {context?.size && context.size !== "default" && (
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-sm bg-primary/8 text-primary/70 uppercase border border-primary/15">{context.size}</span>
+              )}
+              {context?.style && (
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-sm bg-primary/8 text-primary/70 capitalize border border-primary/15">{context.style}</span>
+              )}
+            </span>
+          )}
+          <ChevronDown
+            className={`h-4 w-4 transition-transform duration-200 shrink-0 ${open ? "rotate-180" : ""}`}
+          />
+        </button>
+      </div>
       {open && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 pb-8">
           {groups.map((group) => (
@@ -2385,6 +2429,8 @@ function ComponentsPage() {
   const [btnLeadingIcon, setBtnLeadingIcon] = useState<string | null>(null);
   const [btnTrailingIcon, setBtnTrailingIcon] = useState<string | null>(null);
   const [buttonActiveSize, setButtonActiveSize] = useState<"sm" | "default" | "lg" | "icon">("default");
+  const [alertVariant, setAlertVariant] = useState<"default" | "success" | "warning" | "destructive">("default");
+  const [inputState, setInputState] = useState<"default" | "focus" | "error" | "disabled">("default");
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [view, setView] = useState<"grid" | "detail">("grid");
@@ -3118,6 +3164,19 @@ export function FormDemo() {
     </div>
   )
 }`}>
+        <div className="space-y-5">
+          {/* State selector — drives token panel */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <p className="text-xs font-medium text-muted-foreground">Token view:</p>
+            <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+              {(["default","focus","error","disabled"] as const).map((s) => (
+                <button key={s} onClick={() => setInputState(s)}
+                  className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${inputState === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
         <div className="grid gap-8 sm:grid-cols-2">
           <div className="space-y-4">
             <div className="space-y-2">
@@ -3199,6 +3258,7 @@ export function FormDemo() {
             </div>
           </div>
         </div>
+        </div>
       </Section>
 
       {/* Alerts */}
@@ -3220,11 +3280,25 @@ export function AlertDemo() {
     </div>
   )
 }`}>
-        <div className="space-y-3">
-          <Alert><Info className="h-4 w-4" /><AlertTitle>Heads up!</AlertTitle><AlertDescription>You can add components to your app using the CLI.</AlertDescription></Alert>
-          <Alert variant="success"><Check className="h-4 w-4" /><AlertTitle>All systems operational</AlertTitle><AlertDescription>Everything is running smoothly.</AlertDescription></Alert>
-          <Alert variant="warning"><Bell className="h-4 w-4" /><AlertTitle>Approaching limit</AlertTitle><AlertDescription>You have used 80% of your storage quota.</AlertDescription></Alert>
-          <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertTitle>Deployment failed</AlertTitle><AlertDescription>Check your configuration and try again.</AlertDescription></Alert>
+        <div className="space-y-5">
+          {/* Variant selector — drives token panel */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <p className="text-xs font-medium text-muted-foreground">Token view:</p>
+            <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+              {(["default","success","warning","destructive"] as const).map((v) => (
+                <button key={v} onClick={() => setAlertVariant(v)}
+                  className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${alertVariant === v ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                  {v}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="space-y-3">
+            <Alert><Info className="h-4 w-4" /><AlertTitle>Heads up!</AlertTitle><AlertDescription>You can add components to your app using the CLI.</AlertDescription></Alert>
+            <Alert variant="success"><Check className="h-4 w-4" /><AlertTitle>All systems operational</AlertTitle><AlertDescription>Everything is running smoothly.</AlertDescription></Alert>
+            <Alert variant="warning"><Bell className="h-4 w-4" /><AlertTitle>Approaching limit</AlertTitle><AlertDescription>You have used 80% of your storage quota.</AlertDescription></Alert>
+            <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertTitle>Deployment failed</AlertTitle><AlertDescription>Check your configuration and try again.</AlertDescription></Alert>
+          </div>
         </div>
       </Section>
 
@@ -5270,6 +5344,10 @@ function SectionHeader() {
               ? { size: badgeSize, style: badgeStyle }
               : selectedComponent === "Buttons"
               ? { variant: sizeTabVariant, size: buttonActiveSize }
+              : selectedComponent === "Alerts"
+              ? { variant: alertVariant }
+              : selectedComponent === "Form Controls"
+              ? { variant: inputState }
               : undefined
           }
         />
