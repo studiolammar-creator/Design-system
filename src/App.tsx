@@ -1502,9 +1502,10 @@ function TokensPage({ dark: _dark }: { dark: boolean }) {
 type SpecType = "color" | "size" | "font" | "shadow";
 interface SpecItem { label: string; token: string; value: string; type: SpecType; }
 interface SpecGroup { title: string; items: SpecItem[]; }
+type SpecContext = { variant?: string; size?: string; style?: string };
 
-const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
-  "Typography": [
+const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
+  "Typography": () => [
     { title: "Colors", items: [
       { label: "Body text",            token: "--foreground",       value: "#333333", type: "color" },
       { label: "Muted / secondary",    token: "--muted-foreground", value: "#737373", type: "color" },
@@ -1518,50 +1519,141 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Line height normal",   token: "--leading-normal",   value: "1.5",          type: "size" },
     ]},
   ],
-  "Buttons": [
-    { title: "Colors", items: [
-      { label: "Default background",   token: "--primary",              value: "#013229", type: "color" },
-      { label: "Default text",         token: "--primary-foreground",   value: "#F0FBF8", type: "color" },
-      { label: "Secondary background", token: "--secondary",            value: "#FFD653", type: "color" },
-      { label: "Accent background",    token: "--accent",               value: "#61CAA0", type: "color" },
-      { label: "Destructive background", token: "--destructive",        value: "#DC2626", type: "color" },
-      { label: "Focus ring",           token: "--ring",                 value: "#013229", type: "color" },
-    ]},
-    { title: "Typography", items: [
-      { label: "Font size",            token: "text-sm",    value: "0.875rem / 14px", type: "size" },
-      { label: "Font weight",          token: "font-medium", value: "500",            type: "size" },
-    ]},
-    { title: "Radius", items: [
-      { label: "Border radius",        token: "rounded-md", value: "calc(var(--radius) - 2px) ≈ 10px", type: "size" },
-    ]},
-    { title: "Spacing", items: [
-      { label: "Height (default)",     token: "h-10",  value: "2.5rem / 40px",  type: "size" },
-      { label: "Height (sm)",          token: "h-9",   value: "2.25rem / 36px", type: "size" },
-      { label: "Height (lg)",          token: "h-11",  value: "2.75rem / 44px", type: "size" },
-      { label: "Padding x",            token: "px-4",  value: "0.875rem / 14px",    type: "size" },
-    ]},
-  ],
-  "Badges": [
-    { title: "Colors", items: [
-      { label: "Default background",   token: "--primary",            value: "#013229", type: "color" },
-      { label: "Default text",         token: "--primary-foreground", value: "#F0FBF8", type: "color" },
-      { label: "Secondary background", token: "--secondary",          value: "#FFD653", type: "color" },
-      { label: "Accent background",    token: "--accent",             value: "#61CAA0", type: "color" },
-      { label: "Destructive background", token: "--destructive",      value: "#DC2626", type: "color" },
-    ]},
-    { title: "Typography", items: [
-      { label: "Font size",   token: "text-xs",      value: "0.75rem / 12px", type: "size" },
-      { label: "Font weight", token: "font-semibold", value: "600",           type: "size" },
-    ]},
-    { title: "Radius", items: [
-      { label: "Border radius", token: "rounded-full", value: "9999px", type: "size" },
-    ]},
-    { title: "Spacing", items: [
-      { label: "Padding x",  token: "px-2.5", value: "0.625rem / 10px", type: "size" },
-      { label: "Padding y",  token: "py-0.5", value: "0.125rem / 2px",  type: "size" },
-    ]},
-  ],
-  "Cards": [
+  "Buttons": (ctx = {}) => {
+    const size = ctx.size ?? "default";
+    const variant = ctx.variant ?? "default";
+
+    const colorsByVariant: Record<string, SpecItem[]> = {
+      default:     [
+        { label: "Background", token: "--primary",              value: "#013229", type: "color" },
+        { label: "Text",       token: "--primary-foreground",   value: "#F0FBF8", type: "color" },
+        { label: "Focus ring", token: "--ring",                 value: "#013229", type: "color" },
+      ],
+      secondary:   [
+        { label: "Background", token: "--secondary",            value: "#FFD653", type: "color" },
+        { label: "Text",       token: "--secondary-foreground", value: "#333333", type: "color" },
+        { label: "Focus ring", token: "--ring",                 value: "#013229", type: "color" },
+      ],
+      accent:      [
+        { label: "Background", token: "--accent",               value: "#61CAA0", type: "color" },
+        { label: "Text",       token: "--accent-foreground",    value: "#013229", type: "color" },
+        { label: "Focus ring", token: "--ring",                 value: "#013229", type: "color" },
+      ],
+      destructive: [
+        { label: "Background", token: "--destructive",          value: "#DC2626", type: "color" },
+        { label: "Text",       token: "--destructive-foreground", value: "#FAFAFA", type: "color" },
+        { label: "Focus ring", token: "--ring",                 value: "#013229", type: "color" },
+      ],
+      outline:     [
+        { label: "Border",     token: "--border",               value: "#E5E5E5", type: "color" },
+        { label: "Text",       token: "--foreground",           value: "#333333", type: "color" },
+        { label: "Hover bg",   token: "--accent/5",             value: "rgba(97,202,160,0.05)", type: "color" },
+      ],
+      ghost:       [
+        { label: "Hover bg",   token: "--accent/10",            value: "rgba(97,202,160,0.10)", type: "color" },
+        { label: "Text",       token: "--foreground",           value: "#333333", type: "color" },
+      ],
+      link:        [
+        { label: "Text",       token: "--primary",              value: "#013229", type: "color" },
+        { label: "Underline",  token: "underline-offset-4",     value: "4px",     type: "size" },
+      ],
+    };
+
+    const sizeSpecs: Record<string, SpecItem[]> = {
+      sm:      [
+        { label: "Height",    token: "h-9",      value: "2.25rem / 36px",  type: "size" },
+        { label: "Padding x", token: "px-3",     value: "0.75rem / 12px",  type: "size" },
+        { label: "Font size", token: "text-sm",  value: "0.875rem / 14px", type: "size" },
+      ],
+      default: [
+        { label: "Height",    token: "h-10",     value: "2.5rem / 40px",   type: "size" },
+        { label: "Padding x", token: "px-4",     value: "1rem / 16px",     type: "size" },
+        { label: "Font size", token: "text-sm",  value: "0.875rem / 14px", type: "size" },
+      ],
+      lg:      [
+        { label: "Height",    token: "h-11",     value: "2.75rem / 44px",  type: "size" },
+        { label: "Padding x", token: "px-8",     value: "2rem / 32px",     type: "size" },
+        { label: "Font size", token: "text-base", value: "1rem / 16px",    type: "size" },
+      ],
+      icon:    [
+        { label: "Height",    token: "h-10",     value: "2.5rem / 40px",   type: "size" },
+        { label: "Width",     token: "w-10",     value: "2.5rem / 40px",   type: "size" },
+        { label: "Font size", token: "text-sm",  value: "0.875rem / 14px", type: "size" },
+      ],
+    };
+
+    const sp = sizeSpecs[size] ?? sizeSpecs.default;
+
+    return [
+      { title: "Colors", items: colorsByVariant[variant] ?? colorsByVariant.default },
+      { title: "Typography", items: [
+        { label: "Font weight", token: "font-medium", value: "500", type: "size" },
+        ...sp.filter(i => i.label === "Font size"),
+      ]},
+      { title: "Radius", items: [
+        { label: "Border radius", token: "rounded-md", value: "calc(var(--radius) - 2px) ≈ 10px", type: "size" },
+      ]},
+      { title: "Spacing", items: sp.filter(i => i.label !== "Font size") },
+    ];
+  },
+  "Badges": (ctx = {}) => {
+    const size = ctx.size ?? "md";
+    const style = ctx.style ?? "badge";
+
+    const spacingBySize: Record<string, SpecItem[]> = {
+      sm: [
+        { label: "Padding x", token: "px-1.5",       value: "0.375rem / 6px",  type: "size" },
+        { label: "Padding y", token: "py-px",          value: "1px",             type: "size" },
+        { label: "Font size", token: "text-[10px]",    value: "10px",            type: "size" },
+        { label: "Icon size", token: "h-2.5 w-2.5",   value: "10px",            type: "size" },
+      ],
+      md: [
+        { label: "Padding x", token: "px-2.5",        value: "0.625rem / 10px", type: "size" },
+        { label: "Padding y", token: "py-0.5",         value: "0.125rem / 2px",  type: "size" },
+        { label: "Font size", token: "text-xs",        value: "0.75rem / 12px",  type: "size" },
+        { label: "Icon size", token: "h-3 w-3",        value: "12px",            type: "size" },
+      ],
+      lg: [
+        { label: "Padding x", token: "px-4",          value: "1rem / 16px",     type: "size" },
+        { label: "Padding y", token: "py-1",           value: "0.25rem / 4px",   type: "size" },
+        { label: "Font size", token: "text-sm",        value: "0.875rem / 14px", type: "size" },
+        { label: "Icon size", token: "h-3.5 w-3.5",   value: "14px",            type: "size" },
+      ],
+    };
+
+    const radiusKey = `${style}_${size}`;
+    const radiusMap: Record<string, SpecItem> = {
+      badge_sm: { label: "Border radius", token: "rounded-sm",   value: "≈ 4px",   type: "size" },
+      badge_md: { label: "Border radius", token: "rounded",       value: "≈ 6px",   type: "size" },
+      badge_lg: { label: "Border radius", token: "rounded",       value: "≈ 6px",   type: "size" },
+      pill_sm:  { label: "Border radius", token: "rounded-full",  value: "9999px",  type: "size" },
+      pill_md:  { label: "Border radius", token: "rounded-full",  value: "9999px",  type: "size" },
+      pill_lg:  { label: "Border radius", token: "rounded-full",  value: "9999px",  type: "size" },
+    };
+
+    const sp = spacingBySize[size] ?? spacingBySize.md;
+
+    return [
+      { title: "Colors", items: [
+        { label: "Default bg",     token: "bg-primary/10",     value: "rgba(1,50,41,0.10)",    type: "color" },
+        { label: "Default text",   token: "--primary",          value: "#013229",               type: "color" },
+        { label: "Secondary bg",   token: "bg-secondary/40",   value: "rgba(255,214,83,0.40)", type: "color" },
+        { label: "Accent bg",      token: "bg-accent/25",      value: "rgba(97,202,160,0.25)", type: "color" },
+        { label: "Destructive bg", token: "bg-destructive/10", value: "rgba(220,38,38,0.10)",  type: "color" },
+        { label: "Info bg",        token: "bg-sky-100",         value: "#E0F2FE",               type: "color" },
+        { label: "Warning bg",     token: "bg-amber-100",       value: "#FEF3C7",               type: "color" },
+      ]},
+      { title: "Typography", items: [
+        { label: "Font weight", token: "font-semibold", value: "600", type: "size" },
+        ...sp.filter(i => i.label === "Font size"),
+      ]},
+      { title: "Radius", items: [
+        radiusMap[radiusKey] ?? { label: "Border radius", token: "rounded-full", value: "9999px", type: "size" },
+      ]},
+      { title: "Spacing", items: sp.filter(i => i.label !== "Font size") },
+    ];
+  },
+  "Cards": () => [
     { title: "Colors", items: [
       { label: "Background", token: "--card",          value: "#FFFFFF", type: "color" },
       { label: "Text",       token: "--card-foreground", value: "#333333", type: "color" },
@@ -1578,7 +1670,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Inner gap",   token: "space-y-1.5", value: "0.375rem / 6px", type: "size" },
     ]},
   ],
-  "Form Controls": [
+  "Form Controls": () => [
     { title: "Colors", items: [
       { label: "Input background",  token: "--background",     value: "#FFFFFF", type: "color" },
       { label: "Input border",      token: "--input",          value: "#E5E5E5", type: "color" },
@@ -1599,7 +1691,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Padding x",    token: "px-3", value: "0.75rem / 12px", type: "size" },
     ]},
   ],
-  "Alerts": [
+  "Alerts": () => [
     { title: "Colors", items: [
       { label: "Background",        token: "--background", value: "#FFFFFF", type: "color" },
       { label: "Border",            token: "--border",     value: "#E5E5E5", type: "color" },
@@ -1617,7 +1709,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Padding", token: "p-4", value: "0.875rem / 14px", type: "size" },
     ]},
   ],
-  "Table": [
+  "Table": () => [
     { title: "Colors", items: [
       { label: "Header text",  token: "--muted-foreground", value: "#737373", type: "color" },
       { label: "Body text",    token: "--foreground",       value: "#333333", type: "color" },
@@ -1632,7 +1724,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Cell padding", token: "px-4 py-2", value: "1rem × 0.5rem", type: "size" },
     ]},
   ],
-  "Accordion": [
+  "Accordion": () => [
     { title: "Colors", items: [
       { label: "Text",    token: "--foreground", value: "#333333", type: "color" },
       { label: "Divider", token: "--border",     value: "#E5E5E5", type: "color" },
@@ -1645,7 +1737,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Trigger padding y", token: "py-4", value: "0.875rem / 14px", type: "size" },
     ]},
   ],
-  "Alert Dialog": [
+  "Alert Dialog": () => [
     { title: "Colors", items: [
       { label: "Background",        token: "--background", value: "#FFFFFF",           type: "color" },
       { label: "Overlay",           token: "black/50",     value: "rgba(0,0,0,0.5)",   type: "color" },
@@ -1664,7 +1756,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(1,50,41,0.1)", type: "shadow" },
     ]},
   ],
-  "Sheet": [
+  "Sheet": () => [
     { title: "Colors", items: [
       { label: "Background", token: "--background", value: "#FFFFFF",          type: "color" },
       { label: "Border",     token: "--border",     value: "#E5E5E5",          type: "color" },
@@ -1678,7 +1770,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Padding", token: "p-6", value: "1.5rem / 24px", type: "size" },
     ]},
   ],
-  "Progress & Slider": [
+  "Progress & Slider": () => [
     { title: "Colors", items: [
       { label: "Track background",  token: "--muted",       value: "#F5F5F5", type: "color" },
       { label: "Progress fill",     token: "--primary",     value: "#013229", type: "color" },
@@ -1693,7 +1785,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Thumb size",   token: "h-5 w-5", value: "1.25rem / 20px", type: "size" },
     ]},
   ],
-  "Radio Group & Textarea": [
+  "Radio Group & Textarea": () => [
     { title: "Colors", items: [
       { label: "Radio border",      token: "--input",      value: "#E5E5E5", type: "color" },
       { label: "Radio selected",    token: "--primary",    value: "#013229", type: "color" },
@@ -1709,7 +1801,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Textarea", token: "rounded-md",   value: "≈ 10px",  type: "size" },
     ]},
   ],
-  "Toggle & Toggle Group": [
+  "Toggle & Toggle Group": () => [
     { title: "Colors", items: [
       { label: "Default bg",    token: "transparent",       value: "transparent", type: "color" },
       { label: "Hover bg",      token: "--muted",           value: "#F5F5F5",    type: "color" },
@@ -1727,7 +1819,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Padding x", token: "px-3", value: "0.75rem / 12px", type: "size" },
     ]},
   ],
-  "Skeleton": [
+  "Skeleton": () => [
     { title: "Colors", items: [
       { label: "Background", token: "--muted", value: "#F5F5F5", type: "color" },
     ]},
@@ -1738,7 +1830,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Effect", token: "animate-pulse", value: "pulse 2s cubic-bezier(0.4,0,0.6,1) infinite", type: "font" },
     ]},
   ],
-  "Scroll Area": [
+  "Scroll Area": () => [
     { title: "Colors", items: [
       { label: "Scrollbar thumb", token: "--border", value: "#E5E5E5", type: "color" },
     ]},
@@ -1746,7 +1838,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Scrollbar width", token: "w-2.5", value: "0.625rem / 10px", type: "size" },
     ]},
   ],
-  "Popover & Hover Card": [
+  "Popover & Hover Card": () => [
     { title: "Colors", items: [
       { label: "Background", token: "--popover",            value: "#FFFFFF", type: "color" },
       { label: "Text",       token: "--popover-foreground", value: "#333333", type: "color" },
@@ -1765,7 +1857,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Padding", token: "p-4", value: "0.875rem / 14px", type: "size" },
     ]},
   ],
-  "Menubar & Navigation Menu": [
+  "Menubar & Navigation Menu": () => [
     { title: "Colors", items: [
       { label: "Background",    token: "--background", value: "#FFFFFF", type: "color" },
       { label: "Border",        token: "--border",     value: "#E5E5E5", type: "color" },
@@ -1780,7 +1872,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Item radius", token: "rounded-sm", value: "≈ 6px", type: "size" },
     ]},
   ],
-  "Collapsible & Context Menu": [
+  "Collapsible & Context Menu": () => [
     { title: "Colors", items: [
       { label: "Background",  token: "--popover",           value: "#FFFFFF", type: "color" },
       { label: "Border",      token: "--border",            value: "#E5E5E5", type: "color" },
@@ -1797,7 +1889,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Elevation", token: "--shadow-md", value: "0 4px 6px rgba(1,50,41,0.1)", type: "shadow" },
     ]},
   ],
-  "Breadcrumb & Pagination": [
+  "Breadcrumb & Pagination": () => [
     { title: "Colors", items: [
       { label: "Active text",      token: "--foreground",       value: "#333333", type: "color" },
       { label: "Muted text",       token: "--muted-foreground", value: "#737373", type: "color" },
@@ -1812,7 +1904,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Page button", token: "rounded-md", value: "≈ 10px", type: "size" },
     ]},
   ],
-  "Aspect Ratio & Carousel": [
+  "Aspect Ratio & Carousel": () => [
     { title: "Colors", items: [
       { label: "Container bg",  token: "--muted",            value: "#F5F5F5", type: "color" },
       { label: "Active dot",    token: "--primary",          value: "#013229", type: "color" },
@@ -1822,7 +1914,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Card radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
     ]},
   ],
-  "Calendar": [
+  "Calendar": () => [
     { title: "Colors", items: [
       { label: "Selected day bg",   token: "--primary",          value: "#013229", type: "color" },
       { label: "Selected day text", token: "--primary-foreground", value: "#F0FBF8", type: "color" },
@@ -1836,7 +1928,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Day button", token: "rounded-md", value: "≈ 10px", type: "size" },
     ]},
   ],
-  "Command": [
+  "Command": () => [
     { title: "Colors", items: [
       { label: "Background",     token: "--popover",          value: "#FFFFFF", type: "color" },
       { label: "Border",         token: "--border",           value: "#E5E5E5", type: "color" },
@@ -1853,7 +1945,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(1,50,41,0.1)", type: "shadow" },
     ]},
   ],
-  "Drawer": [
+  "Drawer": () => [
     { title: "Colors", items: [
       { label: "Background", token: "--background",     value: "#FFFFFF",           type: "color" },
       { label: "Handle",     token: "--muted-foreground", value: "rgba(115,115,115,0.3)", type: "color" },
@@ -1867,7 +1959,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Top radius", token: "rounded-t-[10px]", value: "10px (top only)", type: "size" },
     ]},
   ],
-  "Input OTP": [
+  "Input OTP": () => [
     { title: "Colors", items: [
       { label: "Cell background",  token: "--background", value: "#FFFFFF", type: "color" },
       { label: "Cell border",      token: "--input",      value: "#E5E5E5", type: "color" },
@@ -1884,7 +1976,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Cell size", token: "h-10 w-10", value: "2.5rem / 40px square", type: "size" },
     ]},
   ],
-  "Sonner (Toast)": [
+  "Sonner (Toast)": () => [
     { title: "Colors", items: [
       { label: "Background",         token: "--background", value: "#FFFFFF", type: "color" },
       { label: "Border",             token: "--border",     value: "#E5E5E5", type: "color" },
@@ -1902,7 +1994,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(1,50,41,0.1)", type: "shadow" },
     ]},
   ],
-  "Resizable": [
+  "Resizable": () => [
     { title: "Colors", items: [
       { label: "Handle color",  token: "--border",           value: "#E5E5E5", type: "color" },
       { label: "Handle hover",  token: "--muted-foreground", value: "#737373", type: "color" },
@@ -1912,7 +2004,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Hit area width",  token: "w-4",  value: "0.875rem / 14px",  type: "size" },
     ]},
   ],
-  "Chart": [
+  "Chart": () => [
     { title: "Colors", items: [
       { label: "Primary series",   token: "--primary",          value: "#013229", type: "color" },
       { label: "Secondary series", token: "--secondary",        value: "#FFD653", type: "color" },
@@ -1927,7 +2019,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Bar radius", token: "rounded-sm", value: "2px", type: "size" },
     ]},
   ],
-  "Sidebar": [
+  "Sidebar": () => [
     { title: "Colors", items: [
       { label: "Background",   token: "--sidebar",           value: "#013229", type: "color" },
       { label: "Text",         token: "--sidebar-foreground", value: "#F0FBF8", type: "color" },
@@ -1946,7 +2038,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Collapsed width",   token: "w-12", value: "3rem / 48px",   type: "size" },
     ]},
   ],
-  "Spinner": [
+  "Spinner": () => [
     { title: "Colors", items: [
       { label: "Track color",  token: "--primary",  value: "#013229",    type: "color" },
       { label: "Gap segment",  token: "transparent", value: "transparent", type: "color" },
@@ -1961,7 +2053,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Effect", token: "animate-spin", value: "spin 1s linear infinite", type: "font" },
     ]},
   ],
-  "Kbd": [
+  "Kbd": () => [
     { title: "Colors", items: [
       { label: "Background", token: "--muted",   value: "#F5F5F5", type: "color" },
       { label: "Border",     token: "--border",  value: "#E5E5E5", type: "color" },
@@ -1982,7 +2074,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Padding y", token: "py-0.5", value: "0.125rem / 2px", type: "size" },
     ]},
   ],
-  "Native Select": [
+  "Native Select": () => [
     { title: "Colors", items: [
       { label: "Background", token: "--background", value: "#FFFFFF", type: "color" },
       { label: "Border",     token: "--input",      value: "#E5E5E5", type: "color" },
@@ -2000,7 +2092,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Padding x", token: "px-3", value: "0.75rem / 12px", type: "size" },
     ]},
   ],
-  "Input Group": [
+  "Input Group": () => [
     { title: "Colors", items: [
       { label: "Addon background",  token: "--muted",            value: "#F5F5F5", type: "color" },
       { label: "Border",            token: "--input",            value: "#E5E5E5", type: "color" },
@@ -2015,7 +2107,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Addon padding", token: "px-3", value: "0.75rem / 12px", type: "size" },
     ]},
   ],
-  "Button Group": [
+  "Button Group": () => [
     { title: "Colors", items: [
       { label: "Border",          token: "--input",              value: "#E5E5E5", type: "color" },
       { label: "Background",      token: "--background",         value: "#FFFFFF", type: "color" },
@@ -2034,7 +2126,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Padding x", token: "px-4", value: "0.875rem / 14px",    type: "size" },
     ]},
   ],
-  "Empty": [
+  "Empty": () => [
     { title: "Colors", items: [
       { label: "Icon background",   token: "--muted",            value: "#F5F5F5", type: "color" },
       { label: "Icon color",        token: "--muted-foreground", value: "#737373", type: "color" },
@@ -2053,7 +2145,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Icon size", token: "h-12 w-12", value: "3rem / 48px", type: "size" },
     ]},
   ],
-  "Field": [
+  "Field": () => [
     { title: "Colors", items: [
       { label: "Label text",  token: "--foreground",       value: "#333333", type: "color" },
       { label: "Hint text",   token: "--muted-foreground", value: "#737373", type: "color" },
@@ -2069,7 +2161,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Stack gap", token: "space-y-2", value: "0.5rem / 8px", type: "size" },
     ]},
   ],
-  "Item": [
+  "Item": () => [
     { title: "Colors", items: [
       { label: "Background",  token: "--card",   value: "#FFFFFF", type: "color" },
       { label: "Border",      token: "--border", value: "#E5E5E5", type: "color" },
@@ -2087,7 +2179,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Internal gap", token: "gap-3",     value: "0.75rem / 12px",    type: "size" },
     ]},
   ],
-  "Avatar": [
+  "Avatar": () => [
     { title: "Colors", items: [
       { label: "Default background", token: "--primary",          value: "#013229", type: "color" },
       { label: "Default text",       token: "--primary-foreground", value: "#F0FBF8", type: "color" },
@@ -2106,7 +2198,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Small size",   token: "h-8 w-8",   value: "2rem / 32px",   type: "size" },
     ]},
   ],
-  "Dialog": [
+  "Dialog": () => [
     { title: "Colors", items: [
       { label: "Background", token: "--background", value: "#FFFFFF",           type: "color" },
       { label: "Border",     token: "--border",     value: "#E5E5E5",           type: "color" },
@@ -2128,7 +2220,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Max width",  token: "max-w-lg",  value: "32rem / 512px",  type: "size" },
     ]},
   ],
-  "Dropdown Menu": [
+  "Dropdown Menu": () => [
     { title: "Colors", items: [
       { label: "Background",      token: "--popover",           value: "#FFFFFF", type: "color" },
       { label: "Border",          token: "--border",            value: "#E5E5E5", type: "color" },
@@ -2151,7 +2243,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Item padding", token: "px-2 py-1.5", value: "0.5rem × 0.375rem", type: "size" },
     ]},
   ],
-  "Tabs": [
+  "Tabs": () => [
     { title: "Colors", items: [
       { label: "Tab list bg",    token: "--muted",            value: "#F5F5F5", type: "color" },
       { label: "Active tab bg",  token: "--background",       value: "#FFFFFF", type: "color" },
@@ -2173,7 +2265,7 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
       { label: "Tab padding", token: "px-3 py-1.5", value: "0.75rem × 0.375rem", type: "size" },
     ]},
   ],
-  "Tooltip": [
+  "Tooltip": () => [
     { title: "Colors", items: [
       { label: "Background", token: "--primary",            value: "#013229", type: "color" },
       { label: "Text",       token: "--primary-foreground", value: "#F0FBF8", type: "color" },
@@ -2194,9 +2286,10 @@ const COMPONENT_SPECS: Record<string, SpecGroup[]> = {
   ],
 };
 
-function DesignSpecs({ title }: { title: string | null }) {
+function DesignSpecs({ title, context }: { title: string | null; context?: SpecContext }) {
   const [open, setOpen] = useState(true);
-  const groups = title ? COMPONENT_SPECS[title] : undefined;
+  const specFn = title ? COMPONENT_SPECS[title] : undefined;
+  const groups = specFn ? specFn(context) : undefined;
   if (!groups || groups.length === 0) return null;
 
   const shadowPreview = (value: string) => (
@@ -2212,9 +2305,18 @@ function DesignSpecs({ title }: { title: string | null }) {
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center justify-between gap-2 py-5 text-left"
       >
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <SlidersHorizontal className="h-4 w-4 text-muted-foreground shrink-0" />
           <h3 className="text-sm font-semibold tracking-tight">Design tokens</h3>
+          {context?.variant && (
+            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground capitalize">{context.variant}</span>
+          )}
+          {context?.size && context.size !== "default" && (
+            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground uppercase">{context.size}</span>
+          )}
+          {context?.style && (
+            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-muted text-muted-foreground capitalize">{context.style}</span>
+          )}
         </div>
         <ChevronDown
           className={`h-4 w-4 text-muted-foreground transition-transform duration-200 shrink-0 ${open ? "rotate-180" : ""}`}
@@ -2282,6 +2384,7 @@ function ComponentsPage() {
   const [badgeTrailingIcon, setBadgeTrailingIcon] = useState<string | null>(null);
   const [btnLeadingIcon, setBtnLeadingIcon] = useState<string | null>(null);
   const [btnTrailingIcon, setBtnTrailingIcon] = useState<string | null>(null);
+  const [buttonActiveSize, setButtonActiveSize] = useState<"sm" | "default" | "lg" | "icon">("default");
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [view, setView] = useState<"grid" | "detail">("grid");
@@ -2628,12 +2731,24 @@ export function ButtonDemo() {
                 </button>
               ))}
             </div>
+            {/* Size selector (drives token panel) */}
+            <div className="flex items-center gap-2">
+              <p className="text-xs text-muted-foreground">Token view:</p>
+              <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                {(["sm","default","lg","icon"] as const).map((s) => (
+                  <button key={s} onClick={() => setButtonActiveSize(s)}
+                    className={`px-3 py-1 text-xs rounded font-medium transition-colors ${buttonActiveSize === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                    {s === "default" ? "MD" : s.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            </div>
             {/* Size preview */}
             <div className="flex flex-wrap items-center gap-3">
-              <Button size="sm" variant={sizeTabVariant}>Small</Button>
-              <Button variant={sizeTabVariant}>Default</Button>
-              <Button size="lg" variant={sizeTabVariant}>Large</Button>
-              <Button size="icon" variant={sizeTabVariant}><Bell className="h-4 w-4" /></Button>
+              <Button size="sm" variant={sizeTabVariant} onClick={() => setButtonActiveSize("sm")}>Small</Button>
+              <Button variant={sizeTabVariant} onClick={() => setButtonActiveSize("default")}>Default</Button>
+              <Button size="lg" variant={sizeTabVariant} onClick={() => setButtonActiveSize("lg")}>Large</Button>
+              <Button size="icon" variant={sizeTabVariant} onClick={() => setButtonActiveSize("icon")}><Bell className="h-4 w-4" /></Button>
             </div>
           </TabsContent>
           <TabsContent value="states" className="pt-4">
@@ -2656,7 +2771,7 @@ export function ButtonDemo() {
           const trailJsx = badgeTrailingIcon ? ` <${badgeTrailingIcon} className="${iSz}" />` : "";
           const pillClass = isPill ? ` className="px-4 py-1.5 text-sm gap-1.5"` : "";
           const clickClass = badgeClickable ? ` cursor-pointer active:scale-95 transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 hover:shadow-sm` : "";
-          const variants6 = ["default","secondary","accent","success","destructive","outline"];
+          const variants6 = ["default","secondary","accent","success","destructive","outline","info","warning","neutral"];
           const filledRows = variants6.map((v) =>
             badgeClickable
               ? `      <button className={cn(badgeVariants({ variant: "${v}" }),"${clickClass.trim()}"${isPill ? `,"px-4 py-1.5 text-sm gap-1.5"` : ""})}>${leadJsx}${v.charAt(0).toUpperCase()+v.slice(1)}${trailJsx}</button>`
@@ -2696,6 +2811,9 @@ ${outlineRows}
             { key: "success",     label: "Success" },
             { key: "destructive", label: "Destructive" },
             { key: "outline",     label: "Outline" },
+            { key: "info",        label: "Info" },
+            { key: "warning",     label: "Warning" },
+            { key: "neutral",     label: "Neutral" },
           ] as const;
 
           // Size + radius lookup — badge gets square-ish corners, pill keeps rounded-full
@@ -2721,6 +2839,9 @@ ${outlineRows}
             success:     "bg-transparent border-intense-400/70 text-intense-400",
             destructive: "bg-transparent border-destructive/60 text-destructive",
             outline:     "bg-transparent border-border text-muted-foreground",
+            info:        "bg-transparent border-sky-400/70 text-sky-600 dark:text-sky-400",
+            warning:     "bg-transparent border-amber-400/70 text-amber-600 dark:text-amber-400",
+            neutral:     "bg-transparent border-border text-muted-foreground",
           };
 
           // Hover tint for outlined clickable — lowest opacity of each variant's colour
@@ -2731,6 +2852,9 @@ ${outlineRows}
             success:     "hover:bg-intense-400/10",
             destructive: "hover:bg-destructive/10",
             outline:     "hover:bg-muted",
+            info:        "hover:bg-sky-50",
+            warning:     "hover:bg-amber-50",
+            neutral:     "hover:bg-muted",
           };
 
           // Interaction classes
@@ -5138,7 +5262,18 @@ function SectionHeader() {
       </div>{/* end sections wrapper */}
 
       {/* ── Design specs panel (detail view only) ── */}
-      {view === "detail" && <DesignSpecs title={selectedComponent} />}
+      {view === "detail" && (
+        <DesignSpecs
+          title={selectedComponent}
+          context={
+            selectedComponent === "Badges"
+              ? { size: badgeSize, style: badgeStyle }
+              : selectedComponent === "Buttons"
+              ? { variant: sizeTabVariant, size: buttonActiveSize }
+              : undefined
+          }
+        />
+      )}
 
     </div>
   );
