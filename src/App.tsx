@@ -5410,14 +5410,27 @@ function IconsPage() {
 
       {/* Header */}
       <div className="border-b border-border pb-10">
-        <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground mb-3">
-          <span className="px-1.5 py-0.5 rounded bg-muted">lucide-react</span>
-          <span>{ICON_REGISTRY.length} icons</span>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground mb-3">
+              <span className="px-1.5 py-0.5 rounded bg-muted">lucide-react</span>
+              <span>{ICON_REGISTRY.length} icons</span>
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight mb-3">Icons</h1>
+            <p className="text-muted-foreground max-w-xl leading-relaxed">
+              SL Design System ships with <a href="https://lucide.dev" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">Lucide</a> — a clean, consistent icon family with {ICON_REGISTRY.length}+ icons ready to import. Click any icon to copy its import statement.
+            </p>
+          </div>
+          <a
+            href="https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=117-2&t=vHpjN3uTrCixVfg0-1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground border border-border rounded-md px-2.5 py-1.5 transition-colors hover:border-foreground/30 shrink-0 mt-1"
+          >
+            <FigmaIcon />
+            View in Figma
+          </a>
         </div>
-        <h1 className="text-3xl font-bold tracking-tight mb-3">Icons</h1>
-        <p className="text-muted-foreground max-w-xl leading-relaxed">
-          SL Design System ships with <a href="https://lucide.dev" target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">Lucide</a> — a clean, consistent icon family with {ICON_REGISTRY.length}+ icons ready to import. Click any icon to copy its import statement.
-        </p>
       </div>
 
       {/* Controls */}
