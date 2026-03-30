@@ -2473,8 +2473,24 @@ function ComponentsPage() {
   const [inputState, setInputState] = useState<"default" | "focus" | "error" | "disabled">("default");
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [view, setView] = useState<"grid" | "detail">("grid");
-  const [selectedComponent, setSelectedComponent] = useState<string | null>(null);
+  const getComponentFromHash = () => {
+    const hash = window.location.hash.replace("#", "");
+    const parts = hash.split("/");
+    if (parts[0] === "components" && parts[1]) return decodeURIComponent(parts[1]);
+    return null;
+  };
+  const [selectedComponent, setSelectedComponent] = useState<string | null>(getComponentFromHash);
+  const [view, setView] = useState<"grid" | "detail">(() => getComponentFromHash() ? "detail" : "grid");
+
+  React.useEffect(() => {
+    const onHashChange = () => {
+      const component = getComponentFromHash();
+      setSelectedComponent(component);
+      setView(component ? "detail" : "grid");
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
 
   const componentMeta: { title: string; description: string; category: string; preview: React.ReactNode; figmaUrl?: string }[] = [
     { title: "Typography",               category: "Foundation", description: "Text scales and font styles.",                  figmaUrl: FIGMA_FILE, preview: <div className="space-y-1 pointer-events-none select-none"><p className="text-sm font-bold tracking-tight">Heading</p><p className="text-xs text-muted-foreground">Body text sample</p><p className="text-[10px] font-mono text-muted-foreground/60">Code</p></div> },
@@ -2607,7 +2623,7 @@ function ComponentsPage() {
                 {filtered.map((c) => (
                   <div
                     key={c.title}
-                    onClick={() => { setSelectedComponent(c.title); setView("detail"); }}
+                    onClick={() => { window.location.hash = "components/" + encodeURIComponent(c.title); }}
                     className="group text-left border border-border rounded-xl overflow-hidden bg-card hover:border-primary/50 hover:shadow-md transition-all duration-200 cursor-pointer"
                   >
                     {/* Preview area */}
@@ -2652,7 +2668,7 @@ function ComponentsPage() {
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <button
-                  onClick={() => { setView("grid"); setSelectedComponent(null); }}
+                  onClick={() => { window.location.hash = "components"; }}
                   className="hover:text-foreground transition-colors"
                 >
                   Components
@@ -2673,7 +2689,7 @@ function ComponentsPage() {
               )}
             </div>
             <button
-              onClick={() => { setView("grid"); setSelectedComponent(null); }}
+              onClick={() => { window.location.hash = "components"; }}
               className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
@@ -5829,8 +5845,9 @@ const navItems: { id: Page; label: string; icon: React.ComponentType<{ className
 export default function App() {
   const [dark, setDark] = useState(false);
   const [page, setPage] = useState<Page>(() => {
-    const hash = window.location.hash.replace("#", "") as Page;
-    return ["overview","foundation","tokens","components","icons"].includes(hash) ? hash : "overview";
+    const hash = window.location.hash.replace("#", "");
+    const base = hash.split("/")[0] as Page;
+    return ["overview","foundation","tokens","components","icons"].includes(base) ? base : "overview";
   });
 
   const navigate = (p: Page) => {
@@ -5840,8 +5857,9 @@ export default function App() {
 
   React.useEffect(() => {
     const onHashChange = () => {
-      const hash = window.location.hash.replace("#", "") as Page;
-      if (["overview","foundation","tokens","components","icons"].includes(hash)) setPage(hash);
+      const hash = window.location.hash.replace("#", "");
+      const base = hash.split("/")[0] as Page;
+      if (["overview","foundation","tokens","components","icons"].includes(base)) setPage(base);
     };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
