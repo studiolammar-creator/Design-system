@@ -3052,9 +3052,9 @@ ${outlineRows}
                   </div>
                 </div>
 
-                {/* Ghost row */}
+                {/* Outlined row */}
                 <div className="space-y-2">
-                  <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Ghost</p>
+                  <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Outlined</p>
                   <div className="flex flex-wrap items-center gap-3">
                     {variants.map(({ key, label }) =>
                       badgeClickable ? (
