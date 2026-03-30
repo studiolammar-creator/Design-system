@@ -1635,13 +1635,20 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
 
     return [
       { title: "Colors", items: [
-        { label: "Default bg",     token: "bg-primary/10",     value: "rgba(1,50,41,0.10)",    type: "color" },
-        { label: "Default text",   token: "--primary",          value: "#013229",               type: "color" },
-        { label: "Secondary bg",   token: "bg-secondary/40",   value: "rgba(255,214,83,0.40)", type: "color" },
-        { label: "Accent bg",      token: "bg-accent/25",      value: "rgba(97,202,160,0.25)", type: "color" },
-        { label: "Destructive bg", token: "bg-destructive/10", value: "rgba(220,38,38,0.10)",  type: "color" },
-        { label: "Info bg",        token: "bg-sky-100",         value: "#E0F2FE",               type: "color" },
-        { label: "Warning bg",     token: "bg-amber-100",       value: "#FEF3C7",               type: "color" },
+        { label: "Default bg",        token: "bg-primary/10",          value: "rgba(1,50,41,0.10)",    type: "color" },
+        { label: "Default text",      token: "--primary",               value: "#013229",               type: "color" },
+        { label: "Secondary bg",      token: "bg-secondary/40",        value: "rgba(255,214,83,0.40)", type: "color" },
+        { label: "Accent bg",         token: "bg-accent/25",           value: "rgba(97,202,160,0.25)", type: "color" },
+        { label: "Destructive bg",    token: "bg-destructive/10",      value: "rgba(220,38,38,0.10)",  type: "color" },
+        { label: "Destructive text",  token: "--destructive",           value: "#DC2626",               type: "color" },
+        { label: "Success bg",        token: "bg-intense-400/20",      value: "rgba(97,202,160,0.20)", type: "color" },
+        { label: "Success text",      token: "--primary",               value: "#013229",               type: "color" },
+        { label: "Info bg",           token: "bg-sky-100",              value: "#E0F2FE",               type: "color" },
+        { label: "Info text",         token: "text-sky-700",            value: "#0369A1",               type: "color" },
+        { label: "Warning bg",        token: "bg-amber-100",            value: "#FEF3C7",               type: "color" },
+        { label: "Warning text",      token: "text-amber-700",          value: "#B45309",               type: "color" },
+        { label: "Neutral bg",        token: "--muted",                 value: "#F5F5F5",               type: "color" },
+        { label: "Neutral text",      token: "--muted-foreground",      value: "#737373",               type: "color" },
       ]},
       { title: "Typography", items: [
         { label: "Font weight", token: "font-semibold", value: "600", type: "size" },
@@ -2439,7 +2446,7 @@ function ComponentsPage() {
   const componentMeta: { title: string; description: string; category: string; preview: React.ReactNode; figmaUrl?: string }[] = [
     { title: "Typography",               category: "Foundation", description: "Text scales and font styles.",                  figmaUrl: FIGMA_FILE, preview: <div className="space-y-1 pointer-events-none select-none"><p className="text-sm font-bold tracking-tight">Heading</p><p className="text-xs text-muted-foreground">Body text sample</p><p className="text-[10px] font-mono text-muted-foreground/60">Code</p></div> },
     { title: "Buttons",                  category: "Actions",    description: "Seven variants × four sizes.",                  figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=47-2&t=vHpjN3uTrCixVfg0-1", preview: <div className="flex flex-wrap gap-1.5 pointer-events-none select-none"><Button size="sm">Primary</Button><Button size="sm" variant="outline">Outline</Button><Button size="sm" variant="ghost">Ghost</Button></div> },
-    { title: "Badges",                   category: "Display",    description: "Status indicators and labels.",                 figmaUrl: FIGMA_FILE, preview: <div className="flex flex-wrap gap-1.5 pointer-events-none select-none"><Badge>Default</Badge><Badge variant="secondary">Secondary</Badge><Badge variant="outline">Outline</Badge></div> },
+    { title: "Badges",                   category: "Display",    description: "Status indicators and labels.",                 figmaUrl: FIGMA_FILE, preview: <div className="flex flex-wrap gap-1.5 pointer-events-none select-none"><Badge>Default</Badge><Badge variant="secondary">Secondary</Badge><Badge variant="ghost">Ghost</Badge></div> },
     { title: "Cards",                    category: "Layout",     description: "Content containers with header and footer.",    figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card"><p className="font-semibold text-xs">Card title</p><p className="text-muted-foreground text-[10px] mt-0.5">Short description here.</p></div> },
     { title: "Form Controls",            category: "Forms",      description: "Inputs, selects, checkboxes, and switches.",    figmaUrl: FIGMA_FILE, preview: <div className="space-y-1.5 pointer-events-none select-none w-full"><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">Email address</span></div><div className="flex items-center gap-1.5"><div className="h-3.5 w-3.5 rounded-sm border border-input bg-background" /><span className="text-[10px] text-muted-foreground">Accept terms</span></div></div> },
     { title: "Alerts",                   category: "Feedback",   description: "Four semantic variants.",                       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-md p-2.5 w-full flex gap-2 items-start"><div className="h-3 w-3 rounded-full bg-primary mt-0.5 shrink-0" /><div><p className="text-[10px] font-semibold">Alert title</p><p className="text-[9px] text-muted-foreground mt-0.5">Alert description text.</p></div></div> },
@@ -2817,7 +2824,7 @@ export function ButtonDemo() {
           const trailJsx = badgeTrailingIcon ? ` <${badgeTrailingIcon} className="${iSz}" />` : "";
           const pillClass = isPill ? ` className="px-4 py-1.5 text-sm gap-1.5"` : "";
           const clickClass = badgeClickable ? ` cursor-pointer active:scale-95 transition-all focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 hover:shadow-sm` : "";
-          const variants6 = ["default","secondary","accent","success","destructive","outline","info","warning","neutral"];
+          const variants6 = ["default","secondary","accent","success","destructive","ghost","info","warning","neutral"];
           const filledRows = variants6.map((v) =>
             badgeClickable
               ? `      <button className={cn(badgeVariants({ variant: "${v}" }),"${clickClass.trim()}"${isPill ? `,"px-4 py-1.5 text-sm gap-1.5"` : ""})}>${leadJsx}${v.charAt(0).toUpperCase()+v.slice(1)}${trailJsx}</button>`
@@ -2825,8 +2832,8 @@ export function ButtonDemo() {
           ).join("\n");
           const outlineRows = variants6.map((v) =>
             badgeClickable
-              ? `      <button className={cn(badgeVariants({ variant: "outline" }),"${clickClass.trim()}"${isPill ? `,"px-4 py-1.5 text-sm gap-1.5"` : ""})}>${leadJsx}${v.charAt(0).toUpperCase()+v.slice(1)}${trailJsx}</button>`
-              : `      <Badge variant="outline"${pillClass}>${leadJsx}${v.charAt(0).toUpperCase()+v.slice(1)}${trailJsx}</Badge>`
+              ? `      <button className={cn(badgeVariants({ variant: "ghost" }),"${clickClass.trim()}"${isPill ? `,"px-4 py-1.5 text-sm gap-1.5"` : ""})}>${leadJsx}${v.charAt(0).toUpperCase()+v.slice(1)}${trailJsx}</button>`
+              : `      <Badge variant="ghost"${pillClass}>${leadJsx}${v.charAt(0).toUpperCase()+v.slice(1)}${trailJsx}</Badge>`
           ).join("\n");
           return `import { Badge${badgeClickable ? ", badgeVariants" : ""} } from "@/components/ui/badge"${iconImport}${badgeClickable ? `\nimport { cn } from "@/lib/utils"` : ""}
 
@@ -2856,7 +2863,7 @@ ${outlineRows}
             { key: "accent",      label: "Accent" },
             { key: "success",     label: "Success" },
             { key: "destructive", label: "Destructive" },
-            { key: "outline",     label: "Outline" },
+            { key: "ghost",       label: "Ghost" },
             { key: "info",        label: "Info" },
             { key: "warning",     label: "Warning" },
             { key: "neutral",     label: "Neutral" },
@@ -2884,7 +2891,7 @@ ${outlineRows}
             accent:      "bg-transparent border-accent text-accent-foreground",
             success:     "bg-transparent border-intense-400/70 text-intense-400",
             destructive: "bg-transparent border-destructive/60 text-destructive",
-            outline:     "bg-transparent border-border text-muted-foreground",
+            ghost:       "bg-transparent border-border text-muted-foreground",
             info:        "bg-transparent border-sky-400/70 text-sky-600 dark:text-sky-400",
             warning:     "bg-transparent border-amber-400/70 text-amber-600 dark:text-amber-400",
             neutral:     "bg-transparent border-border text-muted-foreground",
@@ -2897,7 +2904,7 @@ ${outlineRows}
             accent:      "hover:bg-accent/15",
             success:     "hover:bg-intense-400/10",
             destructive: "hover:bg-destructive/10",
-            outline:     "hover:bg-muted",
+            ghost:       "hover:bg-muted",
             info:        "hover:bg-sky-50",
             warning:     "hover:bg-amber-50",
             neutral:     "hover:bg-muted",
@@ -3012,19 +3019,19 @@ ${outlineRows}
                   </div>
                 </div>
 
-                {/* Outlined row */}
+                {/* Ghost row */}
                 <div className="space-y-2">
-                  <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Outlined</p>
+                  <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">Ghost</p>
                   <div className="flex flex-wrap items-center gap-3">
                     {variants.map(({ key, label }) =>
                       badgeClickable ? (
-                        <button key={key} className={cn(badgeVariants({ variant: "outline" }), sizeClass, outlineStyles[key], outlineHoverStyles[key], clickableClassOutline)}>
+                        <button key={key} className={cn(badgeVariants({ variant: "ghost" }), sizeClass, outlineStyles[key], outlineHoverStyles[key], clickableClassOutline)}>
                           {BadgeLeading  && <BadgeLeading  className={iconSize} />}
                           {label}
                           {BadgeTrailing && <BadgeTrailing className={iconSize} />}
                         </button>
                       ) : (
-                        <Badge key={key} variant="outline" className={cn(sizeClass, outlineStyles[key], staticClass)}>
+                        <Badge key={key} variant="ghost" className={cn(sizeClass, outlineStyles[key], staticClass)}>
                           {BadgeLeading  && <BadgeLeading  className={iconSize} />}
                           {label}
                           {BadgeTrailing && <BadgeTrailing className={iconSize} />}
@@ -5990,14 +5997,14 @@ export default function App() {
                       <Badge>Default</Badge>
                       <Badge variant="secondary">Secondary</Badge>
                       <Badge variant="accent">Accent</Badge>
-                      <Badge variant="outline">Outline</Badge>
+                      <Badge variant="ghost">Ghost</Badge>
                       <Badge variant="destructive">Destructive</Badge>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline" className="bg-transparent border-primary/60 text-primary">Default</Badge>
-                      <Badge variant="outline" className="bg-transparent border-secondary text-secondary-foreground">Secondary</Badge>
-                      <Badge variant="outline" className="bg-transparent border-accent text-accent-foreground">Accent</Badge>
-                      <Badge variant="outline" className="bg-transparent border-destructive/60 text-destructive">Destructive</Badge>
+                      <Badge variant="ghost" className="bg-transparent border-primary/60 text-primary">Default</Badge>
+                      <Badge variant="ghost" className="bg-transparent border-secondary text-secondary-foreground">Secondary</Badge>
+                      <Badge variant="ghost" className="bg-transparent border-accent text-accent-foreground">Accent</Badge>
+                      <Badge variant="ghost" className="bg-transparent border-destructive/60 text-destructive">Destructive</Badge>
                     </div>
                   </div>
 
