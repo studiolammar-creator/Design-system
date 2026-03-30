@@ -1600,25 +1600,53 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
     const size = ctx.size ?? "md";
     const style = ctx.style ?? "badge";
 
-    const spacingBySize: Record<string, SpecItem[]> = {
-      sm: [
-        { label: "Padding x", token: "px-1.5",       value: "0.375rem / 6px",  type: "size" },
-        { label: "Padding y", token: "py-px",          value: "1px",             type: "size" },
-        { label: "Font size", token: "text-[10px]",    value: "10px",            type: "size" },
-        { label: "Icon size", token: "h-2.5 w-2.5",   value: "10px",            type: "size" },
-      ],
-      md: [
-        { label: "Padding x", token: "px-2.5",        value: "0.625rem / 10px", type: "size" },
-        { label: "Padding y", token: "py-0.5",         value: "0.125rem / 2px",  type: "size" },
-        { label: "Font size", token: "text-xs",        value: "0.75rem / 12px",  type: "size" },
-        { label: "Icon size", token: "h-3 w-3",        value: "12px",            type: "size" },
-      ],
-      lg: [
-        { label: "Padding x", token: "px-4",          value: "1rem / 16px",     type: "size" },
-        { label: "Padding y", token: "py-1",           value: "0.25rem / 4px",   type: "size" },
-        { label: "Font size", token: "text-sm",        value: "0.875rem / 14px", type: "size" },
-        { label: "Icon size", token: "h-3.5 w-3.5",   value: "14px",            type: "size" },
-      ],
+    const spacingByStyleAndSize: Record<string, Record<string, SpecItem[]>> = {
+      badge: {
+        sm: [
+          { label: "Padding x", token: "px-1.5",      value: "0.375rem / 6px",   type: "size" },
+          { label: "Padding y", token: "py-px",        value: "1px",              type: "size" },
+          { label: "Font size", token: "text-[10px]",  value: "10px",             type: "size" },
+          { label: "Icon size", token: "h-2.5 w-2.5",  value: "10px",            type: "size" },
+          { label: "Gap",       token: "gap-1",         value: "0.25rem / 4px",   type: "size" },
+        ],
+        md: [
+          { label: "Padding x", token: "px-2.5",      value: "0.625rem / 10px",  type: "size" },
+          { label: "Padding y", token: "py-0.5",       value: "0.125rem / 2px",   type: "size" },
+          { label: "Font size", token: "text-xs",      value: "0.75rem / 12px",   type: "size" },
+          { label: "Icon size", token: "h-3 w-3",      value: "12px",             type: "size" },
+          { label: "Gap",       token: "gap-1",         value: "0.25rem / 4px",   type: "size" },
+        ],
+        lg: [
+          { label: "Padding x", token: "px-4",         value: "1rem / 16px",      type: "size" },
+          { label: "Padding y", token: "py-1",          value: "0.25rem / 4px",    type: "size" },
+          { label: "Font size", token: "text-sm",       value: "0.875rem / 14px",  type: "size" },
+          { label: "Icon size", token: "h-3.5 w-3.5",  value: "14px",             type: "size" },
+          { label: "Gap",       token: "gap-1.5",        value: "0.375rem / 6px",  type: "size" },
+        ],
+      },
+      pill: {
+        sm: [
+          { label: "Padding x", token: "px-3",         value: "0.75rem / 12px",   type: "size" },
+          { label: "Padding y", token: "py-0.5",        value: "0.125rem / 2px",   type: "size" },
+          { label: "Font size", token: "text-xs",       value: "0.75rem / 12px",   type: "size" },
+          { label: "Icon size", token: "h-3 w-3",       value: "12px",             type: "size" },
+          { label: "Gap",       token: "gap-1",          value: "0.25rem / 4px",   type: "size" },
+        ],
+        md: [
+          { label: "Padding x", token: "px-4",          value: "1rem / 16px",      type: "size" },
+          { label: "Padding y", token: "py-1.5",         value: "0.375rem / 6px",  type: "size" },
+          { label: "Font size", token: "text-sm",        value: "0.875rem / 14px", type: "size" },
+          { label: "Icon size", token: "h-4 w-4",        value: "16px",            type: "size" },
+          { label: "Gap",       token: "gap-1.5",         value: "0.375rem / 6px", type: "size" },
+        ],
+        lg: [
+          { label: "Padding x", token: "px-5",          value: "1.25rem / 20px",   type: "size" },
+          { label: "Padding y", token: "py-1",           value: "0.25rem / 4px",    type: "size" },
+          { label: "Font size", token: "text-sm",        value: "0.875rem / 14px",  type: "size" },
+          { label: "Icon size", token: "h-4 w-4",        value: "16px",             type: "size" },
+          { label: "Gap",       token: "gap-1.5",         value: "0.375rem / 6px",  type: "size" },
+        ],
+      },
     };
 
     const radiusKey = `${style}_${size}`;
@@ -1631,18 +1659,23 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       pill_lg:  { label: "Border radius", token: "rounded-full",  value: "9999px",                              type: "size" },
     };
 
-    const sp = spacingBySize[size] ?? spacingBySize.md;
+    const sp = (spacingByStyleAndSize[style] ?? spacingByStyleAndSize.badge)[size]
+             ?? spacingByStyleAndSize.badge.md;
 
     return [
       { title: "Colors", items: [
         { label: "Default bg",        token: "bg-primary/10",          value: "rgba(1,50,41,0.10)",    type: "color" },
         { label: "Default text",      token: "--primary",               value: "#013229",               type: "color" },
         { label: "Secondary bg",      token: "bg-secondary/40",        value: "rgba(255,214,83,0.40)", type: "color" },
+        { label: "Secondary text",    token: "--foreground",            value: "#333333",               type: "color" },
         { label: "Accent bg",         token: "bg-accent/25",           value: "rgba(97,202,160,0.25)", type: "color" },
+        { label: "Accent text",       token: "--accent-foreground",     value: "#013229",               type: "color" },
         { label: "Destructive bg",    token: "bg-destructive/10",      value: "rgba(220,38,38,0.10)",  type: "color" },
         { label: "Destructive text",  token: "--destructive",           value: "#DC2626",               type: "color" },
         { label: "Success bg",        token: "bg-intense-400/20",      value: "rgba(97,202,160,0.20)", type: "color" },
         { label: "Success text",      token: "--primary",               value: "#013229",               type: "color" },
+        { label: "Ghost text",        token: "--foreground",            value: "#333333",               type: "color" },
+        { label: "Ghost border",      token: "--border",                value: "#E5E5E5",               type: "color" },
         { label: "Info bg",           token: "bg-sky-100",              value: "#E0F2FE",               type: "color" },
         { label: "Info text",         token: "text-sky-700",            value: "#0369A1",               type: "color" },
         { label: "Warning bg",        token: "bg-amber-100",            value: "#FEF3C7",               type: "color" },
