@@ -1695,9 +1695,15 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
   },
   "Cards": () => [
     { title: "Colors", items: [
-      { label: "Background", token: "--card",          value: "#FFFFFF", type: "color" },
-      { label: "Text",       token: "--card-foreground", value: "#333333", type: "color" },
-      { label: "Border",     token: "--border",        value: "#E5E5E5", type: "color" },
+      { label: "Background",        token: "--card",             value: "#FFFFFF", type: "color" },
+      { label: "Title text",        token: "--card-foreground",  value: "#333333", type: "color" },
+      { label: "Description text",  token: "--muted-foreground", value: "#737373", type: "color" },
+      { label: "Border",            token: "--border",           value: "#E5E5E5", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Title size",        token: "text-xl",        value: "1.25rem / 20px", type: "size" },
+      { label: "Title weight",      token: "font-semibold",  value: "600",            type: "size" },
+      { label: "Description size",  token: "text-sm",        value: "0.875rem / 14px", type: "size" },
     ]},
     { title: "Radius", items: [
       { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
@@ -2496,7 +2502,7 @@ function ComponentsPage() {
     { title: "Typography",               category: "Foundation", description: "Text scales and font styles.",                  figmaUrl: FIGMA_FILE, preview: <div className="space-y-1 pointer-events-none select-none"><p className="text-sm font-bold tracking-tight">Heading</p><p className="text-xs text-muted-foreground">Body text sample</p><p className="text-[10px] font-mono text-muted-foreground/60">Code</p></div> },
     { title: "Buttons",                  category: "Actions",    description: "Seven variants × four sizes.",                  figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=47-2&t=vHpjN3uTrCixVfg0-1", preview: <div className="flex flex-wrap gap-1.5 pointer-events-none select-none"><Button size="sm">Primary</Button><Button size="sm" variant="outline">Outline</Button><Button size="sm" variant="ghost">Ghost</Button></div> },
     { title: "Badges",                   category: "Display",    description: "Status indicators and labels.",                 figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=127-715&t=fO3P1QEsKAc0ShcW-1", preview: <div className="flex flex-wrap gap-1.5 pointer-events-none select-none"><Badge>Default</Badge><Badge variant="secondary">Secondary</Badge><Badge variant="outlined">Outlined</Badge></div> },
-    { title: "Cards",                    category: "Layout",     description: "Content containers with header and footer.",    figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card"><p className="font-semibold text-xs">Card title</p><p className="text-muted-foreground text-[10px] mt-0.5">Short description here.</p></div> },
+    { title: "Cards",                    category: "Layout",     description: "Content containers with header and footer.",    figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=140-218&t=anHAdcWSDLhg0F9c-1", preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card"><p className="font-semibold text-xs">Card title</p><p className="text-muted-foreground text-[10px] mt-0.5">Short description here.</p></div> },
     { title: "Form Controls",            category: "Forms",      description: "Inputs, selects, checkboxes, and switches.",    figmaUrl: FIGMA_FILE, preview: <div className="space-y-1.5 pointer-events-none select-none w-full"><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">Email address</span></div><div className="flex items-center gap-1.5"><div className="h-3.5 w-3.5 rounded-sm border border-input bg-background" /><span className="text-[10px] text-muted-foreground">Accept terms</span></div></div> },
     { title: "Alerts",                   category: "Feedback",   description: "Four semantic variants.",                       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-md p-2.5 w-full flex gap-2 items-start"><div className="h-3 w-3 rounded-full bg-primary mt-0.5 shrink-0" /><div><p className="text-[10px] font-semibold">Alert title</p><p className="text-[9px] text-muted-foreground mt-0.5">Alert description text.</p></div></div> },
     { title: "Table",                    category: "Data",       description: "Data display with status badges.",              figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full text-[9px]"><div className="flex gap-3 border-b border-border pb-1 mb-1 font-semibold text-muted-foreground"><span className="flex-1">Invoice</span><span>Status</span><span>Amount</span></div><div className="flex gap-3"><span className="flex-1 text-foreground">INV-001</span><Badge className="text-[8px] h-3.5 px-1">Paid</Badge><span>$250</span></div></div> },
