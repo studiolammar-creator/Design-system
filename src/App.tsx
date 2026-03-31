@@ -1713,12 +1713,12 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
 
     if (variant === "featured") return [
       { title: "Colors", items: [
-        { label: "Background",        token: "--primary",                value: "#013229",              type: "color" },
-        { label: "Title text",        token: "--primary-foreground",     value: "#F0FBF8",              type: "color" },
-        { label: "Description text",  token: "--primary-foreground/70",  value: "rgba(240,251,248,0.7)", type: "color" },
-        { label: "Border",            token: "--primary",                value: "#013229",              type: "color" },
-        { label: "Badge background",  token: "--secondary",              value: "#FFD653",              type: "color" },
-        { label: "Badge text",        token: "--secondary-foreground",   value: "#013229",              type: "color" },
+        { label: "Background",        token: "--primary",              value: "#013229",               type: "color" },
+        { label: "Title text",        token: "--primary-foreground",   value: "#F0FBF8",               type: "color" },
+        { label: "Description text",  token: "--primary-foreground/70", value: "rgba(240,251,248,0.7)", type: "color" },
+        { label: "Border",            token: "--primary",              value: "#013229",               type: "color" },
+        { label: "Badge bg (solid)",  token: "--secondary",            value: "#FFD653",               type: "color" },
+        { label: "Badge text",        token: "--secondary-foreground", value: "#013229",               type: "color" },
       ]},
       sharedTypography,
       sharedRadius,
@@ -3201,7 +3201,7 @@ export function CardDemo() {
 
           <Card className="border-primary bg-primary text-primary-foreground">
             <CardHeader>
-              <Badge variant="secondary" className="w-fit bg-secondary text-secondary-foreground">Popular</Badge>
+              <Badge variant="solid" className="w-fit">Popular</Badge>
               <CardTitle className="text-primary-foreground">Golden Plan</CardTitle>
               <CardDescription className="text-primary-foreground/70">Best value for scaling organisations.</CardDescription>
             </CardHeader>

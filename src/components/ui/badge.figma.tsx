@@ -20,6 +20,7 @@ figma.connect(
         Info:        "info",
         Warning:     "warning",
         Neutral:     "neutral",
+        Solid:       "solid",
       }),
       label: figma.string("Label"),
     },
