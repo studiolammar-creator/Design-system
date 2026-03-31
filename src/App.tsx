@@ -3149,7 +3149,7 @@ export function CardDemo() {
 
           <Card className="border-primary bg-primary text-primary-foreground">
             <CardHeader>
-              <Badge variant="secondary" className="w-fit">Popular</Badge>
+              <Badge variant="secondary" className="w-fit bg-secondary text-secondary-foreground">Popular</Badge>
               <CardTitle className="text-primary-foreground">Golden Plan</CardTitle>
               <CardDescription className="text-primary-foreground/70">Best value for scaling organisations.</CardDescription>
             </CardHeader>
