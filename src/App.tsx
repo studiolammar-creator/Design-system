@@ -2442,6 +2442,90 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Padding", token: "px-3 py-1.5", value: "0.75rem × 0.375rem", type: "size" },
     ]},
   ],
+  "Page Sections": (ctx = {}) => {
+    const variant = ctx.variant ?? "hero";
+    const heroGroups: SpecGroup[] = [
+      { title: "Colors", items: [
+        { label: "Heading",       token: "--foreground",       value: "#333333", type: "color" },
+        { label: "Accent heading", token: "--primary",          value: "#013229", type: "color" },
+        { label: "Description",   token: "--muted-foreground", value: "#737373", type: "color" },
+        { label: "Separator",     token: "--border",           value: "#E5E5E5", type: "color" },
+      ]},
+      { title: "Typography", items: [
+        { label: "Eyebrow",      token: "text-xs font-mono",            value: "12px / Space Mono",  type: "font" },
+        { label: "H1 size",      token: "text-5xl",                     value: "3rem / 48px",        type: "size" },
+        { label: "H1 weight",    token: "font-extrabold",               value: "800",                type: "size" },
+        { label: "H1 leading",   token: "leading-[1.08]",               value: "1.08",               type: "size" },
+        { label: "Description",  token: "text-lg leading-relaxed",      value: "1.125rem / 18px",    type: "size" },
+      ]},
+      { title: "Spacing", items: [
+        { label: "Section padding-b", token: "pb-14", value: "3.5rem / 56px", type: "size" },
+        { label: "Eyebrow gap-b",     token: "mb-4",  value: "1rem / 16px",   type: "size" },
+        { label: "H1 gap-b",          token: "mb-5",  value: "1.25rem / 20px",type: "size" },
+        { label: "Description gap-b", token: "mb-8",  value: "2rem / 32px",   type: "size" },
+        { label: "Actions gap",       token: "gap-3", value: "0.75rem / 12px",type: "size" },
+      ]},
+    ];
+    const pageGroups: SpecGroup[] = [
+      { title: "Colors", items: [
+        { label: "Heading",     token: "--foreground",       value: "#333333", type: "color" },
+        { label: "Description", token: "--muted-foreground", value: "#737373", type: "color" },
+      ]},
+      { title: "Typography", items: [
+        { label: "H1 size",   token: "text-4xl",         value: "2.25rem / 36px", type: "size" },
+        { label: "H1 weight", token: "font-extrabold",   value: "800",            type: "size" },
+        { label: "H1 tracking", token: "tracking-tight", value: "-0.025em",       type: "size" },
+        { label: "Description", token: "text-lg",        value: "1.125rem / 18px",type: "size" },
+      ]},
+      { title: "Spacing", items: [
+        { label: "Layout gap", token: "gap-4",      value: "1rem / 16px",   type: "size" },
+        { label: "Title gap",  token: "space-y-3",  value: "0.75rem / 12px",type: "size" },
+      ]},
+    ];
+    const searchGroups: SpecGroup[] = [
+      { title: "Colors", items: [
+        { label: "Heading",          token: "--foreground",       value: "#333333", type: "color" },
+        { label: "Description",      token: "--muted-foreground", value: "#737373", type: "color" },
+        { label: "Input background", token: "--background",       value: "#FFFFFF", type: "color" },
+        { label: "Input border",     token: "--input",            value: "#E5E5E5", type: "color" },
+        { label: "Focus ring",       token: "--ring",             value: "#013229", type: "color" },
+        { label: "Active pill bg",   token: "--primary",          value: "#013229", type: "color" },
+      ]},
+      { title: "Typography", items: [
+        { label: "H1 size",     token: "text-4xl font-extrabold", value: "2.25rem / 36px", type: "size" },
+        { label: "Filter pill", token: "text-xs font-medium",     value: "0.75rem / 12px", type: "size" },
+      ]},
+      { title: "Spacing", items: [
+        { label: "Input height",  token: "h-9",          value: "2.25rem / 36px", type: "size" },
+        { label: "Input padding", token: "pl-9 pr-3",    value: "2.25rem / 0.75rem", type: "size" },
+        { label: "Pill padding",  token: "px-3 py-1",    value: "0.75rem × 0.25rem", type: "size" },
+        { label: "Sections gap",  token: "space-y-5",    value: "1.25rem / 20px", type: "size" },
+      ]},
+    ];
+    const sectionGroups: SpecGroup[] = [
+      { title: "Colors", items: [
+        { label: "H2 / H3",        token: "--foreground",       value: "#333333", type: "color" },
+        { label: "Description",    token: "--muted-foreground", value: "#737373", type: "color" },
+        { label: "Group label",    token: "--muted-foreground", value: "#737373", type: "color" },
+        { label: "Separator line", token: "--border",           value: "#E5E5E5", type: "color" },
+      ]},
+      { title: "Typography", items: [
+        { label: "H2 size",    token: "text-2xl font-semibold", value: "1.5rem / 24px",   type: "size" },
+        { label: "H3 size",    token: "text-xl font-semibold",  value: "1.25rem / 20px",  type: "size" },
+        { label: "Tracking",   token: "tracking-tight",         value: "-0.025em",         type: "size" },
+        { label: "Label",      token: "text-xs font-medium tracking-wide uppercase", value: "12px / 500", type: "font" },
+      ]},
+      { title: "Spacing", items: [
+        { label: "H2 padding-b", token: "pb-4",     value: "1rem / 16px",    type: "size" },
+        { label: "H3 padding-b", token: "pb-4",     value: "1rem / 16px",    type: "size" },
+        { label: "Title gap",    token: "space-y-1", value: "0.25rem / 4px", type: "size" },
+      ]},
+    ];
+    return variant === "hero" ? heroGroups
+      : variant === "page"    ? pageGroups
+      : variant === "search"  ? searchGroups
+      : sectionGroups;
+  },
 };
 
 function DesignSpecs({ title, context, controls }: { title: string | null; context?: SpecContext; controls?: React.ReactNode }) {
@@ -2545,6 +2629,7 @@ function ComponentsPage() {
   const [cardVariant, setCardVariant] = useState<"default" | "featured" | "settings">("default");
   const [switchState, setSwitchState] = useState<"off" | "on" | "disabled">("off");
   const [switchLabelPosition, setSwitchLabelPosition] = useState<"leading" | "trailing">("trailing");
+  const [pageSectionsVariant, setPageSectionsVariant] = useState<"hero" | "page" | "search" | "section">("hero");
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const getComponentFromHash = () => {
@@ -5518,6 +5603,8 @@ function SectionHeader() {
               ? { variant: cardVariant }
               : selectedComponent === "Toggle Switch"
               ? { variant: switchState, labelPosition: switchLabelPosition }
+              : selectedComponent === "Page Sections"
+              ? { variant: pageSectionsVariant }
               : undefined
           }
           controls={
@@ -5563,6 +5650,15 @@ function SectionHeader() {
                   <button key={v} onClick={() => setAlertVariant(v)}
                     className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${alertVariant === v ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
                     {v}
+                  </button>
+                ))}
+              </div>
+            ) : selectedComponent === "Page Sections" ? (
+              <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                {(["hero","page","search","section"] as const).map((v) => (
+                  <button key={v} onClick={() => setPageSectionsVariant(v)}
+                    className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${pageSectionsVariant === v ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                    {v === "search" ? "Page + Search" : v.charAt(0).toUpperCase() + v.slice(1)}
                   </button>
                 ))}
               </div>
