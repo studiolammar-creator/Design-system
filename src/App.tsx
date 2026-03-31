@@ -3261,7 +3261,19 @@ export function SwitchDemo() {
     </div>
   )
 }`}>
-        <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <p className="text-xs font-medium text-muted-foreground">Label position</p>
+            <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+              {(["leading","trailing"] as const).map((pos) => (
+                <button key={pos} onClick={() => setSwitchLabelPosition(pos)}
+                  className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${switchLabelPosition === pos ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                  {pos}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
           <div className="space-y-5">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">States</p>
             <div className="space-y-4">
@@ -3304,6 +3316,7 @@ export function SwitchDemo() {
               </CardContent>
             </Card>
           </div>
+        </div>
         </div>
       </Section>
 
@@ -5527,23 +5540,13 @@ function SectionHeader() {
                 ))}
               </div>
             ) : selectedComponent === "Toggle Switch" ? (
-              <div className="flex items-center gap-2 flex-wrap">
-                <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
-                  {(["off","on","disabled"] as const).map((s) => (
-                    <button key={s} onClick={() => setSwitchState(s)}
-                      className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${switchState === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
-                      {s}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
-                  {(["leading","trailing"] as const).map((pos) => (
-                    <button key={pos} onClick={() => setSwitchLabelPosition(pos)}
-                      className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${switchLabelPosition === pos ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
-                      {pos}
-                    </button>
-                  ))}
-                </div>
+              <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                {(["off","on","disabled"] as const).map((s) => (
+                  <button key={s} onClick={() => setSwitchState(s)}
+                    className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${switchState === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                    {s}
+                  </button>
+                ))}
               </div>
             ) : selectedComponent === "Form Controls" ? (
               <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
