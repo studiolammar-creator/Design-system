@@ -3468,7 +3468,6 @@ export function SwitchDemo() {
         </div>
       </Section>
 
-      {/* Form Controls */}
       {/* Input */}
       <Section hidden={selectedComponent !== "Input"} title="Input" description="All input types with full state coverage." code={`import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
