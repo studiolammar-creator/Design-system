@@ -3149,7 +3149,7 @@ export function CardDemo() {
 
           <Card className="border-primary bg-primary text-primary-foreground">
             <CardHeader>
-              <Badge className="w-fit bg-secondary text-secondary-foreground">Popular</Badge>
+              <Badge variant="secondary" className="w-fit">Popular</Badge>
               <CardTitle className="text-primary-foreground">Golden Plan</CardTitle>
               <CardDescription className="text-primary-foreground/70">Best value for scaling organisations.</CardDescription>
             </CardHeader>
@@ -3164,7 +3164,7 @@ export function CardDemo() {
               </ul>
             </CardContent>
             <CardFooter>
-              <Button className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90">Get started</Button>
+              <Button variant="secondary" className="w-full">Get started</Button>
             </CardFooter>
           </Card>
 
