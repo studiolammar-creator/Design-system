@@ -2434,7 +2434,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
   ],
 };
 
-function DesignSpecs({ title, context }: { title: string | null; context?: SpecContext }) {
+function DesignSpecs({ title, context, controls }: { title: string | null; context?: SpecContext; controls?: React.ReactNode }) {
   const [open, setOpen] = useState(true);
   const contextKey = JSON.stringify(context);
   React.useEffect(() => { setOpen(true); }, [contextKey]);
@@ -2451,29 +2451,17 @@ function DesignSpecs({ title, context }: { title: string | null; context?: SpecC
 
   return (
     <div className="border-t border-border mt-4">
-      <div className="flex items-center justify-between gap-2 pt-5 pb-3">
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-5 pb-3">
+        <div className="flex items-center gap-2 shrink-0">
           <SlidersHorizontal className="h-4 w-4 text-muted-foreground shrink-0" />
           <h3 className="text-sm font-semibold tracking-tight">Design tokens</h3>
         </div>
+        {controls && <div className="flex-1">{controls}</div>}
         <button
           onClick={() => setOpen((o) => !o)}
-          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors ml-auto"
           aria-label="Toggle design tokens"
         >
-          {(context?.variant || (context?.size && context.size !== "default") || context?.style) && (
-            <span className="flex items-center gap-1 mr-1">
-              {context?.variant && (
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-sm bg-primary/8 text-primary/70 capitalize border border-primary/15">{context.variant}</span>
-              )}
-              {context?.size && context.size !== "default" && (
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-sm bg-primary/8 text-primary/70 uppercase border border-primary/15">{context.size}</span>
-              )}
-              {context?.style && (
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-sm bg-primary/8 text-primary/70 capitalize border border-primary/15">{context.style}</span>
-              )}
-            </span>
-          )}
           <ChevronDown
             className={`h-4 w-4 transition-transform duration-200 shrink-0 ${open ? "rotate-180" : ""}`}
           />
@@ -2909,18 +2897,6 @@ export function ButtonDemo() {
                 </button>
               ))}
             </div>
-            {/* Size selector (drives token panel) */}
-            <div className="flex items-center gap-2">
-              <p className="text-xs text-muted-foreground">Token view:</p>
-              <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
-                {(["sm","default","lg","icon"] as const).map((s) => (
-                  <button key={s} onClick={() => setButtonActiveSize(s)}
-                    className={`px-3 py-1 text-xs rounded font-medium transition-colors ${buttonActiveSize === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
-                    {s === "default" ? "MD" : s.toUpperCase()}
-                  </button>
-                ))}
-              </div>
-            </div>
             {/* Size preview */}
             <div className="flex flex-wrap items-center gap-3">
               <Button size="sm" variant={sizeTabVariant} onClick={() => setButtonActiveSize("sm")}>Small</Button>
@@ -3196,17 +3172,6 @@ export function CardDemo() {
     </Card>
   )
 }`}>
-          <div className="flex items-center gap-3 flex-wrap mb-2">
-            <p className="text-xs font-medium text-muted-foreground">Token view:</p>
-            <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
-              {(["default", "featured", "settings"] as const).map((v) => (
-                <button key={v} onClick={() => setCardVariant(v)}
-                  className={`px-3 py-1 text-xs rounded font-medium transition-colors ${cardVariant === v ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
-                  {v === "default" ? "Default" : v === "featured" ? "Inverted" : "Interactive"}
-                </button>
-              ))}
-            </div>
-          </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader>
@@ -3285,17 +3250,6 @@ export function SwitchDemo() {
     </div>
   )
 }`}>
-        <div className="flex items-center gap-3 flex-wrap mb-6">
-          <p className="text-xs font-medium text-muted-foreground">Token view:</p>
-          <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
-            {(["off", "on", "disabled"] as const).map((s) => (
-              <button key={s} onClick={() => setSwitchState(s)}
-                className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${switchState === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
         <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
           <div className="space-y-5">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">States</p>
@@ -3372,18 +3326,6 @@ export function FormDemo() {
   )
 }`}>
         <div className="space-y-5">
-          {/* State selector — drives token panel */}
-          <div className="flex items-center gap-3 flex-wrap">
-            <p className="text-xs font-medium text-muted-foreground">Token view:</p>
-            <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
-              {(["default","focus","error","disabled"] as const).map((s) => (
-                <button key={s} onClick={() => setInputState(s)}
-                  className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${inputState === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
         <div className="grid gap-8 sm:grid-cols-2">
           <div className="space-y-4">
             <div className="space-y-2">
@@ -3488,18 +3430,6 @@ export function AlertDemo() {
   )
 }`}>
         <div className="space-y-5">
-          {/* Variant selector — drives token panel */}
-          <div className="flex items-center gap-3 flex-wrap">
-            <p className="text-xs font-medium text-muted-foreground">Token view:</p>
-            <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
-              {(["default","success","warning","destructive"] as const).map((v) => (
-                <button key={v} onClick={() => setAlertVariant(v)}
-                  className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${alertVariant === v ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
-                  {v}
-                </button>
-              ))}
-            </div>
-          </div>
           <div className="space-y-3">
             <Alert><Info className="h-4 w-4" /><AlertTitle>Heads up!</AlertTitle><AlertDescription>You can add components to your app using the CLI.</AlertDescription></Alert>
             <Alert variant="success"><Check className="h-4 w-4" /><AlertTitle>All systems operational</AlertTitle><AlertDescription>Everything is running smoothly.</AlertDescription></Alert>
@@ -5560,6 +5490,54 @@ function SectionHeader() {
               : selectedComponent === "Toggle Switch"
               ? { variant: switchState }
               : undefined
+          }
+          controls={
+            selectedComponent === "Buttons" ? (
+              <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                {(["sm","default","lg","icon"] as const).map((s) => (
+                  <button key={s} onClick={() => setButtonActiveSize(s)}
+                    className={`px-3 py-1 text-xs rounded font-medium transition-colors ${buttonActiveSize === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                    {s === "default" ? "MD" : s.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            ) : selectedComponent === "Cards" ? (
+              <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                {(["default","featured","settings"] as const).map((v) => (
+                  <button key={v} onClick={() => setCardVariant(v)}
+                    className={`px-3 py-1 text-xs rounded font-medium transition-colors ${cardVariant === v ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                    {v === "default" ? "Default" : v === "featured" ? "Inverted" : "Interactive"}
+                  </button>
+                ))}
+              </div>
+            ) : selectedComponent === "Toggle Switch" ? (
+              <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                {(["off","on","disabled"] as const).map((s) => (
+                  <button key={s} onClick={() => setSwitchState(s)}
+                    className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${switchState === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            ) : selectedComponent === "Form Controls" ? (
+              <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                {(["default","focus","error","disabled"] as const).map((s) => (
+                  <button key={s} onClick={() => setInputState(s)}
+                    className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${inputState === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            ) : selectedComponent === "Alerts" ? (
+              <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                {(["default","success","warning","destructive"] as const).map((v) => (
+                  <button key={v} onClick={() => setAlertVariant(v)}
+                    className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${alertVariant === v ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                    {v}
+                  </button>
+                ))}
+              </div>
+            ) : undefined
           }
         />
       )}
