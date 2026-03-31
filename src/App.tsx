@@ -1502,7 +1502,7 @@ function TokensPage({ dark: _dark }: { dark: boolean }) {
 type SpecType = "color" | "size" | "font" | "shadow";
 interface SpecItem { label: string; token: string; value: string; type: SpecType; }
 interface SpecGroup { title: string; items: SpecItem[]; }
-type SpecContext = { variant?: string; size?: string; style?: string };
+type SpecContext = { variant?: string; size?: string; style?: string; labelPosition?: string };
 
 const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
   "Typography": () => [
@@ -1816,6 +1816,16 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { title: "Motion", items: [
         { label: "Transition", token: "transition-colors", value: "color 150ms ease", type: "font" },
         { label: "Thumb slide", token: "transition-transform", value: "transform 150ms ease", type: "font" },
+      ]},
+      { title: "Label", items: [
+        { label: "Color",       token: "--foreground",   value: "#333333",           type: "color" },
+        { label: "Font size",   token: "text-sm",        value: "0.875rem / 14px",   type: "font"  },
+        { label: "Font weight", token: "font-medium",    value: "500",               type: "font"  },
+        { label: "Line height", token: "leading-none",   value: "1",                 type: "font"  },
+        ...(state === "disabled"
+          ? [{ label: "Cursor",  token: "cursor-not-allowed", value: "not-allowed", type: "font" as const },
+             { label: "Opacity", token: "opacity-70",         value: "70%",         type: "size" as const }]
+          : [{ label: "Cursor",  token: "cursor-pointer",     value: "pointer",     type: "font" as const }]),
       ]},
     ];
   },
@@ -2534,6 +2544,7 @@ function ComponentsPage() {
   const [inputState, setInputState] = useState<"default" | "focus" | "error" | "disabled">("default");
   const [cardVariant, setCardVariant] = useState<"default" | "featured" | "settings">("default");
   const [switchState, setSwitchState] = useState<"off" | "on" | "disabled">("off");
+  const [switchLabelPosition, setSwitchLabelPosition] = useState<"leading" | "trailing">("trailing");
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const getComponentFromHash = () => {
@@ -3261,8 +3272,13 @@ export function SwitchDemo() {
                 { id: "sw-don",  label: "Disabled on",  checked: true,  disabled: true },
               ].map(({ id, label, checked, disabled }) => (
                 <div key={id} className="flex items-center gap-3">
+                  {switchLabelPosition === "leading" && (
+                    <Label htmlFor={id} className={disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}>{label}</Label>
+                  )}
                   <Switch id={id} defaultChecked={checked} disabled={disabled} />
-                  <Label htmlFor={id} className={disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}>{label}</Label>
+                  {switchLabelPosition === "trailing" && (
+                    <Label htmlFor={id} className={disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}>{label}</Label>
+                  )}
                 </div>
               ))}
             </div>
@@ -5488,7 +5504,7 @@ function SectionHeader() {
               : selectedComponent === "Cards"
               ? { variant: cardVariant }
               : selectedComponent === "Toggle Switch"
-              ? { variant: switchState }
+              ? { variant: switchState, labelPosition: switchLabelPosition }
               : undefined
           }
           controls={
@@ -5511,13 +5527,23 @@ function SectionHeader() {
                 ))}
               </div>
             ) : selectedComponent === "Toggle Switch" ? (
-              <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
-                {(["off","on","disabled"] as const).map((s) => (
-                  <button key={s} onClick={() => setSwitchState(s)}
-                    className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${switchState === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
-                    {s}
-                  </button>
-                ))}
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                  {(["off","on","disabled"] as const).map((s) => (
+                    <button key={s} onClick={() => setSwitchState(s)}
+                      className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${switchState === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                  {(["leading","trailing"] as const).map((pos) => (
+                    <button key={pos} onClick={() => setSwitchLabelPosition(pos)}
+                      className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${switchLabelPosition === pos ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                      {pos}
+                    </button>
+                  ))}
+                </div>
               </div>
             ) : selectedComponent === "Form Controls" ? (
               <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
