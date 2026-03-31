@@ -165,7 +165,8 @@ const config: Config = {
         mono: ["Space Mono", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       fontSize: {
-        md: "16px",
+        base: "14px",
+        md:   "16px",
       },
       keyframes: {
         "accordion-down": {

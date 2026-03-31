@@ -1563,12 +1563,12 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       sm:      [
         { label: "Height",    token: "h-9",      value: "2.25rem / 36px",  type: "size" },
         { label: "Padding x", token: "px-3",     value: "0.75rem / 12px",  type: "size" },
-        { label: "Font size", token: "text-sm",  value: "0.875rem / 14px", type: "size" },
+        { label: "Font size", token: "text-base",  value: "0.875rem / 14px", type: "size" },
       ],
       default: [
         { label: "Height",    token: "h-10",     value: "2.5rem / 40px",   type: "size" },
         { label: "Padding x", token: "px-4",     value: "1rem / 16px",     type: "size" },
-        { label: "Font size", token: "text-sm",  value: "0.875rem / 14px", type: "size" },
+        { label: "Font size", token: "text-base",  value: "0.875rem / 14px", type: "size" },
       ],
       lg:      [
         { label: "Height",    token: "h-11",     value: "2.75rem / 44px",  type: "size" },
@@ -1578,7 +1578,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       icon:    [
         { label: "Height",    token: "h-10",     value: "2.5rem / 40px",   type: "size" },
         { label: "Width",     token: "w-10",     value: "2.5rem / 40px",   type: "size" },
-        { label: "Font size", token: "text-sm",  value: "0.875rem / 14px", type: "size" },
+        { label: "Font size", token: "text-base",  value: "0.875rem / 14px", type: "size" },
       ],
     };
 
@@ -1619,7 +1619,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
         lg: [
           { label: "Padding x", token: "px-4",         value: "1rem / 16px",      type: "size" },
           { label: "Padding y", token: "py-1",          value: "0.25rem / 4px",    type: "size" },
-          { label: "Font size", token: "text-sm",       value: "0.875rem / 14px",  type: "size" },
+          { label: "Font size", token: "text-base",       value: "0.875rem / 14px",  type: "size" },
           { label: "Icon size", token: "h-3.5 w-3.5",  value: "14px",             type: "size" },
           { label: "Gap",       token: "gap-1.5",        value: "0.375rem / 6px",  type: "size" },
         ],
@@ -1635,14 +1635,14 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
         md: [
           { label: "Padding x", token: "px-4",          value: "1rem / 16px",      type: "size" },
           { label: "Padding y", token: "py-1.5",         value: "0.375rem / 6px",  type: "size" },
-          { label: "Font size", token: "text-sm",        value: "0.875rem / 14px", type: "size" },
+          { label: "Font size", token: "text-base",        value: "0.875rem / 14px", type: "size" },
           { label: "Icon size", token: "h-4 w-4",        value: "16px",            type: "size" },
           { label: "Gap",       token: "gap-1.5",         value: "0.375rem / 6px", type: "size" },
         ],
         lg: [
           { label: "Padding x", token: "px-5",          value: "1.25rem / 20px",   type: "size" },
           { label: "Padding y", token: "py-1",           value: "0.25rem / 4px",    type: "size" },
-          { label: "Font size", token: "text-sm",        value: "0.875rem / 14px",  type: "size" },
+          { label: "Font size", token: "text-base",        value: "0.875rem / 14px",  type: "size" },
           { label: "Icon size", token: "h-4 w-4",        value: "16px",             type: "size" },
           { label: "Gap",       token: "gap-1.5",         value: "0.375rem / 6px",  type: "size" },
         ],
@@ -1698,7 +1698,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
     const sharedTypography: SpecGroup = { title: "Typography", items: [
       { label: "Title size",       token: "text-xl",       value: "1.25rem / 20px",  type: "size" },
       { label: "Title weight",     token: "font-semibold", value: "600",             type: "size" },
-      { label: "Description size", token: "text-sm",       value: "0.875rem / 14px", type: "size" },
+      { label: "Description size", token: "text-base",       value: "0.875rem / 14px", type: "size" },
     ]};
     const sharedRadius: SpecGroup = { title: "Radius", items: [
       { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
@@ -1780,7 +1780,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
         { label: "Checked fill", token: "--primary",           value: "#013229",  type: "color" },
       ]},
       { title: "Typography", items: [
-        { label: "Font size",   token: "text-sm",      value: "0.875rem / 14px", type: "size" },
+        { label: "Font size",   token: "text-base",      value: "0.875rem / 14px", type: "size" },
         { label: "Font weight", token: "font-regular", value: "400",             type: "size" },
       ]},
       { title: "Radius", items: [
@@ -1819,7 +1819,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       ]},
       { title: "Label", items: [
         { label: "Color",       token: "--foreground",   value: "#333333",           type: "color" },
-        { label: "Font size",   token: "text-sm",        value: "0.875rem / 14px",   type: "font"  },
+        { label: "Font size",   token: "text-base",        value: "0.875rem / 14px",   type: "font"  },
         { label: "Font weight", token: "font-medium",    value: "500",               type: "font"  },
         { label: "Line height", token: "leading-none",   value: "1",                 type: "font"  },
         ...(state === "disabled"
@@ -1857,7 +1857,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { title: "Colors", items: colorsByVariant[variant] ?? colorsByVariant.default },
       { title: "Typography", items: [
         { label: "Title weight", token: "font-medium", value: "500",             type: "size" },
-        { label: "Font size",    token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+        { label: "Font size",    token: "text-base",     value: "0.875rem / 14px", type: "size" },
       ]},
       { title: "Radius", items: [
         { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
@@ -1875,7 +1875,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Hover row bg", token: "--muted",            value: "#F5F5F5", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size",      token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Font size",      token: "text-base",     value: "0.875rem / 14px", type: "size" },
       { label: "Header weight",  token: "font-medium", value: "500",             type: "size" },
     ]},
     { title: "Spacing", items: [
@@ -1888,7 +1888,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Divider", token: "--border",     value: "#E5E5E5", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size",   token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Font size",   token: "text-base",     value: "0.875rem / 14px", type: "size" },
       { label: "Font weight", token: "font-medium", value: "500",             type: "size" },
     ]},
     { title: "Spacing", items: [
@@ -1905,7 +1905,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
     { title: "Typography", items: [
       { label: "Title size",        token: "text-lg",      value: "1.125rem / 18px",  type: "size" },
       { label: "Title weight",      token: "font-semibold", value: "600",             type: "size" },
-      { label: "Description size",  token: "text-sm",      value: "0.875rem / 14px", type: "size" },
+      { label: "Description size",  token: "text-base",      value: "0.875rem / 14px", type: "size" },
     ]},
     { title: "Radius", items: [
       { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
@@ -1952,7 +1952,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Focus ring",        token: "--ring",       value: "#013229", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+      { label: "Font size", token: "text-base", value: "0.875rem / 14px", type: "size" },
     ]},
     { title: "Radius", items: [
       { label: "Radio",    token: "rounded-full", value: "9999px",  type: "size" },
@@ -1967,7 +1967,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Active text",   token: "--accent-foreground", value: "#013229",  type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+      { label: "Font size", token: "text-base", value: "0.875rem / 14px", type: "size" },
     ]},
     { title: "Radius", items: [
       { label: "Border radius", token: "rounded-md", value: "≈ 10px", type: "size" },
@@ -2003,7 +2003,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Border",     token: "--border",             value: "#E5E5E5", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+      { label: "Font size", token: "text-base", value: "0.875rem / 14px", type: "size" },
     ]},
     { title: "Radius", items: [
       { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
@@ -2023,7 +2023,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Text",          token: "--foreground", value: "#333333", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size",   token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Font size",   token: "text-base",     value: "0.875rem / 14px", type: "size" },
       { label: "Font weight", token: "font-medium", value: "500",             type: "size" },
     ]},
     { title: "Radius", items: [
@@ -2038,7 +2038,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Hover text",  token: "--accent-foreground", value: "#013229", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+      { label: "Font size", token: "text-base", value: "0.875rem / 14px", type: "size" },
     ]},
     { title: "Radius", items: [
       { label: "Menu radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
@@ -2056,7 +2056,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Page border",      token: "--border",           value: "#E5E5E5", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+      { label: "Font size", token: "text-base", value: "0.875rem / 14px", type: "size" },
     ]},
     { title: "Radius", items: [
       { label: "Page button", token: "rounded-md", value: "≈ 10px", type: "size" },
@@ -2080,7 +2080,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Today text",        token: "--accent-foreground", value: "#013229", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+      { label: "Font size", token: "text-base", value: "0.875rem / 14px", type: "size" },
     ]},
     { title: "Radius", items: [
       { label: "Day button", token: "rounded-md", value: "≈ 10px", type: "size" },
@@ -2094,7 +2094,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Group heading",  token: "--muted-foreground", value: "#737373", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+      { label: "Font size", token: "text-base", value: "0.875rem / 14px", type: "size" },
     ]},
     { title: "Radius", items: [
       { label: "Container", token: "--radius", value: "0.75rem / 12px", type: "size" },
@@ -2142,7 +2142,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Error indicator",    token: "--destructive", value: "#DC2626", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size",   token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Font size",   token: "text-base",     value: "0.875rem / 14px", type: "size" },
       { label: "Font weight", token: "font-medium", value: "500",             type: "size" },
     ]},
     { title: "Radius", items: [
@@ -2185,7 +2185,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Border",       token: "--sidebar-border",    value: "#065A45", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Item font size",   token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Item font size",   token: "text-base",     value: "0.875rem / 14px", type: "size" },
       { label: "Item font weight", token: "font-medium", value: "500",             type: "size" },
     ]},
     { title: "Radius", items: [
@@ -2240,7 +2240,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Focus ring", token: "--ring",       value: "#013229", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+      { label: "Font size", token: "text-base", value: "0.875rem / 14px", type: "size" },
     ]},
     { title: "Radius", items: [
       { label: "Border radius", token: "rounded-md", value: "≈ 10px", type: "size" },
@@ -2273,7 +2273,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Active text",     token: "--primary-foreground", value: "#F0FBF8", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size",   token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Font size",   token: "text-base",     value: "0.875rem / 14px", type: "size" },
       { label: "Font weight", token: "font-medium", value: "500",             type: "size" },
     ]},
     { title: "Radius", items: [
@@ -2292,7 +2292,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Description text",  token: "--muted-foreground", value: "#737373", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Title size",        token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Title size",        token: "text-base",     value: "0.875rem / 14px", type: "size" },
       { label: "Title weight",      token: "font-medium", value: "500",             type: "size" },
       { label: "Description size",  token: "text-xs",     value: "0.75rem / 12px",  type: "size" },
     ]},
@@ -2311,7 +2311,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Input border", token: "--input",           value: "#E5E5E5", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Label size",      token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Label size",      token: "text-base",     value: "0.875rem / 14px", type: "size" },
       { label: "Label weight",    token: "font-medium", value: "500",             type: "size" },
       { label: "Hint/error size", token: "text-xs",     value: "0.75rem / 12px",  type: "size" },
     ]},
@@ -2328,7 +2328,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Avatar text", token: "--primary-foreground", value: "#F0FBF8", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Primary text size",   token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Primary text size",   token: "text-base",     value: "0.875rem / 14px", type: "size" },
       { label: "Primary text weight", token: "font-medium", value: "500",             type: "size" },
       { label: "Secondary text size", token: "text-xs",     value: "0.75rem / 12px",  type: "size" },
     ]},
@@ -2365,7 +2365,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
     { title: "Typography", items: [
       { label: "Title size",        token: "text-lg",       value: "1.125rem / 18px", type: "size" },
       { label: "Title weight",      token: "font-semibold", value: "600",             type: "size" },
-      { label: "Description size",  token: "text-sm",       value: "0.875rem / 14px", type: "size" },
+      { label: "Description size",  token: "text-base",       value: "0.875rem / 14px", type: "size" },
     ]},
     { title: "Radius", items: [
       { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
@@ -2388,7 +2388,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Group label",     token: "--muted-foreground",  value: "#737373", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Item font size", token: "text-sm", value: "0.875rem / 14px", type: "size" },
+      { label: "Item font size", token: "text-base", value: "0.875rem / 14px", type: "size" },
     ]},
     { title: "Radius", items: [
       { label: "Container", token: "--radius",   value: "0.75rem / 12px", type: "size" },
@@ -2409,7 +2409,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Inactive text",  token: "--muted-foreground", value: "#737373", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Font size",   token: "text-sm",     value: "0.875rem / 14px", type: "size" },
+      { label: "Font size",   token: "text-base",     value: "0.875rem / 14px", type: "size" },
       { label: "Font weight", token: "font-medium", value: "500",             type: "size" },
     ]},
     { title: "Radius", items: [
