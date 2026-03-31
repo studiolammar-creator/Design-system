@@ -1756,39 +1756,99 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       sharedSpacing,
     ];
   },
-  "Form Controls": (ctx = {}) => {
+  "Input": (ctx = {}) => {
     const state = ctx.variant ?? "default";
     const borderByState: Record<string, SpecItem> = {
-      default:  { label: "Input border",  token: "--input",         value: "#E5E5E5",  type: "color" },
-      focus:    { label: "Input border",  token: "--ring",          value: "#013229",  type: "color" },
-      error:    { label: "Input border",  token: "--destructive",   value: "#DC2626",  type: "color" },
-      disabled: { label: "Input border",  token: "--input/50",      value: "rgba(229,229,229,0.50)", type: "color" },
+      default:  { label: "Border",  token: "--input",       value: "#E5E5E5",  type: "color" },
+      focus:    { label: "Border",  token: "--ring",        value: "#013229",  type: "color" },
+      error:    { label: "Border",  token: "--destructive", value: "#DC2626",  type: "color" },
+      disabled: { label: "Border",  token: "--input/50",    value: "rgba(229,229,229,0.50)", type: "color" },
     };
     const textByState: Record<string, SpecItem> = {
-      default:  { label: "Input text",    token: "--foreground",    value: "#333333",  type: "color" },
-      focus:    { label: "Input text",    token: "--foreground",    value: "#333333",  type: "color" },
-      error:    { label: "Input text",    token: "--destructive",   value: "#DC2626",  type: "color" },
-      disabled: { label: "Input text",    token: "--foreground/40", value: "rgba(51,51,51,0.40)", type: "color" },
+      default:  { label: "Text",  token: "--foreground",    value: "#333333", type: "color" },
+      focus:    { label: "Text",  token: "--foreground",    value: "#333333", type: "color" },
+      error:    { label: "Text",  token: "--destructive",   value: "#DC2626", type: "color" },
+      disabled: { label: "Text",  token: "--foreground/40", value: "rgba(51,51,51,0.40)", type: "color" },
     };
     return [
       { title: "Colors", items: [
-        { label: "Background",   token: "--background",        value: "#FFFFFF",  type: "color" },
+        { label: "Background",  token: "--background",       value: "#FFFFFF", type: "color" },
         borderByState[state] ?? borderByState.default,
         textByState[state]   ?? textByState.default,
-        { label: "Placeholder",  token: "--muted-foreground",  value: "#737373",  type: "color" },
-        { label: "Focus ring",   token: "--ring",              value: "#013229",  type: "color" },
-        { label: "Checked fill", token: "--primary",           value: "#013229",  type: "color" },
+        { label: "Placeholder", token: "--muted-foreground", value: "#737373", type: "color" },
+        { label: "Focus ring",  token: "--ring",             value: "#013229", type: "color" },
       ]},
       { title: "Typography", items: [
-        { label: "Font size",   token: "text-base",      value: "0.875rem / 14px", type: "size" },
+        { label: "Font size",   token: "text-base",    value: "0.875rem / 14px", type: "size" },
         { label: "Font weight", token: "font-regular", value: "400",             type: "size" },
       ]},
       { title: "Radius", items: [
         { label: "Border radius", token: "rounded-md", value: "calc(var(--radius) - 2px) ≈ 10px", type: "size" },
       ]},
       { title: "Spacing", items: [
-        { label: "Input height", token: "h-10", value: "2.5rem / 40px",  type: "size" },
-        { label: "Padding x",    token: "px-3", value: "0.75rem / 12px", type: "size" },
+        { label: "Height",    token: "h-10", value: "2.5rem / 40px",  type: "size" },
+        { label: "Padding x", token: "px-3", value: "0.75rem / 12px", type: "size" },
+      ]},
+    ];
+  },
+  "Select": (ctx = {}) => {
+    const state = ctx.variant ?? "default";
+    const borderByState: Record<string, SpecItem> = {
+      default:  { label: "Border", token: "--input",    value: "#E5E5E5", type: "color" },
+      focus:    { label: "Border", token: "--ring",     value: "#013229", type: "color" },
+      disabled: { label: "Border", token: "--input/50", value: "rgba(229,229,229,0.50)", type: "color" },
+    };
+    return [
+      { title: "Colors", items: [
+        { label: "Background",  token: "--background",       value: "#FFFFFF", type: "color" },
+        borderByState[state] ?? borderByState.default,
+        { label: "Text",        token: "--foreground",       value: "#333333", type: "color" },
+        { label: "Placeholder", token: "--muted-foreground", value: "#737373", type: "color" },
+        { label: "Chevron",     token: "--muted-foreground", value: "#737373", type: "color" },
+        { label: "Focus ring",  token: "--ring",             value: "#013229", type: "color" },
+      ]},
+      { title: "Radius", items: [
+        { label: "Trigger",      token: "rounded-md", value: "calc(var(--radius) - 2px) ≈ 10px", type: "size" },
+        { label: "Content",      token: "rounded-md", value: "calc(var(--radius) - 2px) ≈ 10px", type: "size" },
+      ]},
+      { title: "Spacing", items: [
+        { label: "Height",    token: "h-10", value: "2.5rem / 40px",  type: "size" },
+        { label: "Padding x", token: "px-3", value: "0.75rem / 12px", type: "size" },
+      ]},
+    ];
+  },
+  "Checkbox": (ctx = {}) => {
+    const state = ctx.variant ?? "unchecked";
+    const filled = state === "checked" || state === "indeterminate";
+    return [
+      { title: "Colors", items: [
+        filled
+          ? { label: "Background", token: "--primary",    value: "#013229", type: "color" as const }
+          : { label: "Background", token: "--background", value: "#FFFFFF", type: "color" as const },
+        { label: "Border",     token: filled ? "--primary" : "--input", value: filled ? "#013229" : "#E5E5E5", type: "color" },
+        { label: "Checkmark",  token: "--primary-foreground", value: "#F0FBF8", type: "color" },
+        { label: "Focus ring", token: "--ring",               value: "#013229", type: "color" },
+        ...(state === "disabled" ? [{ label: "Opacity", token: "opacity-50", value: "50%", type: "size" as const }] : []),
+      ]},
+      { title: "Sizing", items: [
+        { label: "Size",          token: "h-4 w-4",    value: "1rem / 16px",    type: "size" },
+        { label: "Border radius", token: "rounded-sm", value: "0.125rem / 2px", type: "size" },
+      ]},
+    ];
+  },
+  "Radio Group": (ctx = {}) => {
+    const state = ctx.variant ?? "default";
+    return [
+      { title: "Colors", items: [
+        { label: "Border",     token: state === "selected" ? "--primary" : "--input", value: state === "selected" ? "#013229" : "#E5E5E5", type: "color" },
+        { label: "Indicator",  token: "--primary", value: "#013229", type: "color" },
+        { label: "Focus ring", token: "--ring",    value: "#013229", type: "color" },
+        ...(state === "disabled" ? [{ label: "Opacity", token: "opacity-50", value: "50%", type: "size" as const }] : []),
+      ]},
+      { title: "Sizing", items: [
+        { label: "Size",      token: "h-4 w-4",     value: "1rem / 16px",     type: "size" },
+        { label: "Indicator", token: "h-2.5 w-2.5", value: "0.625rem / 10px", type: "size" },
+        { label: "Radius",    token: "rounded-full", value: "9999px",          type: "size" },
       ]},
     ];
   },
@@ -2610,8 +2670,6 @@ function DesignSpecs({ title, context, controls }: { title: string | null; conte
 ═══════════════════════════════════════════════════════════ */
 
 function ComponentsPage() {
-  const [checked, setChecked] = useState(false);
-  const [switchOn, setSwitchOn] = useState(false);
   const [sliderValue, setSliderValue] = useState([40]);
   const [radioValue, setRadioValue] = useState("option-1");
   const [collapsibleOpen, setCollapsibleOpen] = useState(false);
@@ -2630,6 +2688,9 @@ function ComponentsPage() {
   const [switchState, setSwitchState] = useState<"off" | "on" | "disabled">("off");
   const [switchLabelPosition, setSwitchLabelPosition] = useState<"leading" | "trailing">("trailing");
   const [pageSectionsVariant, setPageSectionsVariant] = useState<"hero" | "page" | "search" | "section">("hero");
+  const [selectState, setSelectState] = useState<"default" | "focus" | "disabled">("default");
+  const [checkboxState, setCheckboxState] = useState<"unchecked" | "checked" | "indeterminate" | "disabled">("unchecked");
+  const [radioState, setRadioState] = useState<"default" | "selected" | "disabled">("default");
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const getComponentFromHash = () => {
@@ -2657,14 +2718,16 @@ function ComponentsPage() {
     { title: "Badges",                   category: "Display",    description: "Status indicators and labels.",                 figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=127-715&t=fO3P1QEsKAc0ShcW-1", preview: <div className="flex flex-wrap gap-1.5 pointer-events-none select-none"><Badge>Default</Badge><Badge variant="secondary">Secondary</Badge><Badge variant="outlined">Outlined</Badge></div> },
     { title: "Cards",                    category: "Layout",     description: "Content containers with header and footer.",    figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=140-218&t=anHAdcWSDLhg0F9c-1", preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card"><p className="font-semibold text-xs">Card title</p><p className="text-muted-foreground text-[10px] mt-0.5">Short description here.</p></div> },
     { title: "Toggle Switch",             category: "Forms",      description: "On/off control for boolean settings.",          figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=142-511&t=anHAdcWSDLhg0F9c-1", preview: <div className="flex items-center gap-3 pointer-events-none select-none"><div className="h-6 w-11 rounded-full bg-primary flex items-center px-0.5 justify-end"><div className="h-5 w-5 rounded-full bg-background shadow-sm" /></div><div className="h-6 w-11 rounded-full bg-input flex items-center px-0.5"><div className="h-5 w-5 rounded-full bg-background shadow-sm" /></div></div> },
-    { title: "Form Controls",            category: "Forms",      description: "Inputs, selects, checkboxes, and switches.",    figmaUrl: FIGMA_FILE, preview: <div className="space-y-1.5 pointer-events-none select-none w-full"><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">Email address</span></div><div className="flex items-center gap-1.5"><div className="h-3.5 w-3.5 rounded-sm border border-input bg-background" /><span className="text-[10px] text-muted-foreground">Accept terms</span></div></div> },
+    { title: "Input",                     category: "Forms",      description: "Text, email, password, search, number, and URL inputs.", figmaUrl: FIGMA_FILE, preview: <div className="space-y-1.5 pointer-events-none select-none w-full"><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">Email address</span></div><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">Password ••••••</span></div></div> },
+    { title: "Select",                    category: "Forms",      description: "Dropdown selection with keyboard navigation.",            figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full h-7 rounded-md border border-input bg-background px-2 flex items-center justify-between"><span className="text-[10px] text-muted-foreground">Select an option</span><ChevronDown className="h-3 w-3 text-muted-foreground shrink-0" /></div> },
+    { title: "Checkbox",                  category: "Forms",      description: "Binary selection control with indeterminate state.",      figmaUrl: FIGMA_FILE, preview: <div className="flex flex-col gap-2 pointer-events-none select-none"><div className="flex items-center gap-2"><div className="h-4 w-4 rounded-sm bg-primary border border-primary flex items-center justify-center"><Check className="h-2.5 w-2.5 text-primary-foreground" /></div><span className="text-[10px]">Checked</span></div><div className="flex items-center gap-2"><div className="h-4 w-4 rounded-sm border border-input bg-background" /><span className="text-[10px] text-muted-foreground">Unchecked</span></div></div> },
     { title: "Alerts",                   category: "Feedback",   description: "Four semantic variants.",                       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-md p-2.5 w-full flex gap-2 items-start"><div className="h-3 w-3 rounded-full bg-primary mt-0.5 shrink-0" /><div><p className="text-[10px] font-semibold">Alert title</p><p className="text-[9px] text-muted-foreground mt-0.5">Alert description text.</p></div></div> },
     { title: "Table",                    category: "Data",       description: "Data display with status badges.",              figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full text-[9px]"><div className="flex gap-3 border-b border-border pb-1 mb-1 font-semibold text-muted-foreground"><span className="flex-1">Invoice</span><span>Status</span><span>Amount</span></div><div className="flex gap-3"><span className="flex-1 text-foreground">INV-001</span><Badge className="text-[8px] h-3.5 px-1">Paid</Badge><span>$250</span></div></div> },
     { title: "Accordion",                category: "Navigation", description: "Collapsible sections.",                         figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full space-y-1"><div className="border-b border-border pb-1.5 flex items-center justify-between"><span className="text-[10px] font-medium">Is it accessible?</span><span className="text-[10px] text-muted-foreground">+</span></div><div className="border-b border-border pb-1.5 flex items-center justify-between"><span className="text-[10px] font-medium">Is it styled?</span><span className="text-[10px] text-muted-foreground">+</span></div></div> },
     { title: "Alert Dialog",             category: "Overlay",    description: "Blocking confirmation dialogs.",                figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card shadow-sm"><p className="text-[10px] font-semibold">Are you sure?</p><p className="text-[9px] text-muted-foreground mt-0.5">This action cannot be undone.</p><div className="flex gap-1.5 mt-2"><div className="h-5 px-2 rounded bg-destructive flex items-center"><span className="text-[9px] text-white">Delete</span></div><div className="h-5 px-2 rounded border border-border flex items-center"><span className="text-[9px]">Cancel</span></div></div></div> },
     { title: "Sheet",                    category: "Overlay",    description: "Slide-in panels from any edge.",                figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex gap-2 w-full"><Button size="sm" variant="outline" className="text-[10px] h-6 px-2">Open →</Button><div className="flex-1 border-l border-border pl-2"><p className="text-[10px] font-medium">Sheet title</p><p className="text-[9px] text-muted-foreground">Content here.</p></div></div> },
     { title: "Progress & Slider",        category: "Forms",      description: "Progress bars and range inputs.",               figmaUrl: FIGMA_FILE, preview: <div className="space-y-2 pointer-events-none select-none w-full"><div className="h-2 rounded-full bg-muted overflow-hidden"><div className="h-full bg-primary rounded-full" style={{width:"60%"}} /></div><div className="h-2 rounded-full bg-muted relative"><div className="absolute left-[35%] top-1/2 -translate-y-1/2 h-4 w-4 rounded-full border-2 border-primary bg-background shadow" /></div></div> },
-    { title: "Radio Group & Textarea",   category: "Forms",      description: "Radio buttons and multi-line inputs.",          figmaUrl: FIGMA_FILE, preview: <div className="space-y-1.5 pointer-events-none select-none"><div className="flex items-center gap-1.5"><div className="h-3 w-3 rounded-full border-2 border-primary bg-background flex items-center justify-center"><div className="h-1.5 w-1.5 rounded-full bg-primary" /></div><span className="text-[10px]">Option 1</span></div><div className="h-10 rounded-md border border-input bg-background w-full" /></div> },
+    { title: "Radio Group",              category: "Forms",      description: "Single-selection controls with keyboard support.",       figmaUrl: FIGMA_FILE, preview: <div className="flex flex-col gap-1.5 pointer-events-none select-none"><div className="flex items-center gap-2"><div className="h-4 w-4 rounded-full border-2 border-primary bg-background flex items-center justify-center"><div className="h-2 w-2 rounded-full bg-primary" /></div><span className="text-[10px]">Selected</span></div><div className="flex items-center gap-2"><div className="h-4 w-4 rounded-full border border-input bg-background" /><span className="text-[10px] text-muted-foreground">Option 2</span></div></div> },
     { title: "Toggle & Toggle Group",    category: "Actions",    description: "Toggle and grouped toggle buttons.",            figmaUrl: FIGMA_FILE, preview: <div className="flex gap-1 pointer-events-none select-none"><div className="h-7 w-7 rounded border border-border flex items-center justify-center bg-muted"><span className="text-[10px] font-bold">B</span></div><div className="h-7 w-7 rounded border border-border flex items-center justify-center"><span className="text-[10px] italic">I</span></div><div className="h-7 w-7 rounded border border-border flex items-center justify-center"><span className="text-[10px] underline">U</span></div></div> },
     { title: "Skeleton",                 category: "Feedback",   description: "Loading placeholder states.",                   figmaUrl: FIGMA_FILE, preview: <div className="flex items-center gap-2 pointer-events-none select-none w-full"><div className="h-8 w-8 rounded-full bg-muted animate-pulse shrink-0" /><div className="flex-1 space-y-1.5"><div className="h-2.5 rounded bg-muted animate-pulse" /><div className="h-2.5 rounded bg-muted animate-pulse w-3/4" /></div></div> },
     { title: "Scroll Area",              category: "Layout",     description: "Custom-styled scrollable containers.",          figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-md p-2 h-14 w-full overflow-hidden relative"><div className="space-y-0.5"><p className="text-[9px] text-muted-foreground">Item 1</p><p className="text-[9px] text-muted-foreground">Item 2</p><p className="text-[9px] text-muted-foreground">Item 3</p></div><div className="absolute right-1 top-1 w-1 h-8 rounded-full bg-muted" /></div> },
@@ -3406,121 +3469,254 @@ export function SwitchDemo() {
       </Section>
 
       {/* Form Controls */}
-      <Section hidden={selectedComponent !== "Form Controls"} title="Form Controls" description="Inputs, selects, checkboxes, and switches." code={`import { Input } from "@/components/ui/input"
+      {/* Input */}
+      <Section hidden={selectedComponent !== "Input"} title="Input" description="All input types with full state coverage." code={`import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-export function FormDemo() {
+export function InputDemo() {
   return (
     <div className="space-y-4 max-w-sm">
+      <div className="space-y-1.5">
+        <Label htmlFor="text">Text</Label>
+        <Input id="text" type="text" placeholder="Enter text…" />
+      </div>
       <div className="space-y-1.5">
         <Label htmlFor="email">Email</Label>
         <Input id="email" type="email" placeholder="you@example.com" />
       </div>
-      <div className="flex items-center gap-2">
-        <Checkbox id="terms" />
-        <Label htmlFor="terms">Accept terms</Label>
+      <div className="space-y-1.5">
+        <Label htmlFor="password">Password</Label>
+        <Input id="password" type="password" placeholder="••••••••" />
       </div>
-      <div className="flex items-center gap-2">
-        <Switch id="notifications" />
-        <Label htmlFor="notifications">Notifications</Label>
+      <div className="space-y-1.5">
+        <Label htmlFor="search">Search</Label>
+        <Input id="search" type="search" placeholder="Search…" />
       </div>
-      <Select>
-        <SelectTrigger>
-          <SelectValue placeholder="Select option" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="a">Option A</SelectItem>
-          <SelectItem value="b">Option B</SelectItem>
-        </SelectContent>
-      </Select>
+      <Input placeholder="Disabled" disabled />
+      <Input defaultValue="Error state" className="border-destructive focus-visible:ring-destructive" />
     </div>
   )
 }`}>
-        <div className="space-y-5">
-        <div className="grid gap-8 sm:grid-cols-2">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email-c">Email address</Label>
-              <Input id="email-c" type="email" placeholder="studiolammar@gmail.com" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="pass-c">Password</Label>
-              <Input id="pass-c" type="password" placeholder="••••••••" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="role-c">Role</Label>
-              <Select>
-                <SelectTrigger id="role-c">
-                  <SelectValue placeholder="Select a role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="designer">Designer</SelectItem>
-                  <SelectItem value="developer">Developer</SelectItem>
-                  <SelectItem value="pm">Product Manager</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox id="terms-c" checked={checked} onCheckedChange={(v) => setChecked(!!v)} />
-              <Label htmlFor="terms-c" className="cursor-pointer">I agree to the terms and conditions</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <Switch id="notif-c" checked={switchOn} onCheckedChange={setSwitchOn} />
-              <Label htmlFor="notif-c" className="cursor-pointer">
-                {switchOn ? "Notifications enabled" : "Notifications disabled"}
-              </Label>
+        <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
+          <div className="space-y-5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Types</p>
+            <div className="space-y-3">
+              {([
+                { id: "inp-text",     type: "text",     label: "Text",     placeholder: "Enter text…" },
+                { id: "inp-email",    type: "email",    label: "Email",    placeholder: "you@example.com" },
+                { id: "inp-password", type: "password", label: "Password", placeholder: "••••••••" },
+                { id: "inp-search",   type: "search",   label: "Search",   placeholder: "Search…" },
+                { id: "inp-number",   type: "number",   label: "Number",   placeholder: "0" },
+                { id: "inp-url",      type: "url",      label: "URL",      placeholder: "https://…" },
+              ] as const).map(({ id, type, label, placeholder }) => (
+                <div key={id} className="space-y-1.5">
+                  <Label htmlFor={id}>{label}</Label>
+                  <Input id={id} type={type} placeholder={placeholder} />
+                </div>
+              ))}
             </div>
           </div>
-
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>Avatars</Label>
-              <div className="flex items-center gap-3 flex-wrap">
-                {["EL", "AB", "CD", "EF"].map((i) => (
-                  <Avatar key={i}><AvatarImage src="" /><AvatarFallback>{i}</AvatarFallback></Avatar>
-                ))}
-                <Avatar className="h-12 w-12">
-                  <AvatarFallback className="text-base bg-primary text-primary-foreground">EL</AvatarFallback>
-                </Avatar>
+          <div className="space-y-5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">States</p>
+            <div className="space-y-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="inp-default">Default</Label>
+                <Input id="inp-default" placeholder="Default input" />
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label>Dialog</Label>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline">Open Dialog</Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Confirm action</DialogTitle>
-                    <DialogDescription>This action cannot be undone. Are you sure you want to continue?</DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <Button variant="outline">Cancel</Button>
-                    <Button>Confirm</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-            <div className="space-y-2">
-              <Label>Tooltips</Label>
-              <div className="flex gap-3">
-                {["Default", "Info", "Success"].map((label) => (
-                  <Tooltip key={label}>
-                    <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm">{label}</Button>
-                    </TooltipTrigger>
-                    <TooltipContent>This is a {label.toLowerCase()} tooltip</TooltipContent>
-                  </Tooltip>
-                ))}
+              <div className="space-y-1.5">
+                <Label htmlFor="inp-filled">Filled</Label>
+                <Input id="inp-filled" defaultValue="studiolammar@gmail.com" />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="inp-disabled">Disabled</Label>
+                <Input id="inp-disabled" placeholder="Disabled" disabled />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="inp-error" className="text-destructive">Error</Label>
+                <Input id="inp-error" defaultValue="invalid-email" className="border-destructive focus-visible:ring-destructive" />
+                <p className="text-xs text-destructive">Please enter a valid email address.</p>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="inp-readonly">Read-only</Label>
+                <Input id="inp-readonly" defaultValue="Read-only value" readOnly />
               </div>
             </div>
           </div>
         </div>
+      </Section>
+
+      {/* Select */}
+      <Section hidden={selectedComponent !== "Select"} title="Select" description="Dropdown selection with keyboard navigation and search." code={`import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
+
+export function SelectDemo() {
+  return (
+    <div className="space-y-4 max-w-sm">
+      <div className="space-y-1.5">
+        <Label htmlFor="role">Role</Label>
+        <Select>
+          <SelectTrigger id="role">
+            <SelectValue placeholder="Select a role" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="designer">Designer</SelectItem>
+            <SelectItem value="developer">Developer</SelectItem>
+            <SelectItem value="pm">Product Manager</SelectItem>
+            <SelectItem value="admin">Admin</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  )
+}`}>
+        <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
+          <div className="space-y-5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Variants</p>
+            <div className="space-y-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="sel-role">Role</Label>
+                <Select>
+                  <SelectTrigger id="sel-role">
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="designer">Designer</SelectItem>
+                    <SelectItem value="developer">Developer</SelectItem>
+                    <SelectItem value="pm">Product Manager</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="sel-country">Country</Label>
+                <Select>
+                  <SelectTrigger id="sel-country">
+                    <SelectValue placeholder="Select a country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="nl">Netherlands</SelectItem>
+                    <SelectItem value="de">Germany</SelectItem>
+                    <SelectItem value="fr">France</SelectItem>
+                    <SelectItem value="uk">United Kingdom</SelectItem>
+                    <SelectItem value="us">United States</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">States</p>
+            <div className="space-y-3">
+              <div className="space-y-1.5">
+                <Label>Default (empty)</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="a">Option A</SelectItem>
+                    <SelectItem value="b">Option B</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label>With value</Label>
+                <Select defaultValue="designer">
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="designer">Designer</SelectItem>
+                    <SelectItem value="developer">Developer</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Disabled</Label>
+                <Select disabled>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Disabled" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="a">Option A</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Checkbox */}
+      <Section hidden={selectedComponent !== "Checkbox"} title="Checkbox" description="Binary selection control with checked, unchecked, and indeterminate states." code={`import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
+
+export function CheckboxDemo() {
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2">
+        <Checkbox id="accept" />
+        <Label htmlFor="accept">Accept terms and conditions</Label>
+      </div>
+      <div className="flex items-center gap-2">
+        <Checkbox id="checked" defaultChecked />
+        <Label htmlFor="checked">Checked by default</Label>
+      </div>
+      <div className="flex items-center gap-2">
+        <Checkbox id="disabled" disabled />
+        <Label htmlFor="disabled" className="opacity-50 cursor-not-allowed">Disabled</Label>
+      </div>
+    </div>
+  )
+}`}>
+        <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
+          <div className="space-y-5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">States</p>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Checkbox id="cb-unchecked" />
+                <Label htmlFor="cb-unchecked" className="cursor-pointer">Unchecked</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox id="cb-checked" defaultChecked />
+                <Label htmlFor="cb-checked" className="cursor-pointer">Checked</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox id="cb-indeterminate" checked="indeterminate" />
+                <Label htmlFor="cb-indeterminate" className="cursor-pointer">Indeterminate</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox id="cb-disabled-off" disabled />
+                <Label htmlFor="cb-disabled-off" className="opacity-50 cursor-not-allowed">Disabled unchecked</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox id="cb-disabled-on" disabled defaultChecked />
+                <Label htmlFor="cb-disabled-on" className="opacity-50 cursor-not-allowed">Disabled checked</Label>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">In context</p>
+            <Card>
+              <CardHeader>
+                <CardTitle>Notification preferences</CardTitle>
+                <CardDescription>Choose what updates you'd like to receive.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {[
+                  { id: "cb-email",    label: "Email updates",    defaultChecked: true  },
+                  { id: "cb-sms",      label: "SMS alerts",       defaultChecked: false },
+                  { id: "cb-push",     label: "Push notifications", defaultChecked: true },
+                  { id: "cb-monthly",  label: "Monthly digest",   defaultChecked: false },
+                ].map(({ id, label, defaultChecked }) => (
+                  <div key={id} className="flex items-center gap-2">
+                    <Checkbox id={id} defaultChecked={defaultChecked} />
+                    <Label htmlFor={id} className="cursor-pointer">{label}</Label>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </Section>
 
@@ -3798,53 +3994,100 @@ export function ProgressSliderDemo() {
       </Section>
 
       {/* Radio Group & Textarea */}
-      <Section hidden={selectedComponent !== "Radio Group & Textarea"} title="Radio Group & Textarea" description="Single-selection controls and multi-line text input." code={`import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+      {/* Radio Group */}
+      <Section hidden={selectedComponent !== "Radio Group"} title="Radio Group" description="Single-selection controls with full keyboard navigation." code={`import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 
-export function RadioTextareaDemo() {
+export function RadioGroupDemo() {
   return (
-    <div className="space-y-6">
-      <RadioGroup defaultValue="option-1">
-        <div className="flex items-center gap-2">
-          <RadioGroupItem value="option-1" id="r1" />
-          <Label htmlFor="r1">Option 1</Label>
-        </div>
-        <div className="flex items-center gap-2">
-          <RadioGroupItem value="option-2" id="r2" />
-          <Label htmlFor="r2">Option 2</Label>
-        </div>
-      </RadioGroup>
-      <Textarea placeholder="Type your message here…" className="max-w-sm" />
-    </div>
+    <RadioGroup defaultValue="option-1">
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="option-1" id="r1" />
+        <Label htmlFor="r1">Option 1</Label>
+      </div>
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="option-2" id="r2" />
+        <Label htmlFor="r2">Option 2</Label>
+      </div>
+      <div className="flex items-center gap-2">
+        <RadioGroupItem value="option-3" id="r3" />
+        <Label htmlFor="r3">Option 3</Label>
+      </div>
+    </RadioGroup>
   )
 }`}>
         <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
-          <div className="space-y-3">
-            <Label className="text-sm font-semibold">Plan selection</Label>
-            <RadioGroup value={radioValue} onValueChange={setRadioValue}>
-              {[
-                { id: "option-1", label: "Forest Plan — $29/mo" },
-                { id: "option-2", label: "Golden Plan — $79/mo" },
-                { id: "option-3", label: "Enterprise — Custom" },
-              ].map(({ id, label }) => (
-                <div key={id} className="flex items-center space-x-2">
-                  <RadioGroupItem value={id} id={id} />
-                  <Label htmlFor={id} className="cursor-pointer">{label}</Label>
-                </div>
-              ))}
-            </RadioGroup>
-            <p className="text-xs text-muted-foreground">Selected: {radioValue}</p>
+          <div className="space-y-5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">States</p>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground">Default (unselected)</p>
+                <RadioGroup>
+                  {["Option A", "Option B", "Option C"].map((label, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <RadioGroupItem value={`a${i}`} id={`rg-a${i}`} />
+                      <Label htmlFor={`rg-a${i}`} className="cursor-pointer">{label}</Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground">With selection</p>
+                <RadioGroup defaultValue="rg-b1">
+                  {[
+                    { id: "rg-b0", label: "Option A" },
+                    { id: "rg-b1", label: "Option B (selected)" },
+                    { id: "rg-b2", label: "Option C" },
+                  ].map(({ id, label }) => (
+                    <div key={id} className="flex items-center gap-2">
+                      <RadioGroupItem value={id} id={id} />
+                      <Label htmlFor={id} className="cursor-pointer">{label}</Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground">Disabled</p>
+                <RadioGroup disabled defaultValue="rg-c0">
+                  {[
+                    { id: "rg-c0", label: "Option A" },
+                    { id: "rg-c1", label: "Option B" },
+                  ].map(({ id, label }) => (
+                    <div key={id} className="flex items-center gap-2">
+                      <RadioGroupItem value={id} id={id} />
+                      <Label htmlFor={id} className="opacity-50 cursor-not-allowed">{label}</Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
+            </div>
           </div>
-          <div className="space-y-3">
-            <div className="space-y-2">
-              <Label htmlFor="feedback">Feedback</Label>
-              <Textarea id="feedback" placeholder="Share your thoughts about this design system…" rows={4} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes (disabled)</Label>
-              <Textarea id="notes" placeholder="Disabled textarea…" disabled />
-            </div>
+          <div className="space-y-5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">In context</p>
+            <Card>
+              <CardHeader>
+                <CardTitle>Subscription plan</CardTitle>
+                <CardDescription>Choose the plan that fits your needs.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <RadioGroup value={radioValue} onValueChange={setRadioValue} className="space-y-1">
+                  {[
+                    { id: "option-1", label: "Forest Plan",  price: "$29/mo" },
+                    { id: "option-2", label: "Golden Plan",  price: "$79/mo" },
+                    { id: "option-3", label: "Enterprise",   price: "Custom" },
+                  ].map(({ id, label, price }) => (
+                    <div key={id} className="flex items-center justify-between rounded-md border border-border px-3 py-2 hover:bg-muted/40 transition-colors">
+                      <div className="flex items-center gap-2">
+                        <RadioGroupItem value={id} id={id} />
+                        <Label htmlFor={id} className="cursor-pointer font-medium">{label}</Label>
+                      </div>
+                      <span className="text-xs text-muted-foreground">{price}</span>
+                    </div>
+                  ))}
+                </RadioGroup>
+                <p className="text-xs text-muted-foreground mt-3">Selected: {radioValue}</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </Section>
@@ -5597,8 +5840,14 @@ function SectionHeader() {
               ? { variant: sizeTabVariant, size: buttonActiveSize }
               : selectedComponent === "Alerts"
               ? { variant: alertVariant }
-              : selectedComponent === "Form Controls"
+              : selectedComponent === "Input"
               ? { variant: inputState }
+              : selectedComponent === "Select"
+              ? { variant: selectState }
+              : selectedComponent === "Checkbox"
+              ? { variant: checkboxState }
+              : selectedComponent === "Radio Group"
+              ? { variant: radioState }
               : selectedComponent === "Cards"
               ? { variant: cardVariant }
               : selectedComponent === "Toggle Switch"
@@ -5635,11 +5884,38 @@ function SectionHeader() {
                   </button>
                 ))}
               </div>
-            ) : selectedComponent === "Form Controls" ? (
+            ) : selectedComponent === "Input" ? (
               <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
                 {(["default","focus","error","disabled"] as const).map((s) => (
                   <button key={s} onClick={() => setInputState(s)}
                     className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${inputState === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            ) : selectedComponent === "Select" ? (
+              <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                {(["default","focus","disabled"] as const).map((s) => (
+                  <button key={s} onClick={() => setSelectState(s)}
+                    className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${selectState === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            ) : selectedComponent === "Checkbox" ? (
+              <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                {(["unchecked","checked","indeterminate","disabled"] as const).map((s) => (
+                  <button key={s} onClick={() => setCheckboxState(s)}
+                    className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${checkboxState === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            ) : selectedComponent === "Radio Group" ? (
+              <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+                {(["default","selected","disabled"] as const).map((s) => (
+                  <button key={s} onClick={() => setRadioState(s)}
+                    className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${radioState === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
                     {s}
                   </button>
                 ))}
@@ -6261,7 +6537,7 @@ export default function App() {
               {/* Stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-xl overflow-hidden border border-border">
                 {[
-                  { label: "Components",   value: "44",   desc: "Production-ready UI blocks" },
+                  { label: "Components",   value: "45",   desc: "Production-ready UI blocks" },
                   { label: "Icons",        value: "218",  desc: "Lucide icon library" },
                   { label: "Tokens",       value: "130",  desc: "Color, type, spacing, radius & shadows" },
                   { label: "Themes",       value: "2",    desc: "Light & dark mode" },
@@ -6376,7 +6652,7 @@ export default function App() {
               <div className="rounded-xl border border-border bg-muted/30 px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                 <div className="space-y-1">
                   <h2 className="text-base font-bold">Ready to build?</h2>
-                  <p className="text-sm text-muted-foreground">44 components · 218 icons · light &amp; dark mode — all pre-themed with studiolammar's brand tokens.</p>
+                  <p className="text-sm text-muted-foreground">45 components · 218 icons · light &amp; dark mode — all pre-themed with studiolammar's brand tokens.</p>
                 </div>
                 <div className="flex gap-3 shrink-0">
                   <Button onClick={() => navigate("components")}>
