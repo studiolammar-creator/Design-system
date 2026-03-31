@@ -3173,7 +3173,7 @@ export function CardDemo() {
               {(["default", "featured", "settings"] as const).map((v) => (
                 <button key={v} onClick={() => setCardVariant(v)}
                   className={`px-3 py-1 text-xs rounded font-medium transition-colors ${cardVariant === v ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
-                  {v === "default" ? "Forest Plan" : v === "featured" ? "Golden Plan" : "Notifications"}
+                  {v === "default" ? "Default" : v === "featured" ? "Inverted" : "Interactive"}
                 </button>
               ))}
             </div>
