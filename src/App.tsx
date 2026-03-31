@@ -6261,7 +6261,7 @@ export default function App() {
               {/* Stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-border rounded-xl overflow-hidden border border-border">
                 {[
-                  { label: "Components",   value: "54",   desc: "Production-ready UI blocks" },
+                  { label: "Components",   value: "44",   desc: "Production-ready UI blocks" },
                   { label: "Icons",        value: "218",  desc: "Lucide icon library" },
                   { label: "Tokens",       value: "130",  desc: "Color, type, spacing, radius & shadows" },
                   { label: "Themes",       value: "2",    desc: "Light & dark mode" },
@@ -6376,7 +6376,7 @@ export default function App() {
               <div className="rounded-xl border border-border bg-muted/30 px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                 <div className="space-y-1">
                   <h2 className="text-base font-bold">Ready to build?</h2>
-                  <p className="text-sm text-muted-foreground">54 components · 218 icons · light &amp; dark mode — all pre-themed with studiolammar's brand tokens.</p>
+                  <p className="text-sm text-muted-foreground">44 components · 218 icons · light &amp; dark mode — all pre-themed with studiolammar's brand tokens.</p>
                 </div>
                 <div className="flex gap-3 shrink-0">
                   <Button onClick={() => navigate("components")}>
