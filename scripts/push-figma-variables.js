@@ -108,7 +108,7 @@ const colorVarIds = {}; // map "primary/50" → varId
 const colors = tokens['primitives/colors'];
 
 // Palettes
-const palettes = ['primary', 'secondary', 'intense', 'neutral', 'destructive'];
+const palettes = ['primary', 'secondary', 'intense', 'neutral', 'destructive', 'success', 'info'];
 for (const palette of palettes) {
   const pal = colors[palette];
   if (!pal) continue;
@@ -157,7 +157,7 @@ for (const [key, token] of Object.entries(radius)) {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// 4. PRIMITIVES / TYPOGRAPHY (font sizes only — Figma FLOAT variables)
+// 4. PRIMITIVES / TYPOGRAPHY (font sizes + font weights)
 // ════════════════════════════════════════════════════════════════════════════
 const { colId: colType, modeIds: [modeType] } = addCollection('Primitives / Typography', ['Value']);
 
@@ -165,6 +165,25 @@ const typo = tokens['primitives/typography'];
 for (const [size, token] of Object.entries(typo.fontSize || {})) {
   const varId = addVariable(`fontSize/${size}`, colType, 'FLOAT');
   setFloatValue(varId, modeType, token.value);
+}
+for (const [weight, token] of Object.entries(typo.fontWeight || {})) {
+  const varId = addVariable(`fontWeight/${weight}`, colType, 'FLOAT');
+  setFloatValue(varId, modeType, token.value);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// 4b. PRIMITIVES / SHADOWS (STRING variables)
+// ════════════════════════════════════════════════════════════════════════════
+const { colId: colShadow, modeIds: [modeShadow] } = addCollection('Primitives / Shadows', ['Value']);
+
+const shadowVarIds = {};
+const shadows = tokens['primitives/shadow'] || {};
+for (const [name, token] of Object.entries(shadows)) {
+  if (name === 'none') continue;
+  const varName = name === 'DEFAULT' ? 'shadow' : `shadow-${name}`;
+  const varId = addVariable(varName, colShadow, 'STRING');
+  shadowVarIds[name] = varId;
+  variableModeValues.push({ variableId: varId, modeId: modeShadow, value: token.value });
 }
 
 // ════════════════════════════════════════════════════════════════════════════

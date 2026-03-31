@@ -160,6 +160,14 @@ for (const [name, token] of Object.entries(semLight)) {
 line();
 line(`  /* Border radius — ShadCN convention */`);
 line(`  --radius: 0.75rem; /* 12px */`);
+line();
+line(`  /* Semantic radius aliases */`);
+const semRadiusLight = tokens['semantic/light']?.radius || {};
+for (const [name, token] of Object.entries(semRadiusLight)) {
+  const raw = resolveRaw(token.value);
+  const val = isNaN(parseFloat(raw)) ? raw : `${parseFloat(raw)}px`;
+  line(`  --radius-${name}:              ${val};`);
+}
 line(`}`);
 
 // ── SEMANTIC — DARK ───────────────────────────────────────────────────────────
@@ -255,6 +263,14 @@ for (const [name, token] of Object.entries(shadows)) {
   if (name === 'none') continue;
   const varName = (name === 'DEFAULT' ? '--shadow:' : `--shadow-${name}:`);
   line(`  ${varName.padEnd(16)} ${token.value};`);
+}
+line();
+line(`  /* Semantic shadow aliases */`);
+const semShadow = tokens['semantic/light']?.shadow || {};
+for (const [name, token] of Object.entries(semShadow)) {
+  const val = token.value.includes('{') ? refToVar(token.value) : token.value;
+  const varName = (name === 'DEFAULT' ? '--shadow-default:' : `--shadow-${name}-alias:`);
+  line(`  ${varName.padEnd(22)} ${val};`);
 }
 line(`}`);
 

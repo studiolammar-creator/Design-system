@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "sync-tokens": "node scripts/sync-tokens.js",
-    "push-variables": "node scripts/push-figma-variables.js"
+    "push-variables": "node scripts/push-figma-variables.js",
+    "figma-connect": "figma connect publish"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -60,6 +61,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@figma/code-connect": "^1.4.2",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
