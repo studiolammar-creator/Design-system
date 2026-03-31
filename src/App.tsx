@@ -1693,29 +1693,69 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { title: "Spacing", items: sp.filter(i => i.label !== "Font size") },
     ];
   },
-  "Cards": () => [
-    { title: "Colors", items: [
-      { label: "Background",        token: "--card",             value: "#FFFFFF", type: "color" },
-      { label: "Title text",        token: "--card-foreground",  value: "#333333", type: "color" },
-      { label: "Description text",  token: "--muted-foreground", value: "#737373", type: "color" },
-      { label: "Border",            token: "--border",           value: "#E5E5E5", type: "color" },
-    ]},
-    { title: "Typography", items: [
-      { label: "Title size",        token: "text-xl",        value: "1.25rem / 20px", type: "size" },
-      { label: "Title weight",      token: "font-semibold",  value: "600",            type: "size" },
-      { label: "Description size",  token: "text-sm",        value: "0.875rem / 14px", type: "size" },
-    ]},
-    { title: "Radius", items: [
+  "Cards": (ctx = {}) => {
+    const variant = ctx.variant ?? "default";
+    const sharedTypography: SpecGroup = { title: "Typography", items: [
+      { label: "Title size",       token: "text-xl",       value: "1.25rem / 20px",  type: "size" },
+      { label: "Title weight",     token: "font-semibold", value: "600",             type: "size" },
+      { label: "Description size", token: "text-sm",       value: "0.875rem / 14px", type: "size" },
+    ]};
+    const sharedRadius: SpecGroup = { title: "Radius", items: [
       { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
-    ]},
-    { title: "Shadow", items: [
+    ]};
+    const sharedShadow: SpecGroup = { title: "Shadow", items: [
       { label: "Elevation", token: "--shadow-sm", value: "0 1px 2px rgba(1,50,41,0.05)", type: "shadow" },
-    ]},
-    { title: "Spacing", items: [
-      { label: "Padding",     token: "p-6",         value: "1.5rem / 24px",  type: "size" },
-      { label: "Inner gap",   token: "space-y-1.5", value: "0.375rem / 6px", type: "size" },
-    ]},
-  ],
+    ]};
+    const sharedSpacing: SpecGroup = { title: "Spacing", items: [
+      { label: "Padding",   token: "p-6",         value: "1.5rem / 24px",  type: "size" },
+      { label: "Inner gap", token: "space-y-1.5", value: "0.375rem / 6px", type: "size" },
+    ]};
+
+    if (variant === "featured") return [
+      { title: "Colors", items: [
+        { label: "Background",        token: "--primary",                value: "#013229",              type: "color" },
+        { label: "Title text",        token: "--primary-foreground",     value: "#F0FBF8",              type: "color" },
+        { label: "Description text",  token: "--primary-foreground/70",  value: "rgba(240,251,248,0.7)", type: "color" },
+        { label: "Border",            token: "--primary",                value: "#013229",              type: "color" },
+        { label: "Badge background",  token: "--secondary",              value: "#FFD653",              type: "color" },
+        { label: "Badge text",        token: "--secondary-foreground",   value: "#013229",              type: "color" },
+      ]},
+      sharedTypography,
+      sharedRadius,
+      sharedShadow,
+      sharedSpacing,
+    ];
+
+    if (variant === "settings") return [
+      { title: "Colors", items: [
+        { label: "Background",       token: "--card",             value: "#FFFFFF", type: "color" },
+        { label: "Title text",       token: "--card-foreground",  value: "#333333", type: "color" },
+        { label: "Description text", token: "--muted-foreground", value: "#737373", type: "color" },
+        { label: "Border",           token: "--border",           value: "#E5E5E5", type: "color" },
+        { label: "Switch on",        token: "--primary",          value: "#013229", type: "color" },
+        { label: "Label text",       token: "--foreground",       value: "#333333", type: "color" },
+      ]},
+      sharedTypography,
+      sharedRadius,
+      sharedShadow,
+      sharedSpacing,
+    ];
+
+    // default — Forest Plan
+    return [
+      { title: "Colors", items: [
+        { label: "Background",       token: "--card",             value: "#FFFFFF", type: "color" },
+        { label: "Title text",       token: "--card-foreground",  value: "#333333", type: "color" },
+        { label: "Description text", token: "--muted-foreground", value: "#737373", type: "color" },
+        { label: "Border",           token: "--border",           value: "#E5E5E5", type: "color" },
+        { label: "Icon accent",      token: "--accent",           value: "#61CAA0", type: "color" },
+      ]},
+      sharedTypography,
+      sharedRadius,
+      sharedShadow,
+      sharedSpacing,
+    ];
+  },
   "Form Controls": (ctx = {}) => {
     const state = ctx.variant ?? "default";
     const borderByState: Record<string, SpecItem> = {
@@ -2477,6 +2517,7 @@ function ComponentsPage() {
   const [buttonActiveSize, setButtonActiveSize] = useState<"sm" | "default" | "lg" | "icon">("default");
   const [alertVariant, setAlertVariant] = useState<"default" | "success" | "warning" | "destructive">("default");
   const [inputState, setInputState] = useState<"default" | "focus" | "error" | "disabled">("default");
+  const [cardVariant, setCardVariant] = useState<"default" | "featured" | "settings">("default");
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const getComponentFromHash = () => {
@@ -3126,6 +3167,17 @@ export function CardDemo() {
     </Card>
   )
 }`}>
+          <div className="flex items-center gap-3 flex-wrap mb-2">
+            <p className="text-xs font-medium text-muted-foreground">Token view:</p>
+            <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
+              {(["default", "featured", "settings"] as const).map((v) => (
+                <button key={v} onClick={() => setCardVariant(v)}
+                  className={`px-3 py-1 text-xs rounded font-medium transition-colors ${cardVariant === v ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
+                  {v === "default" ? "Forest Plan" : v === "featured" ? "Golden Plan" : "Notifications"}
+                </button>
+              ))}
+            </div>
+          </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader>
@@ -5410,6 +5462,8 @@ function SectionHeader() {
               ? { variant: alertVariant }
               : selectedComponent === "Form Controls"
               ? { variant: inputState }
+              : selectedComponent === "Cards"
+              ? { variant: cardVariant }
               : undefined
           }
         />
