@@ -2684,6 +2684,8 @@ function ComponentsPage() {
   const [buttonActiveSize, setButtonActiveSize] = useState<"sm" | "default" | "lg" | "icon">("default");
   const [alertVariant, setAlertVariant] = useState<"default" | "success" | "warning" | "destructive">("default");
   const [inputState, setInputState] = useState<"default" | "focus" | "error" | "disabled">("default");
+  const [datePickerDate, setDatePickerDate] = useState<Date | undefined>(undefined);
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [cardVariant, setCardVariant] = useState<"default" | "featured" | "settings">("default");
   const [switchState, setSwitchState] = useState<"off" | "on" | "disabled">("off");
   const [switchLabelPosition, setSwitchLabelPosition] = useState<"leading" | "trailing">("trailing");
@@ -3469,11 +3471,17 @@ export function SwitchDemo() {
       </Section>
 
       {/* Input */}
-      <Section hidden={selectedComponent !== "Input"} title="Input" description="All input types with full state coverage." code={`import { Search, Calendar } from "lucide-react"
+      <Section hidden={selectedComponent !== "Input"} title="Input" description="All input types with full state coverage." code={`import { useState } from "react"
+import { Search, Calendar } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Calendar as CalendarPicker } from "@/components/ui/calendar"
 
 export function InputDemo() {
+  const [date, setDate] = useState<Date | undefined>(undefined)
+  const [open, setOpen] = useState(false)
+
   return (
     <div className="space-y-4 max-w-sm">
       <div className="space-y-1.5">
@@ -3497,10 +3505,26 @@ export function InputDemo() {
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="date">Date</Label>
-        <div className="relative">
-          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-          <Input id="date" type="date" placeholder="Pick a date…" className="pl-9" />
-        </div>
+        <Popover open={open} onOpenChange={setOpen}>
+          <div className="relative">
+            <PopoverTrigger asChild>
+              <button type="button" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground hover:text-foreground transition-colors z-10">
+                <Calendar className="h-4 w-4" />
+              </button>
+            </PopoverTrigger>
+            <Input
+              id="date"
+              type="text"
+              readOnly
+              placeholder="Pick a date…"
+              className="pl-9"
+              value={date ? date.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) : ""}
+            />
+          </div>
+          <PopoverContent className="w-auto p-0" align="start">
+            <CalendarPicker mode="single" selected={date} onSelect={(d) => { setDate(d); setOpen(false) }} />
+          </PopoverContent>
+        </Popover>
       </div>
       <Input placeholder="Disabled" disabled />
       <Input defaultValue="Error state" className="border-destructive focus-visible:ring-destructive" />
@@ -3530,10 +3554,34 @@ export function InputDemo() {
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="inp-date">Date</Label>
-                <div className="relative">
-                  <CalendarLucide className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-                  <Input id="inp-date" type="date" placeholder="Pick a date…" className="pl-9" />
-                </div>
+                <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                  <div className="relative">
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors z-10"
+                        aria-label="Open date picker"
+                      >
+                        <CalendarLucide className="h-4 w-4" />
+                      </button>
+                    </PopoverTrigger>
+                    <Input
+                      id="inp-date"
+                      type="text"
+                      readOnly
+                      placeholder="Pick a date…"
+                      className="pl-9"
+                      value={datePickerDate ? datePickerDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) : ""}
+                    />
+                  </div>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={datePickerDate}
+                      onSelect={(d) => { setDatePickerDate(d); setDatePickerOpen(false); }}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
               {([
                 { id: "inp-number",   type: "number",   label: "Number",   placeholder: "0" },
