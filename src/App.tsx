@@ -380,7 +380,7 @@ const palettes: Palette[] = [
 
 const typographyTokens = {
   fontFamily: [
-    { token: "font-sans", value: "Unigeo32, ui-sans-serif, system-ui, sans-serif", sample: "Aa Bb Cc 123" },
+    { token: "font-sans", value: "Sharphy, ui-sans-serif, system-ui, sans-serif", sample: "Aa Bb Cc 123" },
     { token: "font-mono", value: "Space Mono, ui-monospace, SFMono-Regular, Menlo, monospace", sample: "const x = 42;" },
   ],
   fontSize: [
@@ -478,7 +478,7 @@ const typeStyles = [
       { tw: "font-extrabold", cssVar: "--font-weight-extrabold", val: "800"          },
       { tw: "leading-tight",  cssVar: "--leading-tight",         val: "1.25"         },
       { tw: "tracking-tight", cssVar: "--tracking-tight",        val: "-0.025em"     },
-      { tw: "font-sans",      cssVar: "--font-sans",             val: "Unigeo32"     },
+      { tw: "font-sans",      cssVar: "--font-sans",             val: "Sharphy"     },
     ],
   },
   {
@@ -490,7 +490,7 @@ const typeStyles = [
       { tw: "font-bold",      cssVar: "--font-weight-bold",      val: "700"            },
       { tw: "leading-tight",  cssVar: "--leading-tight",         val: "1.25"           },
       { tw: "tracking-tight", cssVar: "--tracking-tight",        val: "-0.025em"       },
-      { tw: "font-sans",      cssVar: "--font-sans",             val: "Unigeo32"       },
+      { tw: "font-sans",      cssVar: "--font-sans",             val: "Sharphy"       },
     ],
   },
   {
@@ -502,7 +502,7 @@ const typeStyles = [
       { tw: "font-semibold",   cssVar: "--font-weight-semibold",  val: "600"             },
       { tw: "leading-snug",    cssVar: "--leading-snug",          val: "1.375"           },
       { tw: "tracking-tight",  cssVar: "--tracking-tight",        val: "-0.025em"        },
-      { tw: "font-sans",       cssVar: "--font-sans",             val: "Unigeo32"        },
+      { tw: "font-sans",       cssVar: "--font-sans",             val: "Sharphy"        },
     ],
   },
   {
@@ -514,7 +514,7 @@ const typeStyles = [
       { tw: "font-semibold",  cssVar: "--font-weight-semibold", val: "600"           },
       { tw: "leading-snug",   cssVar: "--leading-snug",         val: "1.375"         },
       { tw: "tracking-normal",cssVar: "--tracking-normal",      val: "0em"           },
-      { tw: "font-sans",      cssVar: "--font-sans",            val: "Unigeo32"      },
+      { tw: "font-sans",      cssVar: "--font-sans",            val: "Sharphy"      },
     ],
   },
   {
@@ -526,7 +526,7 @@ const typeStyles = [
       { tw: "font-medium",    cssVar: "--font-weight-medium",   val: "500"            },
       { tw: "leading-normal", cssVar: "--leading-normal",       val: "1.5"            },
       { tw: "tracking-normal",cssVar: "--tracking-normal",      val: "0em"            },
-      { tw: "font-sans",      cssVar: "--font-sans",            val: "Unigeo32"       },
+      { tw: "font-sans",      cssVar: "--font-sans",            val: "Sharphy"       },
     ],
   },
   {
@@ -538,7 +538,7 @@ const typeStyles = [
       { tw: "font-normal",     cssVar: "--font-weight-regular",  val: "400"             },
       { tw: "leading-relaxed", cssVar: "--leading-relaxed",      val: "1.625"           },
       { tw: "tracking-normal", cssVar: "--tracking-normal",      val: "0em"             },
-      { tw: "font-sans",       cssVar: "--font-sans",            val: "Unigeo32"        },
+      { tw: "font-sans",       cssVar: "--font-sans",            val: "Sharphy"        },
     ],
   },
   {
@@ -550,7 +550,7 @@ const typeStyles = [
       { tw: "font-normal",    cssVar: "--font-weight-regular",  val: "400"             },
       { tw: "leading-normal", cssVar: "--leading-normal",       val: "1.5"             },
       { tw: "tracking-normal",cssVar: "--tracking-normal",      val: "0em"             },
-      { tw: "font-sans",      cssVar: "--font-sans",            val: "Unigeo32"        },
+      { tw: "font-sans",      cssVar: "--font-sans",            val: "Sharphy"        },
     ],
   },
   {
@@ -562,7 +562,7 @@ const typeStyles = [
       { tw: "font-normal",    cssVar: "--font-weight-regular",  val: "400"             },
       { tw: "leading-normal", cssVar: "--leading-normal",       val: "1.5"             },
       { tw: "tracking-normal",cssVar: "--tracking-normal",      val: "0em"             },
-      { tw: "font-sans",      cssVar: "--font-sans",            val: "Unigeo32"        },
+      { tw: "font-sans",      cssVar: "--font-sans",            val: "Sharphy"        },
     ],
   },
   {
@@ -574,7 +574,7 @@ const typeStyles = [
       { tw: "font-normal",    cssVar: "--font-weight-regular",  val: "400"             },
       { tw: "leading-normal", cssVar: "--leading-normal",       val: "1.5"             },
       { tw: "tracking-normal",cssVar: "--tracking-normal",      val: "0em"             },
-      { tw: "font-sans",      cssVar: "--font-sans",            val: "Unigeo32"        },
+      { tw: "font-sans",      cssVar: "--font-sans",            val: "Sharphy"        },
     ],
   },
   {
@@ -586,7 +586,7 @@ const typeStyles = [
       { tw: "font-normal",    cssVar: "--font-weight-regular",  val: "400"            },
       { tw: "leading-normal", cssVar: "--leading-normal",       val: "1.5"            },
       { tw: "tracking-wide",  cssVar: "--tracking-wide",        val: "0.025em"        },
-      { tw: "font-sans",      cssVar: "--font-sans",            val: "Unigeo32"       },
+      { tw: "font-sans",      cssVar: "--font-sans",            val: "Sharphy"       },
     ],
   },
   {
@@ -598,7 +598,7 @@ const typeStyles = [
       { tw: "font-medium",    cssVar: "--font-weight-medium",   val: "500"            },
       { tw: "leading-none",   cssVar: "--leading-none",         val: "1"              },
       { tw: "tracking-wide",  cssVar: "--tracking-wide",        val: "0.025em"        },
-      { tw: "font-sans",      cssVar: "--font-sans",            val: "Unigeo32"       },
+      { tw: "font-sans",      cssVar: "--font-sans",            val: "Sharphy"       },
     ],
   },
   {
@@ -1511,7 +1511,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Muted / secondary",    token: "--muted-foreground", value: "#737373", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Sans-serif font",      token: "--font-sans",        value: "Unigeo32",     type: "font" },
+      { label: "Sans-serif font",      token: "--font-sans",        value: "Sharphy",     type: "font" },
       { label: "Monospace font",       token: "--font-mono",        value: "Space Mono",   type: "font" },
       { label: "Scale range",          token: "--text-xs → --text-4xl", value: "12px – 36px", type: "size" },
       { label: "Heading weight",       token: "font-extrabold",     value: "800",          type: "size" },
@@ -2926,7 +2926,7 @@ function ComponentsPage() {
       <div className={view === "grid" ? "hidden" : "space-y-16"}>
 
       {/* Typography */}
-      <Section hidden={selectedComponent !== "Typography"} title="Typography" description="Unigeo32 — headings to captions." code={`import { cn } from "@/lib/utils"
+      <Section hidden={selectedComponent !== "Typography"} title="Typography" description="Sharphy — headings to captions." code={`import { cn } from "@/lib/utils"
 
 export function TypographyDemo() {
   return (
@@ -3826,7 +3826,7 @@ export function AccordionDemo() {
         <Accordion type="single" collapsible className="w-full max-w-lg">
           {[
             { value: "item-1", trigger: "What is SL Design System?", content: "SL Design System is a fully-themed component library built on Radix UI primitives, tailored with brand tokens for Forest Green, Golden Yellow, and Mint Teal." },
-            { value: "item-2", trigger: "Which typefaces are included?", content: "Unigeo32 is the primary display and body typeface across all weights (Thin to Extrabold). Space Mono handles monospace code snippets." },
+            { value: "item-2", trigger: "Which typefaces are included?", content: "Sharphy is the primary display and body typeface across all weights (Thin to Extrabold). Space Mono handles monospace code snippets." },
             { value: "item-3", trigger: "Is dark mode supported?", content: "Yes — every component and token adapts seamlessly between light and dark modes. Toggle it with the sun/moon button in the header." },
           ].map(({ value, trigger, content }) => (
             <AccordionItem key={value} value={value}>
@@ -6687,7 +6687,7 @@ export default function App() {
                     </div>
                     <span className="font-medium text-foreground">studiolammar</span>
                   </div>
-                  <p>Built with studiolammar · Tailwind CSS · React · Vite · Unigeo</p>
+                  <p>Built with studiolammar · Tailwind CSS · React · Vite · Sharphy</p>
                 </div>
               </footer>
             </div>

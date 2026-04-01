@@ -161,7 +161,7 @@ const config: Config = {
         sm:   "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["Unigeo32", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ["Sharphy", "ui-sans-serif", "system-ui", "sans-serif"],
         mono: ["Space Mono", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       fontSize: {
