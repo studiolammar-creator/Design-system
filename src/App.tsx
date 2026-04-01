@@ -3469,7 +3469,8 @@ export function SwitchDemo() {
       </Section>
 
       {/* Input */}
-      <Section hidden={selectedComponent !== "Input"} title="Input" description="All input types with full state coverage." code={`import { Input } from "@/components/ui/input"
+      <Section hidden={selectedComponent !== "Input"} title="Input" description="All input types with full state coverage." code={`import { Search, Calendar } from "lucide-react"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 export function InputDemo() {
@@ -3489,7 +3490,17 @@ export function InputDemo() {
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="search">Search</Label>
-        <Input id="search" type="search" placeholder="Search…" />
+        <div className="relative">
+          <Input id="search" type="search" placeholder="Search…" className="pr-9" />
+          <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+        </div>
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="date">Date</Label>
+        <div className="relative">
+          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+          <Input id="date" type="date" placeholder="Pick a date…" className="pl-9" />
+        </div>
       </div>
       <Input placeholder="Disabled" disabled />
       <Input defaultValue="Error state" className="border-destructive focus-visible:ring-destructive" />
@@ -3504,7 +3515,27 @@ export function InputDemo() {
                 { id: "inp-text",     type: "text",     label: "Text",     placeholder: "Enter text…" },
                 { id: "inp-email",    type: "email",    label: "Email",    placeholder: "you@example.com" },
                 { id: "inp-password", type: "password", label: "Password", placeholder: "••••••••" },
-                { id: "inp-search",   type: "search",   label: "Search",   placeholder: "Search…" },
+              ] as const).map(({ id, type, label, placeholder }) => (
+                <div key={id} className="space-y-1.5">
+                  <Label htmlFor={id}>{label}</Label>
+                  <Input id={id} type={type} placeholder={placeholder} />
+                </div>
+              ))}
+              <div className="space-y-1.5">
+                <Label htmlFor="inp-search">Search</Label>
+                <div className="relative">
+                  <Input id="inp-search" type="search" placeholder="Search…" className="pr-9" />
+                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="inp-date">Date</Label>
+                <div className="relative">
+                  <CalendarLucide className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <Input id="inp-date" type="date" placeholder="Pick a date…" className="pl-9" />
+                </div>
+              </div>
+              {([
                 { id: "inp-number",   type: "number",   label: "Number",   placeholder: "0" },
                 { id: "inp-url",      type: "url",      label: "URL",      placeholder: "https://…" },
               ] as const).map(({ id, type, label, placeholder }) => (
