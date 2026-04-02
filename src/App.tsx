@@ -1850,7 +1850,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
     const state = ctx.variant ?? "default";
     return [
       { title: "Colors", items: [
-        { label: "Border",     token: state === "selected" ? "--primary" : "--input", value: state === "selected" ? "#013229" : "#E5E5E5", type: "color" },
+        { label: "Border",     token: "--primary", value: "#013229", type: "color" },
         { label: "Indicator",  token: "--primary", value: "#013229", type: "color" },
         { label: "Focus ring", token: "--ring",    value: "#013229", type: "color" },
         ...(state === "disabled" ? [{ label: "Opacity", token: "opacity-50", value: "50%", type: "size" as const }] : []),
@@ -1859,6 +1859,20 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
         { label: "Size",      token: "h-5 w-5 (primitives/spacing.5)", value: "1.25rem / 20px", type: "size" },
         { label: "Indicator", token: "h-3 w-3 (primitives/spacing.3)", value: "0.75rem / 12px", type: "size" },
         { label: "Radius",    token: "rounded-full",                    value: "9999px",         type: "size" },
+      ]},
+      { title: "Spacing", items: [
+        { label: "Item gap (label)",  token: "gap-2", value: "0.5rem / 8px", type: "size" },
+        { label: "Group gap", token: "gap-2 (grid)", value: "0.5rem / 8px", type: "size" },
+      ]},
+      { title: "Label typography", items: [
+        { label: "Font size",   token: "primitives/typography.fontSize.base",       value: "0.875rem / 14px", type: "font" },
+        { label: "Font weight", token: "primitives/typography.fontWeight.medium",   value: "500",             type: "font" },
+        { label: "Line height", token: "primitives/typography.lineHeight.none",     value: "1",               type: "font" },
+        { label: "Color",       token: "--foreground",                              value: "#333333",         type: "color" },
+        ...(state === "disabled"
+          ? [{ label: "Disabled opacity", token: "opacity-50", value: "50%", type: "size" as const },
+             { label: "Cursor", token: "cursor-not-allowed", value: "not-allowed", type: "font" as const }]
+          : [{ label: "Cursor", token: "cursor-pointer", value: "pointer", type: "font" as const }]),
       ]},
     ];
   },
@@ -4104,7 +4118,49 @@ export function RadioGroupDemo() {
     </RadioGroup>
   )
 }`}>
-        <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
+        <div className="space-y-10">
+          <div className="space-y-5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Radio Button</p>
+            <div className="flex flex-wrap gap-8">
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground">Unselected</p>
+                <RadioGroup>
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="rb-solo-1" id="rb-solo-1" />
+                    <Label htmlFor="rb-solo-1" className="cursor-pointer">Label</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground">Selected</p>
+                <RadioGroup defaultValue="rb-solo-2">
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="rb-solo-2" id="rb-solo-2" />
+                    <Label htmlFor="rb-solo-2" className="cursor-pointer">Label</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground">Disabled unselected</p>
+                <RadioGroup disabled>
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="rb-solo-3" id="rb-solo-3" />
+                    <Label htmlFor="rb-solo-3" className="opacity-50 cursor-not-allowed">Label</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground">Disabled selected</p>
+                <RadioGroup disabled defaultValue="rb-solo-4">
+                  <div className="flex items-center gap-2">
+                    <RadioGroupItem value="rb-solo-4" id="rb-solo-4" />
+                    <Label htmlFor="rb-solo-4" className="opacity-50 cursor-not-allowed">Label</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+            </div>
+          </div>
+          <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
           <div className="space-y-5">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">States</p>
             <div className="space-y-4">
@@ -4176,6 +4232,7 @@ export function RadioGroupDemo() {
                 <p className="text-xs text-muted-foreground mt-3">Selected: {radioValue}</p>
               </CardContent>
             </Card>
+          </div>
           </div>
         </div>
       </Section>
