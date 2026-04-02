@@ -1968,8 +1968,7 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
         { label: "Icon position top",     token: "top-4",  value: "1rem / 16px",    type: "size" },
         { label: "Dismiss padding right", token: "pr-10",  value: "2.5rem / 40px",   type: "size" },
         { label: "Dismiss btn position",  token: "top-3 right-3", value: "0.75rem / 12px", type: "size" },
-        { label: "Actions padding right", token: "pr-40",  value: "10rem / 160px",  type: "size" },
-        { label: "Actions position",      token: "right-4 top-1/2", value: "1rem / 16px", type: "size" },
+        { label: "Actions margin top",    token: "mt-3",   value: "0.75rem / 12px", type: "size" },
         { label: "Actions gap",           token: "gap-2",  value: "0.5rem / 8px",   type: "size" },
       ]},
     ];

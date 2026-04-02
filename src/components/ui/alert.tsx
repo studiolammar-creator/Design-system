@@ -31,12 +31,7 @@ const Alert = React.forwardRef<
   <div
     ref={ref}
     role="alert"
-    className={cn(
-      alertVariants({ variant }),
-      onDismiss && "pr-10",
-      "[&:has([data-slot=alert-actions])]:pr-40",
-      className
-    )}
+    className={cn(alertVariants({ variant }), onDismiss && "pr-10", className)}
     {...props}
   >
     {children}
@@ -84,8 +79,7 @@ const AlertActions = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    data-slot="alert-actions"
-    className={cn("absolute right-4 top-1/2 -translate-y-1/2 flex shrink-0 items-center gap-2", className)}
+    className={cn("mt-3 flex flex-wrap items-center gap-2", className)}
     {...props}
   />
 ));
