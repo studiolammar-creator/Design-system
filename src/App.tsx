@@ -6115,7 +6115,7 @@ function SectionHeader() {
               </div>
             ) : selectedComponent === "Alerts" ? (
               <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
-                {(["default","success","warning","destructive","informative"] as const).map((v) => (
+                {(["default","informative","success","warning","destructive"] as const).map((v) => (
                   <button key={v} onClick={() => setAlertVariant(v)}
                     className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${alertVariant === v ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
                     {v}
