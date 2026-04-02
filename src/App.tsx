@@ -1917,37 +1917,49 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
     const variant = ctx.variant ?? "default";
     const colorsByVariant: Record<string, SpecItem[]> = {
       default: [
-        { label: "Background",    token: "--background",    value: "#FFFFFF",  type: "color" },
-        { label: "Border",        token: "--border",        value: "#E5E5E5",  type: "color" },
-        { label: "Icon / title",  token: "--foreground",    value: "#333333",  type: "color" },
+        { label: "Background",  token: "--background",          value: "#FFFFFF",               type: "color" },
+        { label: "Border",      token: "--border",              value: "#E5E5E5",               type: "color" },
+        { label: "Text",        token: "--foreground",          value: "#333333",               type: "color" },
+        { label: "Icon",        token: "--foreground",          value: "#333333",               type: "color" },
       ],
       success: [
-        { label: "Background",    token: "--background",    value: "#FFFFFF",  type: "color" },
-        { label: "Border",        token: "border-intense-400/40", value: "rgba(97,202,160,0.40)", type: "color" },
-        { label: "Icon / title",  token: "--intense-400",   value: "#61CAA0",  type: "color" },
+        { label: "Background",  token: "intense-50",            value: "#F0FBF7",               type: "color" },
+        { label: "Border",      token: "border-intense-400/50", value: "rgba(97,202,160,0.50)", type: "color" },
+        { label: "Text",        token: "text-intense-700",      value: "#1B7455",               type: "color" },
+        { label: "Icon",        token: "text-intense-600",      value: "#28956E",               type: "color" },
       ],
       warning: [
-        { label: "Background",    token: "--background",    value: "#FFFFFF",  type: "color" },
-        { label: "Border",        token: "border-amber-400/50", value: "rgba(251,191,36,0.50)", type: "color" },
-        { label: "Icon / title",  token: "text-amber-600",  value: "#D97706",  type: "color" },
+        { label: "Background",  token: "secondary-50",              value: "#FFFBEB",               type: "color" },
+        { label: "Border",      token: "border-secondary-400/50",   value: "rgba(255,194,32,0.50)", type: "color" },
+        { label: "Text",        token: "text-secondary-800",        value: "#7A4E00",               type: "color" },
+        { label: "Icon",        token: "text-secondary-600",        value: "#CC8500",               type: "color" },
       ],
       destructive: [
-        { label: "Background",    token: "--background",    value: "#FFFFFF",  type: "color" },
-        { label: "Border",        token: "--destructive/30", value: "rgba(220,38,38,0.30)", type: "color" },
-        { label: "Icon / title",  token: "--destructive",   value: "#DC2626",  type: "color" },
+        { label: "Background",  token: "--background",          value: "#FFFFFF",               type: "color" },
+        { label: "Border",      token: "border-destructive/50", value: "rgba(220,38,38,0.50)",  type: "color" },
+        { label: "Text",        token: "--destructive",         value: "#DC2626",               type: "color" },
+        { label: "Icon",        token: "--destructive",         value: "#DC2626",               type: "color" },
       ],
     };
     return [
       { title: "Colors", items: colorsByVariant[variant] ?? colorsByVariant.default },
       { title: "Typography", items: [
-        { label: "Title weight", token: "font-medium", value: "500",             type: "size" },
-        { label: "Font size",    token: "text-base",     value: "0.875rem / 14px", type: "size" },
+        { label: "Title size",         token: "text-base",      value: "14px",            type: "font" },
+        { label: "Title weight",       token: "font-medium",    value: "500",             type: "font" },
+        { label: "Title line height",  token: "leading-none",   value: "1",               type: "font" },
+        { label: "Title tracking",     token: "tracking-tight", value: "-0.025em",        type: "font" },
+        { label: "Title margin btm",   token: "mb-1",           value: "0.25rem / 4px",   type: "size" },
+        { label: "Description size",   token: "text-sm",        value: "0.875rem / 14px", type: "font" },
+        { label: "Icon size",          token: "h-4 w-4",        value: "1rem / 16px",     type: "size" },
       ]},
       { title: "Radius", items: [
         { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
       ]},
       { title: "Spacing", items: [
-        { label: "Padding", token: "p-4", value: "0.875rem / 14px", type: "size" },
+        { label: "Padding",             token: "p-4",    value: "1rem / 16px",    type: "size" },
+        { label: "Content offset (icon)", token: "pl-7", value: "1.75rem / 28px", type: "size" },
+        { label: "Icon position left",  token: "left-4", value: "1rem / 16px",    type: "size" },
+        { label: "Icon position top",   token: "top-4",  value: "1rem / 16px",    type: "size" },
       ]},
     ];
   },
@@ -3823,30 +3835,53 @@ export function CheckboxDemo() {
       </Section>
 
       {/* Alerts */}
-      <Section hidden={selectedComponent !== "Alerts"} title="Alerts" description="Four semantic variants." code={`import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Info } from "lucide-react"
+      <Section hidden={selectedComponent !== "Alerts"} title="Alerts" description="Four semantic variants, with and without icon." code={`import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Info, Check, Bell, AlertCircle } from "lucide-react"
 
 export function AlertDemo() {
   return (
     <div className="space-y-3">
       <Alert>
         <Info className="h-4 w-4" />
-        <AlertTitle>Default</AlertTitle>
-        <AlertDescription>This is a default alert.</AlertDescription>
+        <AlertTitle>Heads up!</AlertTitle>
+        <AlertDescription>You can add components using the CLI.</AlertDescription>
+      </Alert>
+      <Alert variant="success">
+        <Check className="h-4 w-4" />
+        <AlertTitle>All systems operational</AlertTitle>
+        <AlertDescription>Everything is running smoothly.</AlertDescription>
+      </Alert>
+      <Alert variant="warning">
+        <Bell className="h-4 w-4" />
+        <AlertTitle>Approaching limit</AlertTitle>
+        <AlertDescription>You have used 80% of your storage quota.</AlertDescription>
       </Alert>
       <Alert variant="destructive">
-        <AlertTitle>Destructive</AlertTitle>
-        <AlertDescription>Something went wrong.</AlertDescription>
+        <AlertCircle className="h-4 w-4" />
+        <AlertTitle>Deployment failed</AlertTitle>
+        <AlertDescription>Check your configuration and try again.</AlertDescription>
       </Alert>
     </div>
   )
 }`}>
-        <div className="space-y-5">
-          <div className="space-y-3">
-            <Alert><Info className="h-4 w-4" /><AlertTitle>Heads up!</AlertTitle><AlertDescription>You can add components to your app using the CLI.</AlertDescription></Alert>
-            <Alert variant="success"><Check className="h-4 w-4" /><AlertTitle>All systems operational</AlertTitle><AlertDescription>Everything is running smoothly.</AlertDescription></Alert>
-            <Alert variant="warning"><Bell className="h-4 w-4" /><AlertTitle>Approaching limit</AlertTitle><AlertDescription>You have used 80% of your storage quota.</AlertDescription></Alert>
-            <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertTitle>Deployment failed</AlertTitle><AlertDescription>Check your configuration and try again.</AlertDescription></Alert>
+        <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
+          <div className="space-y-5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">With icon</p>
+            <div className="space-y-3">
+              <Alert><Info className="h-4 w-4" /><AlertTitle>Heads up!</AlertTitle><AlertDescription>You can add components to your app using the CLI.</AlertDescription></Alert>
+              <Alert variant="success"><Check className="h-4 w-4" /><AlertTitle>All systems operational</AlertTitle><AlertDescription>Everything is running smoothly.</AlertDescription></Alert>
+              <Alert variant="warning"><Bell className="h-4 w-4" /><AlertTitle>Approaching limit</AlertTitle><AlertDescription>You have used 80% of your storage quota.</AlertDescription></Alert>
+              <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertTitle>Deployment failed</AlertTitle><AlertDescription>Check your configuration and try again.</AlertDescription></Alert>
+            </div>
+          </div>
+          <div className="space-y-5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Without icon</p>
+            <div className="space-y-3">
+              <Alert><AlertTitle>Heads up!</AlertTitle><AlertDescription>You can add components to your app using the CLI.</AlertDescription></Alert>
+              <Alert variant="success"><AlertTitle>All systems operational</AlertTitle><AlertDescription>Everything is running smoothly.</AlertDescription></Alert>
+              <Alert variant="warning"><AlertTitle>Approaching limit</AlertTitle><AlertDescription>You have used 80% of your storage quota.</AlertDescription></Alert>
+              <Alert variant="destructive"><AlertTitle>Deployment failed</AlertTitle><AlertDescription>Check your configuration and try again.</AlertDescription></Alert>
+            </div>
           </div>
         </div>
       </Section>
