@@ -45,7 +45,7 @@ import {
 } from "lucide-react";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertActions, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader,
@@ -1962,10 +1962,14 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
         { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
       ]},
       { title: "Spacing", items: [
-        { label: "Padding",             token: "p-4",    value: "1rem / 16px",    type: "size" },
-        { label: "Content offset (icon)", token: "pl-7", value: "1.75rem / 28px", type: "size" },
-        { label: "Icon position left",  token: "left-4", value: "1rem / 16px",    type: "size" },
-        { label: "Icon position top",   token: "top-4",  value: "1rem / 16px",    type: "size" },
+        { label: "Padding",               token: "p-4",    value: "1rem / 16px",    type: "size" },
+        { label: "Content offset (icon)", token: "pl-7",   value: "1.75rem / 28px", type: "size" },
+        { label: "Icon position left",    token: "left-4", value: "1rem / 16px",    type: "size" },
+        { label: "Icon position top",     token: "top-4",  value: "1rem / 16px",    type: "size" },
+        { label: "Dismiss padding right", token: "pr-10",  value: "2.5rem / 40px",  type: "size" },
+        { label: "Dismiss btn position",  token: "top-3 right-3", value: "0.75rem / 12px", type: "size" },
+        { label: "Actions margin top",    token: "mt-3",   value: "0.75rem / 12px", type: "size" },
+        { label: "Actions gap",           token: "gap-2",  value: "0.5rem / 8px",   type: "size" },
       ]},
     ];
   },
@@ -2725,6 +2729,8 @@ function ComponentsPage() {
   const [btnTrailingIcon, setBtnTrailingIcon] = useState<string | null>(null);
   const [buttonActiveSize, setButtonActiveSize] = useState<"sm" | "default" | "lg" | "icon">("default");
   const [alertVariant, setAlertVariant] = useState<"default" | "success" | "warning" | "destructive" | "informative">("default");
+  const [alertsDismissed, setAlertsDismissed] = useState<Set<string>>(new Set());
+  const dismissAlert = (id: string) => setAlertsDismissed(prev => new Set(prev).add(id));
   const [inputState, setInputState] = useState<"default" | "focus" | "error" | "disabled">("default");
   const [datePickerDate, setDatePickerDate] = useState<Date | undefined>(undefined);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
@@ -2765,7 +2771,7 @@ function ComponentsPage() {
     { title: "Input",                     category: "Forms",      description: "Text, email, password, search, number, and URL inputs.", figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=150-582&t=jHkW48H5YomBpzoL-1", preview: <div className="space-y-1.5 pointer-events-none select-none w-full"><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">Email address</span></div><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">Password ••••••</span></div></div> },
     { title: "Select",                    category: "Forms",      description: "Dropdown selection with keyboard navigation.",            figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=151-658&t=jHkW48H5YomBpzoL-1", preview: <div className="pointer-events-none select-none w-full h-7 rounded-md border border-input bg-background px-2 flex items-center justify-between"><span className="text-[10px] text-muted-foreground">Select an option</span><ChevronDown className="h-3 w-3 text-muted-foreground shrink-0" /></div> },
     { title: "Checkbox",                  category: "Forms",      description: "Binary selection control with indeterminate state.",      figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=155-1229&t=jHkW48H5YomBpzoL-1", preview: <div className="flex flex-col gap-2 pointer-events-none select-none"><div className="flex items-center gap-2"><div className="h-5 w-5 rounded-[2px] bg-primary border border-primary flex items-center justify-center"><Check className="h-3 w-3 text-primary-foreground" /></div><span className="text-[10px]">Checked</span></div><div className="flex items-center gap-2"><div className="h-5 w-5 rounded-[2px] border border-input bg-background" /><span className="text-[10px] text-muted-foreground">Unchecked</span></div></div> },
-    { title: "Alerts",                   category: "Feedback",   description: "Five semantic variants.",                       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-md p-2.5 w-full flex gap-2 items-start"><div className="h-3 w-3 rounded-full bg-primary mt-0.5 shrink-0" /><div><p className="text-[10px] font-semibold">Alert title</p><p className="text-[9px] text-muted-foreground mt-0.5">Alert description text.</p></div></div> },
+    { title: "Alerts",                   category: "Feedback",   description: "Five variants — dismissable with actions.",                       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-md p-2.5 w-full flex gap-2 items-start"><div className="h-3 w-3 rounded-full bg-primary mt-0.5 shrink-0" /><div><p className="text-[10px] font-semibold">Alert title</p><p className="text-[9px] text-muted-foreground mt-0.5">Alert description text.</p></div></div> },
     { title: "Table",                    category: "Data",       description: "Data display with status badges.",              figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full text-[9px]"><div className="flex gap-3 border-b border-border pb-1 mb-1 font-semibold text-muted-foreground"><span className="flex-1">Invoice</span><span>Status</span><span>Amount</span></div><div className="flex gap-3"><span className="flex-1 text-foreground">INV-001</span><Badge className="text-[8px] h-3.5 px-1">Paid</Badge><span>$250</span></div></div> },
     { title: "Accordion",                category: "Navigation", description: "Collapsible sections.",                         figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full space-y-1"><div className="border-b border-border pb-1.5 flex items-center justify-between"><span className="text-[10px] font-medium">Is it accessible?</span><span className="text-[10px] text-muted-foreground">+</span></div><div className="border-b border-border pb-1.5 flex items-center justify-between"><span className="text-[10px] font-medium">Is it styled?</span><span className="text-[10px] text-muted-foreground">+</span></div></div> },
     { title: "Alert Dialog",             category: "Overlay",    description: "Blocking confirmation dialogs.",                figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card shadow-sm"><p className="text-[10px] font-semibold">Are you sure?</p><p className="text-[9px] text-muted-foreground mt-0.5">This action cannot be undone.</p><div className="flex gap-1.5 mt-2"><div className="h-5 px-2 rounded bg-destructive flex items-center"><span className="text-[9px] text-white">Delete</span></div><div className="h-5 px-2 rounded border border-border flex items-center"><span className="text-[9px]">Cancel</span></div></div></div> },
@@ -3841,41 +3847,32 @@ export function CheckboxDemo() {
       </Section>
 
       {/* Alerts */}
-      <Section hidden={selectedComponent !== "Alerts"} title="Alerts" description="Five semantic variants, with and without icon." code={`import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+      <Section hidden={selectedComponent !== "Alerts"} title="Alerts" description="Five semantic variants — with icon, dismissable, and actions." code={`import { Alert, AlertActions, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Info, Check, Bell, AlertCircle } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
-export function AlertDemo() {
-  return (
-    <div className="space-y-3">
-      <Alert>
-        <Info className="h-4 w-4" />
-        <AlertTitle>Heads up!</AlertTitle>
-        <AlertDescription>You can add components using the CLI.</AlertDescription>
-      </Alert>
-      <Alert variant="informative">
-        <Info className="h-4 w-4" />
-        <AlertTitle>New feature available</AlertTitle>
-        <AlertDescription>Check out the latest updates in your dashboard.</AlertDescription>
-      </Alert>
-      <Alert variant="success">
-        <Check className="h-4 w-4" />
-        <AlertTitle>All systems operational</AlertTitle>
-        <AlertDescription>Everything is running smoothly.</AlertDescription>
-      </Alert>
-      <Alert variant="warning">
-        <Bell className="h-4 w-4" />
-        <AlertTitle>Approaching limit</AlertTitle>
-        <AlertDescription>You have used 80% of your storage quota.</AlertDescription>
-      </Alert>
-      <Alert variant="destructive">
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Deployment failed</AlertTitle>
-        <AlertDescription>Check your configuration and try again.</AlertDescription>
-      </Alert>
-    </div>
-  )
-}`}>
-        <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
+// Dismissable
+const [visible, setVisible] = React.useState(true)
+
+{visible && (
+  <Alert onDismiss={() => setVisible(false)}>
+    <Info className="h-4 w-4" />
+    <AlertTitle>Heads up!</AlertTitle>
+    <AlertDescription>You can add components using the CLI.</AlertDescription>
+  </Alert>
+)}
+
+// With actions
+<Alert variant="informative">
+  <Info className="h-4 w-4" />
+  <AlertTitle>New feature available</AlertTitle>
+  <AlertDescription>Check out the latest updates in your dashboard.</AlertDescription>
+  <AlertActions>
+    <Button size="sm" variant="outline">Learn more</Button>
+    <Button size="sm">Got it</Button>
+  </AlertActions>
+</Alert>`}>
+        <div className="grid gap-8 sm:grid-cols-2">
           <div className="space-y-5">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">With icon</p>
             <div className="space-y-3">
@@ -3894,6 +3891,32 @@ export function AlertDemo() {
               <Alert variant="success"><AlertTitle>All systems operational</AlertTitle><AlertDescription>Everything is running smoothly.</AlertDescription></Alert>
               <Alert variant="warning"><AlertTitle>Approaching limit</AlertTitle><AlertDescription>You have used 80% of your storage quota.</AlertDescription></Alert>
               <Alert variant="destructive"><AlertTitle>Deployment failed</AlertTitle><AlertDescription>Check your configuration and try again.</AlertDescription></Alert>
+            </div>
+          </div>
+          <div className="space-y-5">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Dismissable</p>
+              {alertsDismissed.size > 0 && (
+                <button onClick={() => setAlertsDismissed(new Set())} className="text-[10px] text-muted-foreground hover:text-foreground transition-colors">Reset</button>
+              )}
+            </div>
+            <div className="space-y-3">
+              {!alertsDismissed.has("d-default")      && <Alert onDismiss={() => dismissAlert("d-default")}><Info className="h-4 w-4" /><AlertTitle>Heads up!</AlertTitle><AlertDescription>You can add components to your app using the CLI.</AlertDescription></Alert>}
+              {!alertsDismissed.has("d-informative")  && <Alert variant="informative" onDismiss={() => dismissAlert("d-informative")}><Info className="h-4 w-4" /><AlertTitle>New feature available</AlertTitle><AlertDescription>Check out the latest updates in your dashboard.</AlertDescription></Alert>}
+              {!alertsDismissed.has("d-success")      && <Alert variant="success" onDismiss={() => dismissAlert("d-success")}><Check className="h-4 w-4" /><AlertTitle>All systems operational</AlertTitle><AlertDescription>Everything is running smoothly.</AlertDescription></Alert>}
+              {!alertsDismissed.has("d-warning")      && <Alert variant="warning" onDismiss={() => dismissAlert("d-warning")}><Bell className="h-4 w-4" /><AlertTitle>Approaching limit</AlertTitle><AlertDescription>You have used 80% of your storage quota.</AlertDescription></Alert>}
+              {!alertsDismissed.has("d-destructive")  && <Alert variant="destructive" onDismiss={() => dismissAlert("d-destructive")}><AlertCircle className="h-4 w-4" /><AlertTitle>Deployment failed</AlertTitle><AlertDescription>Check your configuration and try again.</AlertDescription></Alert>}
+              {alertsDismissed.size === 5 && <p className="text-xs text-muted-foreground italic">All dismissed — hit Reset to restore.</p>}
+            </div>
+          </div>
+          <div className="space-y-5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">With actions</p>
+            <div className="space-y-3">
+              <Alert><Info className="h-4 w-4" /><AlertTitle>Heads up!</AlertTitle><AlertDescription>You can add components to your app.</AlertDescription><AlertActions><Button size="sm" variant="outline">Learn more</Button></AlertActions></Alert>
+              <Alert variant="informative"><Info className="h-4 w-4" /><AlertTitle>New feature available</AlertTitle><AlertDescription>Check out the latest updates in your dashboard.</AlertDescription><AlertActions><Button size="sm" variant="outline">Learn more</Button><Button size="sm">Got it</Button></AlertActions></Alert>
+              <Alert variant="success"><Check className="h-4 w-4" /><AlertTitle>All systems operational</AlertTitle><AlertDescription>Everything is running smoothly.</AlertDescription><AlertActions><Button size="sm" variant="outline">View status</Button></AlertActions></Alert>
+              <Alert variant="warning"><Bell className="h-4 w-4" /><AlertTitle>Approaching limit</AlertTitle><AlertDescription>You have used 80% of your storage quota.</AlertDescription><AlertActions><Button size="sm" variant="outline">Manage storage</Button><Button size="sm">Upgrade</Button></AlertActions></Alert>
+              <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertTitle>Deployment failed</AlertTitle><AlertDescription>Check your configuration and try again.</AlertDescription><AlertActions><Button size="sm" variant="outline">View logs</Button><Button size="sm">Retry</Button></AlertActions></Alert>
             </div>
           </div>
         </div>

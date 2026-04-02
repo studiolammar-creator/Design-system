@@ -1,4 +1,5 @@
 import * as React from "react";
+import { X } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
@@ -23,14 +24,28 @@ const alertVariants = cva(
 
 const Alert = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>
->(({ className, variant, ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants> & {
+    onDismiss?: () => void;
+  }
+>(({ className, variant, onDismiss, children, ...props }, ref) => (
   <div
     ref={ref}
     role="alert"
-    className={cn(alertVariants({ variant }), className)}
+    className={cn(alertVariants({ variant }), onDismiss && "pr-10", className)}
     {...props}
-  />
+  >
+    {children}
+    {onDismiss && (
+      <button
+        type="button"
+        onClick={onDismiss}
+        aria-label="Dismiss"
+        className="absolute top-3 right-3 rounded-sm opacity-60 hover:opacity-100 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <X className="h-4 w-4" />
+      </button>
+    )}
+  </div>
 ));
 Alert.displayName = "Alert";
 
@@ -58,4 +73,16 @@ const AlertDescription = React.forwardRef<
 ));
 AlertDescription.displayName = "AlertDescription";
 
-export { Alert, AlertTitle, AlertDescription };
+const AlertActions = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("mt-3 flex flex-wrap items-center gap-2", className)}
+    {...props}
+  />
+));
+AlertActions.displayName = "AlertActions";
+
+export { Alert, AlertTitle, AlertDescription, AlertActions };
