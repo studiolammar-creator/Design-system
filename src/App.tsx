@@ -1935,10 +1935,16 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
         { label: "Icon",        token: "text-secondary-600",        value: "#CC8500",               type: "color" },
       ],
       destructive: [
-        { label: "Background",  token: "--background",          value: "#FFFFFF",               type: "color" },
+        { label: "Background",  token: "bg-destructive/10",     value: "rgba(220,38,38,0.10)",  type: "color" },
         { label: "Border",      token: "border-destructive/50", value: "rgba(220,38,38,0.50)",  type: "color" },
-        { label: "Text",        token: "--destructive",         value: "#DC2626",               type: "color" },
-        { label: "Icon",        token: "--destructive",         value: "#DC2626",               type: "color" },
+        { label: "Text",        token: "text-red-900",          value: "#7F1D1D",               type: "color" },
+        { label: "Icon",        token: "text-red-700",          value: "#B91C1C",               type: "color" },
+      ],
+      informative: [
+        { label: "Background",  token: "info-scale-50",              value: "#EFF8FF",               type: "color" },
+        { label: "Border",      token: "border-info-scale-400/50",   value: "rgba(61,164,249,0.50)", type: "color" },
+        { label: "Text",        token: "text-info-scale-800",        value: "#074384",               type: "color" },
+        { label: "Icon",        token: "text-info-scale-600",        value: "#0669CC",               type: "color" },
       ],
     };
     return [
@@ -2718,7 +2724,7 @@ function ComponentsPage() {
   const [btnLeadingIcon, setBtnLeadingIcon] = useState<string | null>(null);
   const [btnTrailingIcon, setBtnTrailingIcon] = useState<string | null>(null);
   const [buttonActiveSize, setButtonActiveSize] = useState<"sm" | "default" | "lg" | "icon">("default");
-  const [alertVariant, setAlertVariant] = useState<"default" | "success" | "warning" | "destructive">("default");
+  const [alertVariant, setAlertVariant] = useState<"default" | "success" | "warning" | "destructive" | "informative">("default");
   const [inputState, setInputState] = useState<"default" | "focus" | "error" | "disabled">("default");
   const [datePickerDate, setDatePickerDate] = useState<Date | undefined>(undefined);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
@@ -2759,7 +2765,7 @@ function ComponentsPage() {
     { title: "Input",                     category: "Forms",      description: "Text, email, password, search, number, and URL inputs.", figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=150-582&t=jHkW48H5YomBpzoL-1", preview: <div className="space-y-1.5 pointer-events-none select-none w-full"><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">Email address</span></div><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">Password ••••••</span></div></div> },
     { title: "Select",                    category: "Forms",      description: "Dropdown selection with keyboard navigation.",            figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=151-658&t=jHkW48H5YomBpzoL-1", preview: <div className="pointer-events-none select-none w-full h-7 rounded-md border border-input bg-background px-2 flex items-center justify-between"><span className="text-[10px] text-muted-foreground">Select an option</span><ChevronDown className="h-3 w-3 text-muted-foreground shrink-0" /></div> },
     { title: "Checkbox",                  category: "Forms",      description: "Binary selection control with indeterminate state.",      figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=155-1229&t=jHkW48H5YomBpzoL-1", preview: <div className="flex flex-col gap-2 pointer-events-none select-none"><div className="flex items-center gap-2"><div className="h-5 w-5 rounded-[2px] bg-primary border border-primary flex items-center justify-center"><Check className="h-3 w-3 text-primary-foreground" /></div><span className="text-[10px]">Checked</span></div><div className="flex items-center gap-2"><div className="h-5 w-5 rounded-[2px] border border-input bg-background" /><span className="text-[10px] text-muted-foreground">Unchecked</span></div></div> },
-    { title: "Alerts",                   category: "Feedback",   description: "Four semantic variants.",                       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-md p-2.5 w-full flex gap-2 items-start"><div className="h-3 w-3 rounded-full bg-primary mt-0.5 shrink-0" /><div><p className="text-[10px] font-semibold">Alert title</p><p className="text-[9px] text-muted-foreground mt-0.5">Alert description text.</p></div></div> },
+    { title: "Alerts",                   category: "Feedback",   description: "Five semantic variants.",                       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-md p-2.5 w-full flex gap-2 items-start"><div className="h-3 w-3 rounded-full bg-primary mt-0.5 shrink-0" /><div><p className="text-[10px] font-semibold">Alert title</p><p className="text-[9px] text-muted-foreground mt-0.5">Alert description text.</p></div></div> },
     { title: "Table",                    category: "Data",       description: "Data display with status badges.",              figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full text-[9px]"><div className="flex gap-3 border-b border-border pb-1 mb-1 font-semibold text-muted-foreground"><span className="flex-1">Invoice</span><span>Status</span><span>Amount</span></div><div className="flex gap-3"><span className="flex-1 text-foreground">INV-001</span><Badge className="text-[8px] h-3.5 px-1">Paid</Badge><span>$250</span></div></div> },
     { title: "Accordion",                category: "Navigation", description: "Collapsible sections.",                         figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full space-y-1"><div className="border-b border-border pb-1.5 flex items-center justify-between"><span className="text-[10px] font-medium">Is it accessible?</span><span className="text-[10px] text-muted-foreground">+</span></div><div className="border-b border-border pb-1.5 flex items-center justify-between"><span className="text-[10px] font-medium">Is it styled?</span><span className="text-[10px] text-muted-foreground">+</span></div></div> },
     { title: "Alert Dialog",             category: "Overlay",    description: "Blocking confirmation dialogs.",                figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card shadow-sm"><p className="text-[10px] font-semibold">Are you sure?</p><p className="text-[9px] text-muted-foreground mt-0.5">This action cannot be undone.</p><div className="flex gap-1.5 mt-2"><div className="h-5 px-2 rounded bg-destructive flex items-center"><span className="text-[9px] text-white">Delete</span></div><div className="h-5 px-2 rounded border border-border flex items-center"><span className="text-[9px]">Cancel</span></div></div></div> },
@@ -3835,7 +3841,7 @@ export function CheckboxDemo() {
       </Section>
 
       {/* Alerts */}
-      <Section hidden={selectedComponent !== "Alerts"} title="Alerts" description="Four semantic variants, with and without icon." code={`import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+      <Section hidden={selectedComponent !== "Alerts"} title="Alerts" description="Five semantic variants, with and without icon." code={`import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Info, Check, Bell, AlertCircle } from "lucide-react"
 
 export function AlertDemo() {
@@ -3845,6 +3851,11 @@ export function AlertDemo() {
         <Info className="h-4 w-4" />
         <AlertTitle>Heads up!</AlertTitle>
         <AlertDescription>You can add components using the CLI.</AlertDescription>
+      </Alert>
+      <Alert variant="informative">
+        <Info className="h-4 w-4" />
+        <AlertTitle>New feature available</AlertTitle>
+        <AlertDescription>Check out the latest updates in your dashboard.</AlertDescription>
       </Alert>
       <Alert variant="success">
         <Check className="h-4 w-4" />
@@ -3869,6 +3880,7 @@ export function AlertDemo() {
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">With icon</p>
             <div className="space-y-3">
               <Alert><Info className="h-4 w-4" /><AlertTitle>Heads up!</AlertTitle><AlertDescription>You can add components to your app using the CLI.</AlertDescription></Alert>
+              <Alert variant="informative"><Info className="h-4 w-4" /><AlertTitle>New feature available</AlertTitle><AlertDescription>Check out the latest updates in your dashboard.</AlertDescription></Alert>
               <Alert variant="success"><Check className="h-4 w-4" /><AlertTitle>All systems operational</AlertTitle><AlertDescription>Everything is running smoothly.</AlertDescription></Alert>
               <Alert variant="warning"><Bell className="h-4 w-4" /><AlertTitle>Approaching limit</AlertTitle><AlertDescription>You have used 80% of your storage quota.</AlertDescription></Alert>
               <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertTitle>Deployment failed</AlertTitle><AlertDescription>Check your configuration and try again.</AlertDescription></Alert>
@@ -3878,6 +3890,7 @@ export function AlertDemo() {
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Without icon</p>
             <div className="space-y-3">
               <Alert><AlertTitle>Heads up!</AlertTitle><AlertDescription>You can add components to your app using the CLI.</AlertDescription></Alert>
+              <Alert variant="informative"><AlertTitle>New feature available</AlertTitle><AlertDescription>Check out the latest updates in your dashboard.</AlertDescription></Alert>
               <Alert variant="success"><AlertTitle>All systems operational</AlertTitle><AlertDescription>Everything is running smoothly.</AlertDescription></Alert>
               <Alert variant="warning"><AlertTitle>Approaching limit</AlertTitle><AlertDescription>You have used 80% of your storage quota.</AlertDescription></Alert>
               <Alert variant="destructive"><AlertTitle>Deployment failed</AlertTitle><AlertDescription>Check your configuration and try again.</AlertDescription></Alert>
@@ -6102,7 +6115,7 @@ function SectionHeader() {
               </div>
             ) : selectedComponent === "Alerts" ? (
               <div className="flex items-center rounded-md border border-border bg-muted p-0.5 w-fit">
-                {(["default","success","warning","destructive"] as const).map((v) => (
+                {(["default","success","warning","destructive","informative"] as const).map((v) => (
                   <button key={v} onClick={() => setAlertVariant(v)}
                     className={`px-3 py-1 text-xs rounded font-medium transition-colors capitalize ${alertVariant === v ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
                     {v}
