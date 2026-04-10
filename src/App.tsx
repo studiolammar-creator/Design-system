@@ -1817,6 +1817,27 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       ]},
     ];
   },
+  "Textarea": () => [
+    { title: "Colors", items: [
+      { label: "Border",      token: "--input",            value: "#E5E5E5", type: "color" },
+      { label: "Background",  token: "--background",       value: "#FFFFFF", type: "color" },
+      { label: "Placeholder", token: "--muted-foreground", value: "#737373", type: "color" },
+      { label: "Focus ring",  token: "--ring",             value: "#013229", type: "color" },
+      { label: "Error border",token: "--destructive",      value: "#DC2626", type: "color" },
+    ]},
+    { title: "Typography", items: [
+      { label: "Font size",   token: "text-sm",      value: "0.875rem / 14px", type: "size" },
+      { label: "Line height", token: "leading-normal", value: "1.5",           type: "size" },
+    ]},
+    { title: "Radius", items: [
+      { label: "Border radius", token: "rounded-md", value: "≈ 10px", type: "size" },
+    ]},
+    { title: "Spacing", items: [
+      { label: "Min height", token: "min-h-[80px]", value: "80px",           type: "size" },
+      { label: "Padding x",  token: "px-3",         value: "0.75rem / 12px", type: "size" },
+      { label: "Padding y",  token: "py-2",         value: "0.5rem / 8px",   type: "size" },
+    ]},
+  ],
   "Checkbox": (ctx = {}) => {
     const state = ctx.variant ?? "unchecked";
     const filled = state === "checked" || state === "indeterminate";
@@ -2711,6 +2732,26 @@ function DesignSpecs({ title, context, controls }: { title: string | null; conte
   );
 }
 
+function TextareaWithCount() {
+  const [value, setValue] = useState("");
+  const max = 200;
+  return (
+    <div className="space-y-1">
+      <Textarea
+        id="ta-count"
+        placeholder="Enter your message…"
+        value={value}
+        onChange={(e) => setValue(e.target.value.slice(0, max))}
+        className="resize-none"
+        rows={3}
+      />
+      <p className={`text-xs text-right ${value.length >= max ? "text-destructive" : "text-muted-foreground"}`}>
+        {value.length} / {max}
+      </p>
+    </div>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════
    COMPONENTS PAGE
 ═══════════════════════════════════════════════════════════ */
@@ -2770,6 +2811,7 @@ function ComponentsPage() {
     { title: "Toggle Switch",             category: "Forms",      description: "On/off control for boolean settings.",          figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=142-511&t=anHAdcWSDLhg0F9c-1", preview: <div className="flex items-center gap-3 pointer-events-none select-none"><div className="h-6 w-11 rounded-full bg-primary flex items-center px-0.5 justify-end"><div className="h-5 w-5 rounded-full bg-background shadow-sm" /></div><div className="h-6 w-11 rounded-full bg-input flex items-center px-0.5"><div className="h-5 w-5 rounded-full bg-background shadow-sm" /></div></div> },
     { title: "Input",                     category: "Forms",      description: "Text, email, password, search, number, and URL inputs.", figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=150-582&t=jHkW48H5YomBpzoL-1", preview: <div className="space-y-1.5 pointer-events-none select-none w-full"><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">Email address</span></div><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">Password ••••••</span></div></div> },
     { title: "Select",                    category: "Forms",      description: "Dropdown selection with keyboard navigation.",            figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=151-658&t=jHkW48H5YomBpzoL-1", preview: <div className="pointer-events-none select-none w-full h-7 rounded-md border border-input bg-background px-2 flex items-center justify-between"><span className="text-[10px] text-muted-foreground">Select an option</span><ChevronDown className="h-3 w-3 text-muted-foreground shrink-0" /></div> },
+    { title: "Textarea",                  category: "Forms",      description: "Multi-line text input with resize and state variants.",    figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full h-14 rounded-md border border-input bg-background px-2 py-1.5 flex items-start"><span className="text-[10px] text-muted-foreground">Enter your message…</span></div> },
     { title: "Checkbox",                  category: "Forms",      description: "Binary selection control with indeterminate state.",      figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=155-1229&t=jHkW48H5YomBpzoL-1", preview: <div className="flex flex-col gap-2 pointer-events-none select-none"><div className="flex items-center gap-2"><div className="h-5 w-5 rounded-[2px] bg-primary border border-primary flex items-center justify-center"><Check className="h-3 w-3 text-primary-foreground" /></div><span className="text-[10px]">Checked</span></div><div className="flex items-center gap-2"><div className="h-5 w-5 rounded-[2px] border border-input bg-background" /><span className="text-[10px] text-muted-foreground">Unchecked</span></div></div> },
     { title: "Alerts",                   category: "Feedback",   description: "Five variants — dismissable with actions.",                       figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=184-567&t=LxRKPfVCe6qST8HF-1", preview: <div className="pointer-events-none select-none border border-border rounded-md p-2.5 w-full flex gap-2 items-start"><div className="h-3 w-3 rounded-full bg-primary mt-0.5 shrink-0" /><div><p className="text-[10px] font-semibold">Alert title</p><p className="text-[9px] text-muted-foreground mt-0.5">Alert description text.</p></div></div> },
     { title: "Table",                    category: "Data",       description: "Data display with status badges.",              figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full text-[9px]"><div className="flex gap-3 border-b border-border pb-1 mb-1 font-semibold text-muted-foreground"><span className="flex-1">Invoice</span><span>Status</span><span>Amount</span></div><div className="flex gap-3"><span className="flex-1 text-foreground">INV-001</span><Badge className="text-[8px] h-3.5 px-1">Paid</Badge><span>$250</span></div></div> },
@@ -3767,6 +3809,72 @@ export function SelectDemo() {
                     <SelectItem value="a">Option A</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Textarea */}
+      <Section hidden={selectedComponent !== "Textarea"} title="Textarea" description="Multi-line text input with resize and state variants." code={`import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+
+export function TextareaDemo() {
+  return (
+    <div className="space-y-4 max-w-sm">
+      <div className="space-y-1.5">
+        <Label htmlFor="ta-default">Default</Label>
+        <Textarea id="ta-default" placeholder="Enter your message…" />
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="ta-disabled">Disabled</Label>
+        <Textarea id="ta-disabled" placeholder="Disabled" disabled />
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="ta-error" className="text-destructive">Error</Label>
+        <Textarea id="ta-error" defaultValue="Too short." className="border-destructive focus-visible:ring-destructive" />
+        <p className="text-xs text-destructive">Must be at least 20 characters.</p>
+      </div>
+    </div>
+  )
+}`}>
+        <div className="grid gap-8 sm:grid-cols-2 max-w-2xl">
+          <div className="space-y-5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">States</p>
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="ta-default">Default</Label>
+                <Textarea id="ta-default" placeholder="Enter your message…" />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="ta-filled">Filled</Label>
+                <Textarea id="ta-filled" defaultValue="This is some existing content that has already been entered by the user." />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="ta-disabled">Disabled</Label>
+                <Textarea id="ta-disabled" placeholder="Cannot edit this" disabled />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="ta-readonly">Read-only</Label>
+                <Textarea id="ta-readonly" defaultValue="Read-only content" readOnly />
+              </div>
+            </div>
+          </div>
+          <div className="space-y-5">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Variants</p>
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="ta-error" className="text-destructive">Error</Label>
+                <Textarea id="ta-error" defaultValue="Too short." className="border-destructive focus-visible:ring-destructive" />
+                <p className="text-xs text-destructive">Must be at least 20 characters.</p>
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="ta-count">With character count</Label>
+                <TextareaWithCount />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="ta-noresize">No resize</Label>
+                <Textarea id="ta-noresize" placeholder="This textarea cannot be resized." className="resize-none" />
               </div>
             </div>
           </div>
