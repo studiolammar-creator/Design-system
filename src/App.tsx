@@ -5682,7 +5682,7 @@ export function AlertDialogDemo() {
           <div className="space-y-3">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Dialog</p>
             {/* Scene: blurred page content + overlay + dialog card */}
-            <div className="relative rounded-xl overflow-hidden border border-border" style={{ minHeight: 340 }}>
+            <div className="relative rounded-xl overflow-hidden border border-border h-[420px]">
               {/* Ghost page content */}
               <div className="p-8 space-y-3 pointer-events-none select-none" aria-hidden>
                 <div className="h-4 w-40 rounded bg-foreground/10" />
@@ -5700,7 +5700,7 @@ export function AlertDialogDemo() {
               {/* Overlay */}
               <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" aria-hidden />
               {/* Dialog card */}
-              <div className="absolute inset-0 flex items-center justify-center p-4">
+              <div className="absolute inset-0 flex items-center justify-center p-6">
                 <div className="relative w-full max-w-sm border border-border bg-background p-6 shadow-lg rounded-lg grid gap-4">
                   {/* Close button */}
                   <button className="absolute right-4 top-4 opacity-70 pointer-events-none" tabIndex={-1} aria-hidden>
@@ -5712,12 +5712,12 @@ export function AlertDialogDemo() {
                     <p className="text-sm text-muted-foreground">Make changes to your profile here. Click save when you're done.</p>
                   </div>
                   {/* Content */}
-                  <div className="grid gap-4 py-1">
-                    <div className="space-y-2">
+                  <div className="grid gap-3">
+                    <div className="space-y-1.5">
                       <Label htmlFor="sd-name">Name</Label>
                       <Input id="sd-name" defaultValue="Erhan Lammar" readOnly className="pointer-events-none" />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                       <Label htmlFor="sd-role">Role</Label>
                       <Input id="sd-role" defaultValue="UI Designer" readOnly className="pointer-events-none" />
                     </div>
