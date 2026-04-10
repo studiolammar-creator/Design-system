@@ -46,11 +46,6 @@ import {
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Alert, AlertActions, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import {
-  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
-  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader,
-  AlertDialogTitle, AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge, badgeVariants } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -64,10 +59,6 @@ import {
   ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuLabel,
   ContextMenuSeparator, ContextMenuShortcut, ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import {
-  Dialog, DialogContent, DialogDescription, DialogFooter,
-  DialogHeader, DialogTitle, DialogTrigger,
-} from "@/components/ui/dialog";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
@@ -2022,25 +2013,6 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Trigger padding y", token: "py-4", value: "0.875rem / 14px", type: "size" },
     ]},
   ],
-  "Alert Dialog": () => [
-    { title: "Colors", items: [
-      { label: "Background",        token: "--background", value: "#FFFFFF",           type: "color" },
-      { label: "Overlay",           token: "black/50",     value: "rgba(0,0,0,0.5)",   type: "color" },
-      { label: "Action button bg",  token: "--primary",    value: "#013229",           type: "color" },
-      { label: "Cancel border",     token: "--border",     value: "#E5E5E5",           type: "color" },
-    ]},
-    { title: "Typography", items: [
-      { label: "Title size",        token: "text-lg",      value: "1.125rem / 18px",  type: "size" },
-      { label: "Title weight",      token: "font-semibold", value: "600",             type: "size" },
-      { label: "Description size",  token: "text-base",      value: "0.875rem / 14px", type: "size" },
-    ]},
-    { title: "Radius", items: [
-      { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
-    ]},
-    { title: "Shadow", items: [
-      { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(1,50,41,0.1)", type: "shadow" },
-    ]},
-  ],
   "Sheet": () => [
     { title: "Colors", items: [
       { label: "Background", token: "--background", value: "#FFFFFF",          type: "color" },
@@ -2483,26 +2455,43 @@ const COMPONENT_SPECS: Record<string, (ctx?: SpecContext) => SpecGroup[]> = {
       { label: "Small size",   token: "h-8 w-8",   value: "2rem / 32px",   type: "size" },
     ]},
   ],
-  "Dialog": () => [
-    { title: "Colors", items: [
-      { label: "Background", token: "--background", value: "#FFFFFF",           type: "color" },
-      { label: "Border",     token: "--border",     value: "#E5E5E5",           type: "color" },
-      { label: "Overlay",    token: "black/50",     value: "rgba(0,0,0,0.5)",  type: "color" },
+  "Dialogs": () => [
+    { title: "Overlay", items: [
+      { label: "Dialog overlay",       token: "bg-black/50",  value: "rgba(0,0,0,0.5)",  type: "color" },
+      { label: "Alert dialog overlay", token: "bg-black/80",  value: "rgba(0,0,0,0.8)",  type: "color" },
+    ]},
+    { title: "Container", items: [
+      { label: "Background",  token: "--background", value: "#FFFFFF",  type: "color" },
+      { label: "Border",      token: "--border",     value: "#E5E5E5",  type: "color" },
+    ]},
+    { title: "Content", items: [
+      { label: "Title",           token: "--foreground",      value: "#333333", type: "color" },
+      { label: "Description",     token: "--muted-foreground", value: "#737373", type: "color" },
+      { label: "Close button",    token: "--muted-foreground", value: "#737373", type: "color" },
+    ]},
+    { title: "Actions", items: [
+      { label: "Primary action bg",    token: "--primary",              value: "#013229", type: "color" },
+      { label: "Primary action text",  token: "--primary-foreground",   value: "#F0FBF8", type: "color" },
+      { label: "Destructive action bg",token: "--destructive",          value: "#DC2626", type: "color" },
+      { label: "Destructive text",     token: "--destructive-foreground",value: "#FFFFFF", type: "color" },
+      { label: "Cancel border",        token: "--border",               value: "#E5E5E5", type: "color" },
     ]},
     { title: "Typography", items: [
-      { label: "Title size",        token: "text-lg",       value: "1.125rem / 18px", type: "size" },
-      { label: "Title weight",      token: "font-semibold", value: "600",             type: "size" },
-      { label: "Description size",  token: "text-base",       value: "0.875rem / 14px", type: "size" },
+      { label: "Title size",        token: "text-lg",        value: "1.125rem / 18px",  type: "size" },
+      { label: "Title weight",      token: "font-semibold",  value: "600",              type: "size" },
+      { label: "Title tracking",    token: "tracking-tight", value: "−0.025em",         type: "size" },
+      { label: "Description size",  token: "text-sm",        value: "0.875rem / 14px",  type: "size" },
     ]},
-    { title: "Radius", items: [
-      { label: "Border radius", token: "--radius", value: "0.75rem / 12px", type: "size" },
+    { title: "Structure", items: [
+      { label: "Max width",       token: "max-w-lg",  value: "32rem / 512px",  type: "size" },
+      { label: "Padding",         token: "p-6",       value: "1.5rem / 24px",  type: "size" },
+      { label: "Gap between rows",token: "gap-4",     value: "1rem / 16px",    type: "size" },
+      { label: "Header gap",      token: "space-y-1.5", value: "0.375rem / 6px", type: "size" },
+      { label: "Footer gap",      token: "space-x-2", value: "0.5rem / 8px",   type: "size" },
     ]},
-    { title: "Shadow", items: [
-      { label: "Elevation", token: "--shadow-lg", value: "0 10px 15px rgba(1,50,41,0.1)", type: "shadow" },
-    ]},
-    { title: "Spacing", items: [
-      { label: "Padding",    token: "p-6",       value: "1.5rem / 24px",  type: "size" },
-      { label: "Max width",  token: "max-w-lg",  value: "32rem / 512px",  type: "size" },
+    { title: "Radius & Shadow", items: [
+      { label: "Border radius", token: "rounded-lg", value: "0.75rem / 12px",                    type: "size" },
+      { label: "Elevation",     token: "shadow-lg",  value: "0 10px 15px rgba(1,50,41,0.1)",     type: "shadow" },
     ]},
   ],
   "Dropdown Menu": () => [
@@ -2816,7 +2805,6 @@ function ComponentsPage() {
     { title: "Alerts",                   category: "Feedback",   description: "Five variants — dismissable with actions.",                       figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=184-567&t=LxRKPfVCe6qST8HF-1", preview: <div className="pointer-events-none select-none border border-border rounded-md p-2.5 w-full flex gap-2 items-start"><div className="h-3 w-3 rounded-full bg-primary mt-0.5 shrink-0" /><div><p className="text-[10px] font-semibold">Alert title</p><p className="text-[9px] text-muted-foreground mt-0.5">Alert description text.</p></div></div> },
     { title: "Table",                    category: "Data",       description: "Data display with status badges.",              figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full text-[9px]"><div className="flex gap-3 border-b border-border pb-1 mb-1 font-semibold text-muted-foreground"><span className="flex-1">Invoice</span><span>Status</span><span>Amount</span></div><div className="flex gap-3"><span className="flex-1 text-foreground">INV-001</span><Badge className="text-[8px] h-3.5 px-1">Paid</Badge><span>$250</span></div></div> },
     { title: "Accordion",                category: "Navigation", description: "Collapsible sections.",                         figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full space-y-1"><div className="border-b border-border pb-1.5 flex items-center justify-between"><span className="text-[10px] font-medium">Is it accessible?</span><span className="text-[10px] text-muted-foreground">+</span></div><div className="border-b border-border pb-1.5 flex items-center justify-between"><span className="text-[10px] font-medium">Is it styled?</span><span className="text-[10px] text-muted-foreground">+</span></div></div> },
-    { title: "Alert Dialog",             category: "Overlay",    description: "Blocking confirmation dialogs.",                figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card shadow-sm"><p className="text-[10px] font-semibold">Are you sure?</p><p className="text-[9px] text-muted-foreground mt-0.5">This action cannot be undone.</p><div className="flex gap-1.5 mt-2"><div className="h-5 px-2 rounded bg-destructive flex items-center"><span className="text-[9px] text-white">Delete</span></div><div className="h-5 px-2 rounded border border-border flex items-center"><span className="text-[9px]">Cancel</span></div></div></div> },
     { title: "Sheet",                    category: "Overlay",    description: "Slide-in panels from any edge.",                figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex gap-2 w-full"><Button size="sm" variant="ghost" className="text-[10px] h-6 px-2">Open →</Button><div className="flex-1 border-l border-border pl-2"><p className="text-[10px] font-medium">Sheet title</p><p className="text-[9px] text-muted-foreground">Content here.</p></div></div> },
     { title: "Progress & Slider",        category: "Forms",      description: "Progress bars and range inputs.",               figmaUrl: FIGMA_FILE, preview: <div className="space-y-2 pointer-events-none select-none w-full"><div className="h-2 rounded-full bg-muted overflow-hidden"><div className="h-full bg-primary rounded-full" style={{width:"60%"}} /></div><div className="h-2 rounded-full bg-muted relative"><div className="absolute left-[35%] top-1/2 -translate-y-1/2 h-4 w-4 rounded-full border-2 border-primary bg-background shadow" /></div></div> },
     { title: "Radio Group",              category: "Forms",      description: "Single-selection controls with keyboard support.",       figmaUrl: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/SL-Design-system?node-id=184-474&t=jHkW48H5YomBpzoL-1", preview: <div className="flex flex-col gap-1.5 pointer-events-none select-none"><div className="flex items-center gap-2"><div className="h-5 w-5 rounded-full border-2 border-primary bg-background flex items-center justify-center"><div className="h-2.5 w-2.5 rounded-full bg-primary" /></div><span className="text-[10px]">Selected</span></div><div className="flex items-center gap-2"><div className="h-5 w-5 rounded-full border border-input bg-background" /><span className="text-[10px] text-muted-foreground">Option 2</span></div></div> },
@@ -2846,7 +2834,7 @@ function ComponentsPage() {
     { title: "Field",                    category: "Forms",      description: "Form field with label, hint, and error.",       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none space-y-1 w-full"><p className="text-[10px] font-medium">Email</p><div className="h-7 rounded-md border border-input bg-background px-2 flex items-center"><span className="text-[10px] text-muted-foreground">you@example.com</span></div><p className="text-[9px] text-muted-foreground">We'll never share your email.</p></div> },
     { title: "Item",                     category: "Display",    description: "Flexible list row primitive.",                  figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none divide-y divide-border rounded-md border border-border w-full overflow-hidden"><div className="flex items-center gap-2 px-2 py-1.5"><div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-[8px] text-primary-foreground font-bold shrink-0">EL</div><div className="flex-1 min-w-0"><p className="text-[10px] font-medium truncate">Erhan Lammar</p><p className="text-[9px] text-muted-foreground">Designer</p></div><Badge className="text-[8px] h-3.5 px-1">Admin</Badge></div></div> },
     { title: "Avatar",                   category: "Display",    description: "User profile image with initials fallback.",    figmaUrl: FIGMA_FILE, preview: <div className="flex items-center gap-2 pointer-events-none select-none"><div className="h-9 w-9 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-primary-foreground shrink-0">EL</div><div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-muted-foreground shrink-0">JD</div><div className="h-6 w-6 rounded-full bg-secondary flex items-center justify-center text-[9px] font-bold text-secondary-foreground shrink-0">SL</div></div> },
-    { title: "Dialog",                   category: "Overlay",    description: "Modal dialogs for focused interactions.",       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none border border-border rounded-lg p-3 w-full bg-card shadow-sm space-y-2"><p className="text-[10px] font-semibold">Edit profile</p><div className="h-5 rounded border border-input bg-background px-2 flex items-center"><span className="text-[9px] text-muted-foreground">Display name</span></div><div className="flex gap-1.5 mt-1.5"><div className="h-5 flex-1 rounded bg-primary flex items-center justify-center"><span className="text-[9px] text-primary-foreground font-medium">Save</span></div><div className="h-5 flex-1 rounded border border-border flex items-center justify-center"><span className="text-[9px]">Cancel</span></div></div></div> },
+    { title: "Dialogs",                  category: "Overlay",    description: "Modal dialogs and destructive confirmation alerts.", figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full space-y-1.5"><div className="border border-border rounded-md p-2 w-full bg-card shadow-sm"><p className="text-[10px] font-semibold mb-1">Edit profile</p><div className="h-4 rounded border border-input bg-background px-1.5 flex items-center mb-1.5"><span className="text-[9px] text-muted-foreground">Display name</span></div><div className="flex gap-1 justify-end"><div className="h-4 px-1.5 rounded border border-border flex items-center"><span className="text-[9px]">Cancel</span></div><div className="h-4 px-1.5 rounded bg-primary flex items-center"><span className="text-[9px] text-primary-foreground">Save</span></div></div></div><div className="border border-border rounded-md p-2 w-full bg-card shadow-sm"><p className="text-[10px] font-semibold">Delete project?</p><p className="text-[9px] text-muted-foreground mt-0.5 mb-1.5">This cannot be undone.</p><div className="flex gap-1 justify-end"><div className="h-4 px-1.5 rounded border border-border flex items-center"><span className="text-[9px]">Cancel</span></div><div className="h-4 px-1.5 rounded bg-destructive flex items-center"><span className="text-[9px] text-white">Delete</span></div></div></div></div> },
     { title: "Dropdown Menu",            category: "Overlay",    description: "Context menus and action dropdowns.",           figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full"><div className="border border-border rounded-md p-1 bg-popover shadow-sm space-y-0.5 w-28"><div className="rounded px-2 py-0.5 bg-accent text-[9px]">Profile</div><div className="rounded px-2 py-0.5 text-[9px] text-muted-foreground">Settings</div><div className="h-px bg-border my-0.5" /><div className="rounded px-2 py-0.5 text-[9px] text-destructive">Log out</div></div></div> },
     { title: "Tabs",                     category: "Navigation", description: "Tab panels for switching between views.",       figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none w-full space-y-2"><div className="flex gap-0 border-b border-border"><span className="text-[9px] font-semibold border-b-2 border-primary pb-1 px-2 -mb-px">Account</span><span className="text-[9px] text-muted-foreground pb-1 px-2">Password</span><span className="text-[9px] text-muted-foreground pb-1 px-2">Settings</span></div><div className="space-y-1 pt-1"><div className="h-1.5 w-20 rounded bg-muted" /><div className="h-1.5 w-14 rounded bg-muted" /></div></div> },
     { title: "Tooltip",                  category: "Overlay",    description: "Contextual hints on hover or focus.",           figmaUrl: FIGMA_FILE, preview: <div className="pointer-events-none select-none flex flex-col items-center gap-2"><div className="rounded border border-border bg-popover px-2 py-1 text-[9px] shadow-md font-medium">Add to library</div><div className="h-0 w-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-border -mt-0.5" /><div className="h-6 w-6 rounded-md border border-border flex items-center justify-center"><Plus className="h-3 w-3 text-muted-foreground" /></div></div> },
@@ -4117,67 +4105,6 @@ export function AccordionDemo() {
             </AccordionItem>
           ))}
         </Accordion>
-      </Section>
-
-      {/* Alert Dialog */}
-      <Section hidden={selectedComponent !== "Alert Dialog"} title="Alert Dialog" description="Blocking confirmation dialogs for destructive actions." code={`import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-
-export function AlertDialogDemo() {
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="destructive">Delete account</Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-          <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  )
-}`}>
-        <div className="flex gap-3 flex-wrap">
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive">Delete project</Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Delete project?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This will permanently delete "Forest Initiative" and all its data. This action cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction>Delete</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline">Remove member</Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Remove team member?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  They will lose access to all projects immediately.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction>Remove</AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
       </Section>
 
       {/* Sheet */}
@@ -5675,8 +5602,9 @@ export function AvatarDemo() {
         </div>
       </Section>
 
-      {/* Dialog */}
-      <Section hidden={selectedComponent !== "Dialog"} title="Dialog" description="Modal dialogs for focused interactions." code={`import {
+      {/* Dialogs */}
+      <Section hidden={selectedComponent !== "Dialogs"} title="Dialogs" description="Modal dialogs and destructive confirmation alerts — always visible." code={`// Dialog (form)
+import {
   Dialog, DialogContent, DialogDescription, DialogFooter,
   DialogHeader, DialogTitle, DialogTrigger,
 } from "@/components/ui/dialog"
@@ -5702,58 +5630,149 @@ export function DialogDemo() {
             <Label htmlFor="name">Name</Label>
             <Input id="name" defaultValue="Erhan Lammar" />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="role">Role</Label>
+            <Input id="role" defaultValue="UI Designer" />
+          </div>
         </div>
         <DialogFooter>
+          <Button variant="outline">Cancel</Button>
           <Button type="submit">Save changes</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   )
+}
+
+// Alert Dialog (destructive confirmation)
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel,
+  AlertDialogContent, AlertDialogDescription,
+  AlertDialogFooter, AlertDialogHeader,
+  AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
+export function AlertDialogDemo() {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="destructive">Delete project</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete project?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This will permanently delete the project and all its data.
+            This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction className={buttonVariants({ variant: "destructive" })}>
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
 }`}>
-        <div className="flex flex-wrap gap-3">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline">Edit profile</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you're done.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="dialog-name">Name</Label>
-                  <Input id="dialog-name" defaultValue="Erhan Lammar" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="dialog-role">Role</Label>
-                  <Input id="dialog-role" defaultValue="UI Designer" />
+        <div className="grid gap-6 lg:grid-cols-2">
+
+          {/* ── Dialog ── */}
+          <div className="space-y-3">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Dialog</p>
+            {/* Scene: blurred page content + overlay + dialog card */}
+            <div className="relative rounded-xl overflow-hidden border border-border" style={{ minHeight: 340 }}>
+              {/* Ghost page content */}
+              <div className="p-8 space-y-3 pointer-events-none select-none" aria-hidden>
+                <div className="h-4 w-40 rounded bg-foreground/10" />
+                <div className="h-2.5 w-full rounded bg-foreground/5" />
+                <div className="h-2.5 w-5/6 rounded bg-foreground/5" />
+                <div className="h-2.5 w-4/5 rounded bg-foreground/5" />
+                <div className="mt-6 h-3 w-28 rounded bg-foreground/10" />
+                <div className="h-2.5 w-full rounded bg-foreground/5" />
+                <div className="h-2.5 w-3/4 rounded bg-foreground/5" />
+                <div className="mt-4 flex gap-2">
+                  <div className="h-7 w-20 rounded-md bg-foreground/10" />
+                  <div className="h-7 w-20 rounded-md bg-foreground/10" />
                 </div>
               </div>
-              <DialogFooter>
-                <Button type="submit">Save changes</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="destructive">Delete project</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[400px]">
-              <DialogHeader>
-                <DialogTitle>Delete project?</DialogTitle>
-                <DialogDescription>
-                  This will permanently delete the project and all its data. This action cannot be undone.
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter className="gap-2">
-                <Button variant="outline">Cancel</Button>
-                <Button variant="destructive">Delete</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" aria-hidden />
+              {/* Dialog card */}
+              <div className="absolute inset-0 flex items-center justify-center p-4">
+                <div className="relative w-full max-w-sm border border-border bg-background p-6 shadow-lg rounded-lg grid gap-4">
+                  {/* Close button */}
+                  <button className="absolute right-4 top-4 opacity-70 pointer-events-none" tabIndex={-1} aria-hidden>
+                    <X className="h-4 w-4" />
+                  </button>
+                  {/* Header */}
+                  <div className="flex flex-col space-y-1.5">
+                    <p className="text-lg font-semibold leading-none tracking-tight">Edit profile</p>
+                    <p className="text-sm text-muted-foreground">Make changes to your profile here. Click save when you're done.</p>
+                  </div>
+                  {/* Content */}
+                  <div className="grid gap-4 py-1">
+                    <div className="space-y-2">
+                      <Label htmlFor="sd-name">Name</Label>
+                      <Input id="sd-name" defaultValue="Erhan Lammar" readOnly className="pointer-events-none" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="sd-role">Role</Label>
+                      <Input id="sd-role" defaultValue="UI Designer" readOnly className="pointer-events-none" />
+                    </div>
+                  </div>
+                  {/* Footer */}
+                  <div className="flex justify-end gap-2">
+                    <Button variant="outline" className="pointer-events-none" tabIndex={-1}>Cancel</Button>
+                    <Button className="pointer-events-none" tabIndex={-1}>Save changes</Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Alert Dialog ── */}
+          <div className="space-y-3">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Alert Dialog</p>
+            {/* Scene: page content + heavier overlay + alert card */}
+            <div className="relative rounded-xl overflow-hidden border border-border" style={{ minHeight: 340 }}>
+              {/* Ghost page content */}
+              <div className="p-8 space-y-3 pointer-events-none select-none" aria-hidden>
+                <div className="h-4 w-40 rounded bg-foreground/10" />
+                <div className="h-2.5 w-full rounded bg-foreground/5" />
+                <div className="h-2.5 w-5/6 rounded bg-foreground/5" />
+                <div className="h-2.5 w-4/5 rounded bg-foreground/5" />
+                <div className="mt-6 h-3 w-28 rounded bg-foreground/10" />
+                <div className="h-2.5 w-full rounded bg-foreground/5" />
+                <div className="h-2.5 w-3/4 rounded bg-foreground/5" />
+                <div className="mt-4 flex gap-2">
+                  <div className="h-7 w-20 rounded-md bg-foreground/10" />
+                  <div className="h-7 w-20 rounded-md bg-foreground/10" />
+                </div>
+              </div>
+              {/* Heavier overlay — matches bg-black/80 */}
+              <div className="absolute inset-0 bg-black/80" aria-hidden />
+              {/* Alert Dialog card */}
+              <div className="absolute inset-0 flex items-center justify-center p-4">
+                <div className="w-full max-w-sm border border-border bg-background p-6 shadow-lg rounded-lg grid gap-4">
+                  {/* Header */}
+                  <div className="flex flex-col space-y-2">
+                    <p className="text-lg font-semibold">Delete project?</p>
+                    <p className="text-sm text-muted-foreground">
+                      This will permanently delete "Forest Initiative" and all its data. This action cannot be undone.
+                    </p>
+                  </div>
+                  {/* Footer */}
+                  <div className="flex justify-end gap-2">
+                    <Button variant="outline" className="pointer-events-none" tabIndex={-1}>Cancel</Button>
+                    <Button variant="destructive" className="pointer-events-none" tabIndex={-1}>Delete</Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </Section>
 
