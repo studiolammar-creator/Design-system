@@ -1436,35 +1436,6 @@ function FoundationPage({ dark }: { dark: boolean }) {
         {/* ─── Typography ─────────────────────────── */}
         <TabsContent value="typography" className="space-y-12 pt-6">
 
-          <Section title="Type Styles" description="Named styles combining size, weight, leading, and tracking tokens.">
-            <div className="space-y-2">
-              {typeStyles.map((style) => (
-                <div key={style.name} className="rounded-lg border border-border overflow-hidden">
-                  <div className="flex items-start gap-6 px-5 py-4 border-b border-border bg-muted/20">
-                    <span className="font-mono text-xs text-muted-foreground w-24 shrink-0 pt-0.5">{style.name}</span>
-                    <p className={style.cls}>{style.sample}</p>
-                  </div>
-                  <div className="px-5 py-3 flex flex-wrap gap-3">
-                    {style.tokens.map((tok) => (
-                      <button
-                        key={tok.cssVar}
-                        onClick={() => navigator.clipboard?.writeText(tok.cssVar)}
-                        title={`Copy ${tok.cssVar}`}
-                        className="flex flex-col items-start gap-0.5 group cursor-pointer"
-                      >
-                        <span className="inline-flex items-center px-2 py-0.5 rounded bg-muted font-mono text-xs text-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                          {tok.tw}
-                        </span>
-                        <span className="font-mono text-[10px] text-muted-foreground px-1">{tok.cssVar}</span>
-                        <span className="font-mono text-[10px] text-muted-foreground/60 px-1">{tok.val}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Section>
-
           <Section title="Font Family" description="Choose typefaces for display/body and monospace. Changes apply instantly across all components.">
             {/* Selectors */}
             <div className="grid sm:grid-cols-2 gap-5 mb-5">
@@ -1517,6 +1488,35 @@ function FoundationPage({ dark }: { dark: boolean }) {
                   <div className="hidden md:flex flex-col items-end gap-0.5 min-w-0">
                     <span className="font-mono text-sm text-foreground">{f.name}</span>
                     <span className="font-mono text-[10px] text-muted-foreground">{f.cssVar}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section title="Type Styles" description="Named styles combining size, weight, leading, and tracking tokens.">
+            <div className="space-y-2">
+              {typeStyles.map((style) => (
+                <div key={style.name} className="rounded-lg border border-border overflow-hidden">
+                  <div className="flex items-start gap-6 px-5 py-4 border-b border-border bg-muted/20">
+                    <span className="font-mono text-xs text-muted-foreground w-24 shrink-0 pt-0.5">{style.name}</span>
+                    <p className={style.cls}>{style.sample}</p>
+                  </div>
+                  <div className="px-5 py-3 flex flex-wrap gap-3">
+                    {style.tokens.map((tok) => (
+                      <button
+                        key={tok.cssVar}
+                        onClick={() => navigator.clipboard?.writeText(tok.cssVar)}
+                        title={`Copy ${tok.cssVar}`}
+                        className="flex flex-col items-start gap-0.5 group cursor-pointer"
+                      >
+                        <span className="inline-flex items-center px-2 py-0.5 rounded bg-muted font-mono text-xs text-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                          {tok.tw}
+                        </span>
+                        <span className="font-mono text-[10px] text-muted-foreground px-1">{tok.cssVar}</span>
+                        <span className="font-mono text-[10px] text-muted-foreground/60 px-1">{tok.val}</span>
+                      </button>
+                    ))}
                   </div>
                 </div>
               ))}
