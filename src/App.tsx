@@ -1216,46 +1216,6 @@ function FoundationPage({ dark }: { dark: boolean }) {
               />
             </div>
 
-            {/* Font selectors */}
-            <div className="grid sm:grid-cols-2 gap-5">
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium">Sans-serif Font</span>
-                  <span className="font-mono text-[10px] text-muted-foreground">--font-sans</span>
-                </div>
-                <Select value={config.fontSans} onValueChange={(v) => updateFont('fontSans', v)}>
-                  <SelectTrigger className="h-9 text-sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {SANS_FONTS.map((f) => (
-                      <SelectItem key={f} value={f} style={{ fontFamily: f }}>
-                        {f}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium">Monospace Font</span>
-                  <span className="font-mono text-[10px] text-muted-foreground">--font-mono</span>
-                </div>
-                <Select value={config.fontMono} onValueChange={(v) => updateFont('fontMono', v)}>
-                  <SelectTrigger className="h-9 text-sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MONO_FONTS.map((f) => (
-                      <SelectItem key={f} value={f} style={{ fontFamily: f }}>
-                        {f}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
             {/* Live component preview strip */}
             <div className="mt-7 rounded-xl border border-border bg-muted/20 p-5 space-y-4">
               <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Live Preview</p>
@@ -1505,7 +1465,47 @@ function FoundationPage({ dark }: { dark: boolean }) {
             </div>
           </Section>
 
-          <Section title="Font Family" description="Two typefaces configured from the Brand Identity panel. Change them there to see updates here.">
+          <Section title="Font Family" description="Choose typefaces for display/body and monospace. Changes apply instantly across all components.">
+            {/* Selectors */}
+            <div className="grid sm:grid-cols-2 gap-5 mb-5">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium">Sans-serif Font</span>
+                  <span className="font-mono text-[10px] text-muted-foreground">--font-sans</span>
+                </div>
+                <Select value={config.fontSans} onValueChange={(v) => updateFont('fontSans', v)}>
+                  <SelectTrigger className="h-9 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SANS_FONTS.map((f) => (
+                      <SelectItem key={f} value={f} style={{ fontFamily: f }}>
+                        {f}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium">Monospace Font</span>
+                  <span className="font-mono text-[10px] text-muted-foreground">--font-mono</span>
+                </div>
+                <Select value={config.fontMono} onValueChange={(v) => updateFont('fontMono', v)}>
+                  <SelectTrigger className="h-9 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MONO_FONTS.map((f) => (
+                      <SelectItem key={f} value={f} style={{ fontFamily: f }}>
+                        {f}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            {/* Live preview rows */}
             <div className="rounded-lg border border-border overflow-hidden">
               {[
                 { token: "font-sans", cssVar: "--font-sans", name: config.fontSans, sample: "Aa Bb Cc 123" },
