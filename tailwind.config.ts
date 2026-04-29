@@ -161,8 +161,11 @@ const config: Config = {
         sm:   "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["Sharphy", "ui-sans-serif", "system-ui", "sans-serif"],
-        mono: ["Space Mono", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+        /* var(--font-sans/mono) is the brand-controlled font name.
+           Tailwind appends system fallbacks so font changes work
+           everywhere via document.documentElement.style.setProperty(). */
+        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "-apple-system", "sans-serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "monospace"],
       },
       fontSize: {
         base: "14px",

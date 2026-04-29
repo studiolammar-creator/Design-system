@@ -277,6 +277,8 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { Empty } from "@/components/ui/empty";
 import { Field, FieldLabel, FieldHint, FieldError } from "@/components/ui/field";
 import { Item, ItemStart, ItemContent, ItemTitle, ItemDescription, ItemEnd } from "@/components/ui/item";
+import { BrandProvider, useBrand, BRAND_PRESETS, SANS_FONTS, MONO_FONTS } from "@/context/BrandContext";
+import { getLuminance as getScaleLuminance } from "@/lib/color-scale";
 
 /* ═══════════════════════════════════════════════════════════
    TOKEN DATA
@@ -994,16 +996,6 @@ function wcagLevel(ratio: number) {
   };
 }
 
-/* Semantic foreground / background pairs for contrast audit */
-const contrastPairs = [
-  { label: "Body text",       fgName: "foreground",             bgName: "background",  lightFg: "#333333", lightBg: "#FFFFFF", darkFg: "#FAFAFA", darkBg: "#0D0D0D" },
-  { label: "Primary button",  fgName: "primary-foreground",     bgName: "primary",     lightFg: "#F0FBF8", lightBg: "#013229", darkFg: "#001A16", darkBg: "#61CAA0" },
-  { label: "Secondary",       fgName: "secondary-foreground",   bgName: "secondary",   lightFg: "#013229", lightBg: "#FFD653", darkFg: "#013229", darkBg: "#FFD653" },
-  { label: "Accent",          fgName: "accent-foreground",      bgName: "accent",      lightFg: "#013229", lightBg: "#61CAA0", darkFg: "#F0FBF7", darkBg: "#28956E" },
-  { label: "Muted text",      fgName: "muted-foreground",       bgName: "muted",       lightFg: "#737373", lightBg: "#F5F5F5", darkFg: "#A3A3A3", darkBg: "#333333" },
-  { label: "Error / danger",  fgName: "destructive-foreground", bgName: "destructive", lightFg: "#FAFAFA", lightBg: "#EF4444", darkFg: "#FAFAFA", darkBg: "#991B1B" },
-  { label: "Card",            fgName: "card-foreground",        bgName: "card",        lightFg: "#333333", lightBg: "#FFFFFF", darkFg: "#FAFAFA", darkBg: "#1A1A1A" },
-];
 
 /* ═══════════════════════════════════════════════════════════
    FOUNDATION PAGE — visual elements linked to tokens
@@ -1029,8 +1021,120 @@ const FIGMA_TABS: Record<string, string> = {
   shadows: "https://www.figma.com/design/Pa10O4NTaU3tKf3whoQoWV/Design-System-with-Claude?node-id=71-4&t=SVftSQFngq9MDHq9-1",
 };
 
+/* ── ColorHexInput ────────────────────────────────────────
+   Combines a native color-picker swatch with a typed HEX
+   text field. Validates on blur / Enter.
+   ───────────────────────────────────────────────────────── */
+function ColorHexInput({
+  label, sublabel, value, onChange,
+}: {
+  label: string;
+  sublabel?: string;
+  value: string;
+  onChange: (hex: string) => void;
+}) {
+  const [local, setLocal]   = useState(value);
+  const [invalid, setInvalid] = useState(false);
+
+  React.useEffect(() => { setLocal(value); setInvalid(false); }, [value]);
+
+  const commit = (raw: string) => {
+    const norm = raw.startsWith('#') ? raw : `#${raw}`;
+    if (/^#[0-9A-Fa-f]{6}$/.test(norm)) {
+      setInvalid(false);
+      onChange(norm.toUpperCase());
+    } else {
+      setInvalid(true);
+    }
+  };
+
+  const isOk = /^#[0-9A-Fa-f]{6}$/.test(value);
+
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-medium">{label}</span>
+        {sublabel && <span className="font-mono text-[10px] text-muted-foreground">{sublabel}</span>}
+      </div>
+      <div className="flex items-center gap-2">
+        {/* Native color picker — hidden behind the swatch div */}
+        <label className="relative h-9 w-9 shrink-0 cursor-pointer">
+          <div
+            className="h-9 w-9 rounded-md border border-border"
+            style={{ backgroundColor: isOk ? value : '#000' }}
+          />
+          <input
+            type="color"
+            value={isOk ? value : '#000000'}
+            onChange={(e) => onChange(e.target.value.toUpperCase())}
+            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+          />
+        </label>
+        {/* Text input */}
+        <input
+          type="text"
+          value={local}
+          onChange={(e) => { setLocal(e.target.value); setInvalid(false); }}
+          onBlur={(e) => commit(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && commit((e.target as HTMLInputElement).value)}
+          placeholder="#000000"
+          spellCheck={false}
+          className={`flex-1 h-9 rounded-md border px-3 font-mono text-sm bg-background text-foreground outline-none transition-colors
+            ${invalid
+              ? 'border-destructive focus:ring-1 focus:ring-destructive/30'
+              : 'border-input focus:border-ring focus:ring-2 focus:ring-ring/20'}`}
+        />
+      </div>
+      {invalid && (
+        <p className="font-mono text-[10px] text-destructive">Invalid — use #RRGGBB format</p>
+      )}
+    </div>
+  );
+}
+
 function FoundationPage({ dark }: { dark: boolean }) {
   const [activeTab, setActiveTab] = useState("colors");
+  const {
+    config, activePreset, applyPreset,
+    updateColor, updateFont,
+    getPrimaryScale, getSecondaryScale, getAccentScale,
+  } = useBrand();
+  const primaryScale   = useMemo(() => getPrimaryScale(),   [getPrimaryScale]);
+  const secondaryScale = useMemo(() => getSecondaryScale(), [getSecondaryScale]);
+  const accentScale    = useMemo(() => getAccentScale(),    [getAccentScale]);
+
+  /* Neutral base — permanent, white-label primitives */
+  const neutralBase = [
+    { step: "0",   hex: "#FFFFFF" },
+    { step: "50",  hex: "#FAFAFA" },
+    { step: "100", hex: "#F5F5F5" },
+    { step: "200", hex: "#E5E5E5" },
+    { step: "300", hex: "#D4D4D4" },
+    { step: "400", hex: "#A3A3A3" },
+    { step: "500", hex: "#737373" },
+    { step: "600", hex: "#525252" },
+    { step: "700", hex: "#404040" },
+    { step: "800", hex: "#333333" },
+    { step: "900", hex: "#1A1A1A" },
+    { step: "950", hex: "#0D0D0D" },
+  ];
+
+  /* Dynamic brand palettes (generated from HEX inputs) */
+  const brandPalettes = [
+    { label: "Primary",   cssToken: "--primary",   scale: primaryScale   },
+    { label: "Secondary", cssToken: "--secondary", scale: secondaryScale },
+    { label: "Accent",    cssToken: "--accent",    scale: accentScale    },
+  ];
+
+  /* Dynamic contrast pairs — reflect current brand */
+  const dynamicContrastPairs = [
+    { label: "Body text",       fgName: "foreground",           bgName: "background",  lightFg: "#333333",           lightBg: "#FFFFFF",           darkFg: "#FAFAFA",            darkBg: "#0D0D0D" },
+    { label: "Primary button",  fgName: "primary-foreground",   bgName: "primary",     lightFg: primaryScale['50'],  lightBg: primaryScale['900'], darkFg: primaryScale['950'],  darkBg: primaryScale['300'] },
+    { label: "Secondary",       fgName: "secondary-foreground", bgName: "secondary",   lightFg: secondaryScale['900'],lightBg: secondaryScale['400'],darkFg: secondaryScale['900'],darkBg: secondaryScale['300'] },
+    { label: "Accent",          fgName: "accent-foreground",    bgName: "accent",      lightFg: accentScale['900'],  lightBg: accentScale['400'],  darkFg: accentScale['950'],   darkBg: accentScale['400'] },
+    { label: "Muted text",      fgName: "muted-foreground",     bgName: "muted",       lightFg: "#737373",           lightBg: "#F5F5F5",           darkFg: "#A3A3A3",            darkBg: "#333333" },
+    { label: "Error / danger",  fgName: "destructive-foreground", bgName: "destructive", lightFg: "#FAFAFA",        lightBg: "#EF4444",           darkFg: "#FAFAFA",            darkBg: "#991B1B" },
+  ];
 
   return (
     <div className="space-y-16">
@@ -1066,6 +1170,185 @@ function FoundationPage({ dark }: { dark: boolean }) {
 
         {/* ─── Colors ─────────────────────────────── */}
         <TabsContent value="colors" className="space-y-12 pt-6">
+
+          {/* ── 1. Brand Identity Controls ───────────────── */}
+          <Section
+            title="Brand Identity"
+            description="Enter HEX values and pick font families. All semantic tokens and components update instantly — no rebuild needed."
+          >
+            {/* Preset selector */}
+            <div className="flex flex-wrap gap-2 mb-7">
+              {BRAND_PRESETS.map((preset) => (
+                <button
+                  key={preset.id}
+                  onClick={() => applyPreset(preset.id)}
+                  className={`group flex flex-col gap-0.5 px-3.5 py-2 rounded-lg border text-left transition-all ${
+                    activePreset === preset.id
+                      ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                      : 'bg-background text-foreground border-border hover:border-primary/40 hover:bg-primary/5'
+                  }`}
+                >
+                  <span className="text-xs font-semibold leading-none">{preset.name}</span>
+                  <span className={`text-[10px] leading-none ${activePreset === preset.id ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>{preset.description}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Color HEX inputs */}
+            <div className="grid sm:grid-cols-3 gap-5 mb-7">
+              <ColorHexInput
+                label="Primary"
+                sublabel="--primary"
+                value={config.primary}
+                onChange={(hex) => updateColor('primary', hex)}
+              />
+              <ColorHexInput
+                label="Secondary"
+                sublabel="--secondary"
+                value={config.secondary}
+                onChange={(hex) => updateColor('secondary', hex)}
+              />
+              <ColorHexInput
+                label="Accent"
+                sublabel="--accent"
+                value={config.accent}
+                onChange={(hex) => updateColor('accent', hex)}
+              />
+            </div>
+
+            {/* Font selectors */}
+            <div className="grid sm:grid-cols-2 gap-5">
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium">Sans-serif Font</span>
+                  <span className="font-mono text-[10px] text-muted-foreground">--font-sans</span>
+                </div>
+                <Select value={config.fontSans} onValueChange={(v) => updateFont('fontSans', v)}>
+                  <SelectTrigger className="h-9 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SANS_FONTS.map((f) => (
+                      <SelectItem key={f} value={f} style={{ fontFamily: f }}>
+                        {f}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium">Monospace Font</span>
+                  <span className="font-mono text-[10px] text-muted-foreground">--font-mono</span>
+                </div>
+                <Select value={config.fontMono} onValueChange={(v) => updateFont('fontMono', v)}>
+                  <SelectTrigger className="h-9 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MONO_FONTS.map((f) => (
+                      <SelectItem key={f} value={f} style={{ fontFamily: f }}>
+                        {f}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Live component preview strip */}
+            <div className="mt-7 rounded-xl border border-border bg-muted/20 p-5 space-y-4">
+              <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground">Live Preview</p>
+              <div className="flex flex-wrap gap-3 items-center">
+                <Button size="sm">Primary</Button>
+                <Button size="sm" variant="secondary">Secondary</Button>
+                <Button size="sm" variant="accent">Accent</Button>
+                <Button size="sm" variant="outline">Outline</Button>
+                <Button size="sm" variant="ghost">Ghost</Button>
+                <Button size="sm" variant="destructive">Destructive</Button>
+              </div>
+              <div className="flex flex-wrap gap-2 items-center">
+                <Badge>Default</Badge>
+                <Badge variant="secondary">Secondary</Badge>
+                <Badge variant="outlined">Outline</Badge>
+                <Badge variant="destructive">Destructive</Badge>
+              </div>
+              <div className="flex gap-3 items-center">
+                <Input placeholder="Input field" className="max-w-[200px] h-8 text-xs" />
+                <Switch defaultChecked />
+                <Checkbox defaultChecked />
+              </div>
+              <p className="text-sm" style={{ fontFamily: `"${config.fontSans}", sans-serif` }}>
+                <span className="font-semibold">Aa</span> — {config.fontSans} · The quick brown fox jumps over the lazy dog.
+              </p>
+              <p className="text-xs font-mono" style={{ fontFamily: `"${config.fontMono}", monospace` }}>
+                const token = 'var(--primary)'; // {config.fontMono}
+              </p>
+            </div>
+          </Section>
+
+          {/* ── 2. Neutral Base Palette ──────────────────── */}
+          <Section
+            title="Neutral Base"
+            description="White-label primitive scale — brand-independent. Used for backgrounds, surfaces, borders, text hierarchy, and layout elements."
+          >
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[10px] font-medium tracking-widest uppercase text-muted-foreground">Neutral — Grey</span>
+                <div className="flex-1 h-px bg-border" />
+                <span className="text-[10px] text-muted-foreground font-mono">--color-neutral-*</span>
+              </div>
+              <div className="grid grid-cols-12 gap-1">
+                {neutralBase.map((s) => {
+                  const textCls = getScaleLuminance(s.hex) > 0.179 ? 'text-black/60' : 'text-white/70';
+                  return (
+                    <div key={s.step} className="flex flex-col gap-1 min-w-0">
+                      <div
+                        className={`h-14 w-full rounded-md flex items-end p-1.5 border border-black/5 ${textCls}`}
+                        style={{ backgroundColor: s.hex }}
+                      >
+                        <span className="text-[9px] font-mono leading-none">{s.step}</span>
+                      </div>
+                      <span className="text-[9px] font-mono text-muted-foreground truncate">{s.hex}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </Section>
+
+          {/* ── 3. Brand Color Scales ────────────────────── */}
+          <Section
+            title="Brand Color Scales"
+            description="11-step tonal scales generated live from the HEX inputs above. These feed the semantic tokens — change a HEX to regenerate the entire scale."
+          >
+            <div className="space-y-8">
+              {brandPalettes.map((p) => (
+                <div key={p.cssToken} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium">{p.label}</p>
+                    <span className="font-mono text-[10px] text-muted-foreground">{p.cssToken}</span>
+                  </div>
+                  <div className="grid grid-cols-11 gap-1">
+                    {Object.entries(p.scale).map(([step, hex]) => {
+                      const textCls = getScaleLuminance(hex) > 0.179 ? 'text-black/70' : 'text-white/80';
+                      return (
+                        <div key={step} className="flex flex-col gap-1 min-w-0">
+                          <div
+                            className={`h-14 w-full rounded-md flex items-end p-1.5 ${textCls}`}
+                            style={{ backgroundColor: hex }}
+                          >
+                            <span className="text-[9px] font-mono leading-none">{step}</span>
+                          </div>
+                          <span className="text-[9px] font-mono text-muted-foreground truncate">{hex}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Section>
 
           <Section title="Semantic Palette" description={`Semantic colors as rendered in ${dark ? "dark" : "light"} mode.`}>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -1117,7 +1400,7 @@ function FoundationPage({ dark }: { dark: boolean }) {
             </div>
 
             <div className="rounded-lg border border-border overflow-hidden">
-              {contrastPairs.map((pair, i) => {
+              {dynamicContrastPairs.map((pair, i) => {
                 const fg = dark ? pair.darkFg : pair.lightFg;
                 const bg = dark ? pair.darkBg : pair.lightBg;
                 const ratio = getContrastRatio(fg, bg);
@@ -1126,7 +1409,7 @@ function FoundationPage({ dark }: { dark: boolean }) {
                 const failClass = "px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-muted text-muted-foreground border-border";
 
                 return (
-                  <div key={pair.label} className={`flex flex-wrap items-center gap-4 px-5 py-4 ${i < contrastPairs.length - 1 ? "border-b border-border" : ""} hover:bg-muted/30 transition-colors`}>
+                  <div key={pair.label} className={`flex flex-wrap items-center gap-4 px-5 py-4 ${i < dynamicContrastPairs.length - 1 ? "border-b border-border" : ""} hover:bg-muted/30 transition-colors`}>
 
                     {/* Preview swatch */}
                     <div
@@ -1163,67 +1446,29 @@ function FoundationPage({ dark }: { dark: boolean }) {
             </div>
           </Section>
 
-          <Section title="Color Scales" description="Primitive palettes — 11 steps from 50 to 950, each linked to its CSS token.">
-            <div className="space-y-14">
-
-              {/* Brand Colors */}
-              <div className="space-y-6 pt-4">
-                <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-medium tracking-widest uppercase text-muted-foreground">Brand</span>
-                  <div className="flex-1 h-px bg-border" />
-                </div>
-                <div className="space-y-8">
-                  {palettes.filter(p => ["primary","secondary","intense","neutral"].includes(p.key)).map((p) => (
-                    <div key={p.key} className="space-y-2">
-                      <p className="text-sm font-medium">{p.label}</p>
-                      <div className="grid grid-cols-11 gap-1">
-                        {p.swatches.map((s) => (
-                          <div key={s.name} className="flex flex-col gap-1 min-w-0">
-                            <div
-                              className={`h-14 w-full rounded-md flex items-end p-1.5 ${s.textClass}`}
-                              style={{ backgroundColor: s.hex }}
-                            >
-                              <span className="text-[9px] font-mono leading-none opacity-80">{s.name}</span>
-                            </div>
-                            <span className="text-[9px] font-mono text-primary/70 truncate">{`--color-${p.key}-${s.name}`}</span>
-                            <span className="text-[9px] font-mono text-muted-foreground truncate">{s.hex}</span>
-                          </div>
-                        ))}
+          <Section
+            title="Feedback Color Scales"
+            description="Static semantic feedback scales — error, success, info. These are brand-independent and consistent across all themes."
+          >
+            <div className="space-y-8">
+              {palettes.filter((p) => ["destructive", "success", "info"].includes(p.key)).map((p) => (
+                <div key={p.key} className="space-y-2">
+                  <p className="text-sm font-medium">{p.label}</p>
+                  <div className="grid grid-cols-11 gap-1">
+                    {p.swatches.map((s) => (
+                      <div key={s.name} className="flex flex-col gap-1 min-w-0">
+                        <div
+                          className={`h-14 w-full rounded-md flex items-end p-1.5 ${s.textClass}`}
+                          style={{ backgroundColor: s.hex }}
+                        >
+                          <span className="text-[9px] font-mono leading-none opacity-80">{s.name}</span>
+                        </div>
+                        <span className="text-[9px] font-mono text-muted-foreground truncate">{s.hex}</span>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-
-              {/* Feedback Colors */}
-              <div className="space-y-6">
-                <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-medium tracking-widest uppercase text-muted-foreground">Feedback</span>
-                  <div className="flex-1 h-px bg-border" />
-                </div>
-                <div className="space-y-8">
-                  {palettes.filter(p => ["destructive","success","info"].includes(p.key)).map((p) => (
-                    <div key={p.key} className="space-y-2">
-                      <p className="text-sm font-medium">{p.label}</p>
-                      <div className="grid grid-cols-11 gap-1">
-                        {p.swatches.map((s) => (
-                          <div key={s.name} className="flex flex-col gap-1 min-w-0">
-                            <div
-                              className={`h-14 w-full rounded-md flex items-end p-1.5 ${s.textClass}`}
-                              style={{ backgroundColor: s.hex }}
-                            >
-                              <span className="text-[9px] font-mono leading-none opacity-80">{s.name}</span>
-                            </div>
-                            <span className="text-[9px] font-mono text-primary/70 truncate">{`--color-${p.key}-${s.name}`}</span>
-                            <span className="text-[9px] font-mono text-muted-foreground truncate">{s.hex}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
+              ))}
             </div>
           </Section>
         </TabsContent>
@@ -1260,13 +1505,19 @@ function FoundationPage({ dark }: { dark: boolean }) {
             </div>
           </Section>
 
-          <Section title="Font Family" description="Two typefaces: display/body and monospace.">
+          <Section title="Font Family" description="Two typefaces configured from the Brand Identity panel. Change them there to see updates here.">
             <div className="rounded-lg border border-border overflow-hidden">
-              {typographyTokens.fontFamily.map((f, i) => (
-                <div key={f.token} className={`flex items-center gap-6 p-5 ${i < typographyTokens.fontFamily.length - 1 ? "border-b border-border" : ""}`}>
+              {[
+                { token: "font-sans", cssVar: "--font-sans", name: config.fontSans, sample: "Aa Bb Cc 123" },
+                { token: "font-mono", cssVar: "--font-mono", name: config.fontMono, sample: "const x = 42;" },
+              ].map((f, i) => (
+                <div key={f.token} className={`flex items-center gap-6 p-5 ${i === 0 ? "border-b border-border" : ""}`}>
                   <span className="font-mono text-sm text-muted-foreground w-24 shrink-0">{f.token}</span>
-                  <span className="text-2xl font-semibold flex-1 min-w-0 truncate" style={{ fontFamily: f.value.split(",")[0] }}>{f.sample}</span>
-                  <span className="font-mono text-xs text-muted-foreground hidden md:block truncate max-w-xs">{f.value}</span>
+                  <span className="text-2xl font-semibold flex-1 min-w-0 truncate" style={{ fontFamily: `"${f.name}"` }}>{f.sample}</span>
+                  <div className="hidden md:flex flex-col items-end gap-0.5 min-w-0">
+                    <span className="font-mono text-sm text-foreground">{f.name}</span>
+                    <span className="font-mono text-[10px] text-muted-foreground">{f.cssVar}</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -8333,6 +8584,7 @@ export default function App() {
   const currentNav = navItems.find((n) => n.id === page)!;
 
   return (
+    <BrandProvider dark={dark}>
     <TooltipProvider>
       <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
         <SidebarProvider defaultOpen>
@@ -8623,5 +8875,6 @@ export default function App() {
         </SidebarProvider>
       </div>
     </TooltipProvider>
+    </BrandProvider>
   );
 }

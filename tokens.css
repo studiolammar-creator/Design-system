@@ -224,8 +224,9 @@
    ──────────────────────────────────────── */
 
 :root {
-  --font-sans: "Sharphy", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: "Space Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  /* Font name only — Tailwind config appends system fallbacks via var(--font-sans) */
+  --font-sans: "Sharphy";
+  --font-mono: "Space Mono";
 
   --text-xs:       0.75rem;   /* 12px */
   --text-base:     0.875rem;   /* 14px */
